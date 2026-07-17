@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
-enum SocialProvider { google, apple, microsoft, github, phone }
+enum SocialProvider { google, apple, microsoft, github, phone, guest }
 
 /// A single row-style button for third-party auth providers.
 ///
@@ -47,6 +47,10 @@ class _SocialAuthButtonState extends State<SocialAuthButton> {
         SocialProvider.phone => (
             icon: Icons.phone_iphone_rounded,
             label: 'Continue with Phone',
+          ),
+        SocialProvider.guest => (
+            icon: Icons.group_outlined,
+            label: 'Continue as Guest',
           ),
       };
 

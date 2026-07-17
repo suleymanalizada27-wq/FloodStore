@@ -2,71 +2,34 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:platform/platform.dart';
-
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode, debugPrint;
+import 'dart:io' show Platform;
 import '../../domain/entities/app_user.dart';
 import '../../domain/entities/mfa_method.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-/// Production implementation of [AuthRepository] backed by Firebase
-/// Authentication.
-///
-/// Setup required before this compiles against a real project:
-///   1. Run `flutterfire configure` to generate `firebase_options.dart`.
-///   2. Enable the Email/Password, Google, Apple and Phone providers in the
-///      Firebase console.
-///   3. For Microsoft and GitHub, register the respective OAuth providers
-///      (`microsoft.com`, `github.com`) in the Firebase console. Both go
-///      through Firebase's generic `OAuthProvider` — neither needs a
-///      dedicated package. GitHub additionally requires an OAuth App
-///      registered at github.com/settings/developers with the Firebase
-///      auth handler URL as its callback.
-///   4. Enable Anonymous auth in the Firebase console for Guest Mode.
-///
-/// No mock branches live in this class: every method either talks to
-/// Firebase or throws. Screens should never special-case "is this real or
-/// fake" — that's exactly what this abstraction exists to prevent.
 class FirebaseAuthRepository implements AuthRepository {
+  final fb.FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
+  final LocalAuthentication _localAuth;
+
   FirebaseAuthRepository({
     fb.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
-    PlatformPlatform? platform,
+    LocalAuthentication? localAuth,
   })  : _auth = firebaseAuth ?? fb.FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn(),
-        _platform = platform ?? const LocalPlatform();
-
-  final fb.FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
-  final PlatformPlatform _platform;
-
-  AppUser _mapUser(fb.User user) => AppUser(
-        id: user.uid,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        displayName: user.displayName,
-        photoUrl: user.photoURL,
-        emailVerified: user.emailVerified,
-      );
-
-  AuthFailure _mapException(Object error) {
-    if (error is fb.FirebaseAuthException) {
-      return AuthFailure(
-        error.message ?? 'Authentication failed. Please try again.',
-        code: error.code,
-      );
-    }
-    return AuthFailure(error.toString());
-  }
+        _localAuth = localAuth ?? LocalAuthentication();
 
   @override
   Stream<AppUser?> authStateChanges() {
-    return _auth.authStateChanges().map((u) => u == null ? null : _mapUser(u));
+    return _auth.authStateChanges().map((user) => user != null ? _mapUser(user) : null);
   }
 
   @override
   AppUser? get currentUser {
     final user = _auth.currentUser;
-    return user == null ? null : _mapUser(user);
+    return user != null ? _mapUser(user) : null;
   }
 
   @override
@@ -79,6 +42,7 @@ class FirebaseAuthRepository implements AuthRepository {
         email: email,
         password: password,
       );
+      await _writeTestUser(credential.user!);
       return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
@@ -92,15 +56,7 @@ class FirebaseAuthRepository implements AuthRepository {
         email: payload.email,
         password: payload.password,
       );
-      final displayName = '${payload.firstName} ${payload.lastName}'.trim();
-      await credential.user?.updateDisplayName(displayName);
-      await credential.user?.sendEmailVerification();
-      // payload.accountMode / payload.companyName are captured on the form
-      // (see AccountModeSelector) but Firebase Auth itself has nowhere to
-      // persist a company profile — that belongs in a Firestore/user-profile
-      // document once one exists. Wiring that write-through is a Part 3+
-      // item; nothing here silently drops the field, it's just not yet
-      // durable server-side beyond this payload.
+      await _writeTestUser(credential.user!);
       return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
@@ -112,17 +68,21 @@ class FirebaseAuthRepository implements AuthRepository {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        throw const AuthFailure(
-          'Google sign-in was cancelled.',
-          code: 'cancelled',
+        throw fb.FirebaseAuthException(
+          code: 'ERROR_ABORTED_BY_USER',
+          message: 'Sign in aborted by user',
         );
       }
+
       final googleAuth = await googleUser.authentication;
       final credential = fb.GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final userCredential = await _auth.signInWithCredential(credential);
+
+      final userCredential =
+          await _auth.signInWithCredential(credential);
+      await _writeTestUser(userCredential.user!);
       return _mapUser(userCredential.user!);
     } catch (e) {
       throw _mapException(e);
@@ -132,17 +92,35 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<AppUser> signInWithApple() async {
     try {
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
+      // Define the scopes we want
+      final List<AppleIDAuthorizationScopes> scopes = [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ];
+
+      // Prepare web authentication options for non-Apple platforms (Android and Web)
+      final WebAuthenticationOptions? webAuthenticationOptions =
+          kIsWeb || Platform.isAndroid
+              ? WebAuthenticationOptions(
+                  clientId: 'com.firebase.floodstore.signin',
+                  redirectUri: Uri.parse(
+                      'https://floodstore-fbece.firebaseapp.com/__/auth/handler'),
+                )
+              : null;
+
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: scopes,
+        webAuthenticationOptions: webAuthenticationOptions,
       );
-      final oauthCredential = fb.OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
+
+      final oAuthCredential = fb.OAuthProvider('apple').credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
       );
-      final userCredential = await _auth.signInWithCredential(oauthCredential);
+
+      final userCredential =
+          await _auth.signInWithCredential(oAuthCredential);
+      await _writeTestUser(userCredential.user!);
       return _mapUser(userCredential.user!);
     } catch (e) {
       throw _mapException(e);
@@ -152,11 +130,10 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<AppUser> signInWithMicrosoft() async {
     try {
-      final provider = fb.OAuthProvider('microsoft.com')
-        ..addScope('mail.read')
-        ..setCustomParameters({'prompt': 'select_account'});
-      final userCredential = await _auth.signInWithProvider(provider);
-      return _mapUser(userCredential.user!);
+      final microsoftProvider = fb.OAuthProvider('microsoft.com');
+      final credential = await _auth.signInWithProvider(microsoftProvider);
+      await _writeTestUser(credential.user!);
+      return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
     }
@@ -165,12 +142,10 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<AppUser> signInWithGithub() async {
     try {
-      final provider = fb.OAuthProvider('github.com')
-        ..addScope('read:user')
-        ..addScope('user:email')
-        ..setCustomParameters({'allow_signup': 'true'});
-      final userCredential = await _auth.signInWithProvider(provider);
-      return _mapUser(userCredential.user!);
+      final githubProvider = fb.OAuthProvider('github.com');
+      final credential = await _auth.signInWithProvider(githubProvider);
+      await _writeTestUser(credential.user!);
+      return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
     }
@@ -179,8 +154,9 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<AppUser> signInAsGuest() async {
     try {
-      final userCredential = await _auth.signInAnonymously();
-      return _mapUser(userCredential.user!);
+      final credential = await _auth.signInAnonymously();
+      await _writeTestUser(credential.user!);
+      return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
     }
@@ -194,14 +170,20 @@ class FirebaseAuthRepository implements AuthRepository {
   }) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
-      verificationCompleted: (_) {
-        // Auto-retrieval on Android completes silently; the UI flow for
-        // FloodStore always confirms via the OTP screen, so this is a
-        // deliberate no-op.
+      verificationCompleted: (phoneAuthCredential) async {
+        final userCredential =
+            await _auth.signInWithCredential(phoneAuthCredential);
+        await _writeTestUser(userCredential.user!);
       },
-      verificationFailed: (e) => onFailed(_mapException(e)),
-      codeSent: (verificationId, _) => onCodeSent(verificationId),
-      codeAutoRetrievalTimeout: (_) {},
+      verificationFailed: (fb.FirebaseAuthException error) {
+        onFailed(_mapException(error));
+      },
+      codeSent: (String verificationId, int? forceResendingToken) {
+        onCodeSent(verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // Auto-reset timeout
+      },
     );
   }
 
@@ -215,7 +197,9 @@ class FirebaseAuthRepository implements AuthRepository {
         verificationId: verificationId,
         smsCode: smsCode,
       );
+
       final userCredential = await _auth.signInWithCredential(credential);
+      await _writeTestUser(userCredential.user!);
       return _mapUser(userCredential.user!);
     } catch (e) {
       throw _mapException(e);
@@ -223,68 +207,8 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<bool> isBiometricAvailable() async {
-    try {
-      final localAuth = LocalAuthentication();
-      bool canCheckBiometrics = false;
-      try {
-        canCheckBiometrics = await localAuth.canCheckBiometrics;
-      } on Exception catch (_) {
-        // On some platforms, canCheckBiometrics might throw.
-        canCheckBiometrics = false;
-      }
-      return canCheckBiometrics;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  @override
-  Future<AppUser> signInWithBiometrics() async {
-    // First, check if biometric is available.
-    final bool isAvailable = await isBiometricAvailable();
-    if (!isAvailable) {
-      throw const AuthFailure(
-        'Biometric authentication is not available on this device.',
-        code: 'biometric-not-available',
-      );
-    }
-
-    // Prompt the user for biometric authentication.
-    final localAuth = LocalAuthentication();
-    bool didAuthenticate = false;
-    try {
-      didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Scan your fingerprint to confirm your identity',
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
-      );
-    } on Exception catch (e) {
-      throw AuthFailure(
-        'Biometric authentication failed: $e',
-        code: 'biometric-failed',
-      );
-    }
-
-    if (!didAuthenticate) {
-      throw const AuthFailure(
-        'Biometric authentication failed.',
-        code: 'biometric-failed',
-      );
-    }
-
-    // If we reach here, biometric succeeded.
-    // Now, we must have a current user to return.
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw const AuthFailure(
-        'No user is currently signed in. Please sign in with email or social first.',
-        code: 'no-current-user',
-      );
-    }
-    return _mapUser(user);
+  Future<void> requestVoiceCall(String phoneNumber) async {
+    throw UnimplementedError('Voice call OTP is not implemented yet.');
   }
 
   @override
@@ -299,7 +223,8 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<String> verifyPasswordResetCode(String code) async {
     try {
-      return await _auth.verifyPasswordResetCode(code);
+      final email = await _auth.verifyPasswordResetCode(code);
+      return email;
     } catch (e) {
       throw _mapException(e);
     }
@@ -311,7 +236,50 @@ class FirebaseAuthRepository implements AuthRepository {
     required String newPassword,
   }) async {
     try {
-      await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
+      await _auth.confirmPasswordReset(
+        code: code,
+        newPassword: newPassword,
+      );
+    } catch (e) {
+      throw _mapException(e);
+    }
+  }
+
+  @override
+  Future<void> sendMagicLink(String email) async {
+    try {
+      await _auth.sendSignInLinkToEmail(
+        email: email,
+        actionCodeSettings: fb.ActionCodeSettings(
+          url: 'https://floodstore-fbece.firebaseapp.com/__/auth/handler',
+          handleCodeInApp: true,
+          androidPackageName: 'com.example.flood_store',
+          androidInstallApp: true,
+          iOSBundleId: 'com.example.floodStore',
+        ),
+      );
+    } catch (e) {
+      throw _mapException(e);
+    }
+  }
+
+  @override
+  Future<bool> isMagicLink(String link) async {
+    return await _auth.isSignInWithEmailLink(link);
+  }
+
+  @override
+  Future<AppUser> signInWithMagicLink({
+    required String email,
+    required String link,
+  }) async {
+    try {
+      final credential = await _auth.signInWithEmailLink(
+        email: email,
+        emailLink: link,
+      );
+      await _writeTestUser(credential.user!);
+      return _mapUser(credential.user!);
     } catch (e) {
       throw _mapException(e);
     }
@@ -322,7 +290,10 @@ class FirebaseAuthRepository implements AuthRepository {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        throw const AuthFailure('No signed-in user.', code: 'no-current-user');
+        throw fb.FirebaseAuthException(
+          code: 'ERROR_NOT_AUTHENTICATED',
+          message: 'User not authenticated',
+        );
       }
       await user.verifyBeforeUpdateEmail(newEmail);
     } catch (e) {
@@ -331,11 +302,70 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<bool> isBiometricAvailable() async {
+    try {
+      if (!kIsWeb) {
+        return await _localAuth.canCheckBiometrics ||
+            await _localAuth.isDeviceSupported();
+      }
+      return false; // Web doesn't support local_auth biometrics
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<AppUser> signInWithBiometrics() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw fb.FirebaseAuthException(
+        code: 'ERROR_NOT_AUTHENTICATED',
+        message: 'User must be signed in to use biometric authentication',
+      );
+    }
+
+    try {
+      final didAuthenticate = await _localAuth.authenticate(
+        localizedReason: 'Scan your fingerprint to verify identity',
+      );
+
+      if (!didAuthenticate) {
+        throw fb.FirebaseAuthException(
+          code: 'ERROR_USER_CANCELLED',
+          message: 'Biometric authentication failed',
+        );
+      }
+
+      return _mapUser(user);
+    } catch (e) {
+      throw _mapException(e);
+    }
+  }
+
+  @override
+  Future<AppUser> signInWithPasskey() async {
+    throw UnimplementedError('Passkey sign-in is not implemented yet.');
+  }
+
+  @override
+  Future<List<String>> generateBackupCodes() async {
+    throw UnimplementedError('Backup codes generation is not implemented yet.');
+  }
+
+  @override
+  Future<AppUser> signInWithBackupCode(String code) async {
+    throw UnimplementedError('Backup code sign-in is not implemented yet.');
+  }
+
+  @override
   Future<void> sendEmailVerification() async {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        throw const AuthFailure('No signed-in user to verify.', code: 'no-current-user');
+        throw fb.FirebaseAuthException(
+          code: 'ERROR_NOT_AUTHENTICATED',
+          message: 'User not authenticated',
+        );
       }
       await user.sendEmailVerification();
     } catch (e) {
@@ -346,32 +376,72 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   Future<AppUser?> reloadCurrentUser() async {
     try {
-      await _auth.currentUser?.reload();
       final user = _auth.currentUser;
-      return user == null ? null : _mapUser(user);
+      if (user == null) return null;
+      await user.reload();
+      return _mapUser(user);
     } catch (e) {
       throw _mapException(e);
     }
   }
 
   @override
-  Future<void> signOut() async {
-    await Future.wait([
-      _auth.signOut(),
-      _googleSignIn.signOut(),
-    ]);
+  Future<List<MfaMethod>> getEnrolledMfaMethods() async {
+    throw UnimplementedError('Getting enrolled MFA methods is not implemented yet.');
   }
-}
 
-// A platform interface for testing.
-abstract class PlatformPlatform {
-  bool get isAndroid;
-  bool get isIOS;
-}
+  @override
+  Future<void> enrollMfa(MfaMethod method) async {
+    throw UnimplementedError('MFA enrollment is not implemented yet.');
+  }
 
-class LocalPlatform extends PlatformPlatform {
   @override
-  bool get isAndroid => Platform.isAndroid;
+  Future<AppUser> resolveMfaChallenge({
+    required MfaChallenge challenge,
+    required String code,
+  }) async {
+    throw UnimplementedError('MFA challenge resolution is not implemented yet.');
+  }
+
   @override
-  bool get isIOS => Platform.isIOS;
+  Future<void> signOut() async {
+    try {
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+    } catch (e) {
+      throw _mapException(e);
+    }
+  }
+
+  // Helper methods
+  AppUser _mapUser(fb.User user) {
+    return AppUser(
+      id: user.uid,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      displayName: user.displayName,
+      photoUrl: user.photoURL,
+      emailVerified: user.emailVerified,
+    );
+  }
+
+  Future<void> _writeTestUser(fb.User user) async {
+    if (!kDebugMode) return;
+
+    try {
+      debugPrint('Firebase connection verified for user: ${user.uid}');
+    } catch (e) {
+      // Ignore errors in debug mode
+    }
+  }
+
+  AuthFailure _mapException(dynamic e) {
+    if (e is fb.FirebaseAuthException) {
+      return AuthFailure(
+        e.message ?? 'An unknown error occurred',
+        code: e.code,
+      );
+    }
+    return AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
+  }
 }

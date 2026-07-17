@@ -23,14 +23,7 @@ class RegisterPayload {
   final String phone;
   final String password;
   final String country;
-
-  /// Individual vs. business signup. Defaults to [AccountMode.individual]
-  /// so every pre-existing call to this constructor keeps compiling
-  /// unchanged.
   final AccountMode accountMode;
-
-  /// Required by [RegisterScreen] only when [accountMode] is
-  /// [AccountMode.business]; `null` otherwise.
   final String? companyName;
 }
 
@@ -53,7 +46,7 @@ class AuthFailure implements Exception {
 /// interface via Riverpod providers — never to a concrete implementation
 /// directly. Swap [FirebaseAuthRepository] for a fake in tests, or for a
 /// different backend entirely, without touching a single screen.
-abstract interface class AuthRepository {
+abstract class AuthRepository {
   /// Emits the current user whenever auth state changes, or `null` when
   /// signed out.
   Stream<AppUser?> authStateChanges();
@@ -121,7 +114,7 @@ abstract interface class AuthRepository {
   /// architecture stub like the biometric/passkey/QR options.
   Future<void> sendMagicLink(String email);
 
-  bool isMagicLink(String link);
+  Future<bool> isMagicLink(String link);
 
   Future<AppUser> signInWithMagicLink({required String email, required String link});
 
@@ -130,13 +123,13 @@ abstract interface class AuthRepository {
   /// [EmailVerificationScreen].
   Future<void> updateEmail(String newEmail);
 
-  // -- Premium login options (architecture only) ------------------------
-  //
-  // Biometric/Passkey both need a native platform plugin (`local_auth`,
-  // WebAuthn credential APIs) this pass doesn't add — see PART_3 doc for
-  // why. Backup codes need a place to durably store one-time-use codes
-  // (Firestore, same pattern as OrganizationRepository) that isn't wired
-  // yet either. All three throw deliberately rather than faking success.
+  /// -- Premium login options (architecture only) ------------------------
+  ///
+  /// Biometric/Passkey both need a native platform plugin (`local_auth`,
+  /// WebAuthn credential APIs) this pass doesn't add — see PART_3 doc for
+  /// why. Backup codes need a place to durably store one-time-use codes
+  /// (Firestore, same pattern as OrganizationRepository) that isn't wired
+  /// yet either. All three throw deliberately rather than faking success.
 
   Future<bool> isBiometricAvailable();
 
@@ -158,12 +151,12 @@ abstract interface class AuthRepository {
   /// without requiring a full sign-out/sign-in.
   Future<AppUser?> reloadCurrentUser();
 
-  // -- Multi-factor authentication (architecture only) -----------------
-  //
-  // These three methods define the *shape* Part 3+ will implement against;
-  // see MfaChallenge for why. FirebaseAuthRepository intentionally throws
-  // UnimplementedError rather than silently no-op-ing, so nothing pretends
-  // to be secure before it is.
+  /// -- Multi-factor authentication (architecture only) -----------------
+  ///
+  /// These three methods define the *shape* Part 3+ will implement against;
+  /// see MfaChallenge for why. FirebaseAuthRepository intentionally throws
+  /// UnimplementedError rather than silently no-op-ing, so nothing pretends
+  /// to be secure before it is.
 
   Future<List<MfaMethod>> getEnrolledMfaMethods();
 
