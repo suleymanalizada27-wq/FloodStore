@@ -1,0 +1,462 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/premium_button.dart';
+import '../../application/providers/product_providers.dart';
+import '../../domain/entities/product.dart';
+import '../../domain/entities/product_base.dart';
+import '../../domain/entities/category.dart';
+import '../../domain/entities/product_metadata.dart';
+import '../../domain/entities/product_pricing.dart';
+import '../../domain/repositories/product_repository.dart';
+
+final _uuid = Uuid();
+
+class ProductsScreen extends ConsumerStatefulWidget {
+  const ProductsScreen({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends ConsumerState<ProductsScreen> {
+  late final Future<List<Product>> _productsFuture;
+  static const int _pageSize = 20;
+  String? _lastDocumentId;
+  bool _isLoadingMore = false;
+  List<Product> _products = [];
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProducts();
+  }
+
+  Future<void> _initializeProducts() async {
+    // Check if we have any products in the database
+    final productRepository = ref.read(productRepositoryProvider);
+
+    try {
+      // Try to get a small sample of products from default category to see if any exist
+      final sampleProducts = await productRepository.getProductsByCategory(
+        'default',  // Try to get from default category first
+        limit: 1,
+      );
+
+      if (sampleProducts.isEmpty) {
+        // No products in default category, create some sample data
+        await _createSampleData();
+      }
+    } catch (e) {
+      // If there's an error (like category doesn't exist), create sample data
+      await _createSampleData();
+    }
+
+    // Now load the products for display
+    _loadProducts();
+    setState(() {
+      _isInitialized = true;
+    });
+  }
+
+  Future<void> _createSampleData() async {
+    try {
+      final productRepository = ref.read(productRepositoryProvider);
+
+      // Create a default category if it doesn't exist
+      final defaultCategory = Category(
+        id: 'default',
+        name: 'Default Category',
+        level: 0,
+        sortOrder: 0,
+        isActive: true,
+      );
+
+      try {
+        await productRepository.createCategory(defaultCategory);
+      } catch (e) {
+        // Category might already exist, which is fine
+      }
+
+      // Create several sample products
+      for (int i = 0; i < 5; i++) {
+        final sampleProduct = Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-id', // In real app, this would be current user's ID
+          categoryId: 'default',
+          secondaryCategories: const [],
+          base: ProductBase(
+            title: 'Sample Product ${i + 1}',
+            description: 'This is a sample product for demonstration purposes. This is product number $i+1.',
+            brand: 'SampleBrand',
+            sku: 'SAMPLE-${_uuid.v4().substring(0, 8).toUpperCase()}-$i',
+            weight: 250.0 + (i * 50.0), // Vary the weight
+            dimensions: ProductDimensions(
+              length: 10.0 + (i * 2.0),
+              width: 10.0 + (i * 2.0),
+              height: 5.0 + (i * 1.0),
+            ),
+            materials: ['Cotton', 'Polyester'],
+            careInstructions: 'Machine wash cold, tumble dry low',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['sample', 'demo', 'test', 'product$i'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['casual'],
+            style: ['modern'],
+            color: ['blue', 'white', 'black'][i % 3] == 0 ? ['blue'] : ['white', 'black'][i % 3] == 1 ? ['white'] : ['black'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 1999 + (i * 500), // $19.99, $24.99, etc.
+            currency: 'USD',
+            compareAtPrice: 2499 + (i * 500), // $24.99, $29.99, etc.
+            taxCode: 'standard',
+            shippingTier: 'standard',
+          ),
+          createdAt: DateTime.now().subtract(Duration(days: i)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        );
+
+        await productRepository.createProduct(sampleProduct);
+      }
+    } catch (e) {
+      // If we can't create sample data, we'll just show an empty state
+      debugPrint('Error creating sample data: $e');
+    }
+  }
+
+  void _loadProducts() {
+    final productRepository = ref.read(productRepositoryProvider);
+    _productsFuture = productRepository.getProductsByCategory(
+      'default',
+      limit: _pageSize,
+    ).then((products) {
+      setState(() {
+        _products = products;
+        _lastDocumentId = products.isNotEmpty ? products.last.id : null;
+      });
+    });
+  }
+
+  void _loadMoreProducts() {
+    if (_isLoadingMore || _lastDocumentId == null) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    final productRepository = ref.read(productRepositoryProvider);
+    productRepository.getProductsByCategory(
+      'default',
+      limit: _pageSize,
+      lastDocumentId: _lastDocumentId,
+    ).then((moreProducts) {
+      setState(() {
+        _products.addAll(moreProducts);
+        _lastDocumentId = moreProducts.isNotEmpty ? moreProducts.last.id : null;
+        _isLoadingMore = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    });
+  }
+
+  Future<void> _addSampleProduct() async {
+    try {
+      final productRepository = ref.read(productRepositoryProvider);
+
+      // Create a sample product
+      final sampleProduct = Product(
+        id: _uuid.v4(),
+        sellerId: 'demo-seller-id', // In real app, this would be current user's ID
+        categoryId: 'default', // Use default category
+        secondaryCategories: const [],
+        base: ProductBase(
+          title: 'Sample Product ${DateTime.now().millisecondsSinceEpoch}',
+          description: 'This is a sample product for demonstration purposes.',
+          brand: 'SampleBrand',
+          sku: 'SAMPLE-${_uuid.v4().substring(0, 8).toUpperCase()}',
+          weight: 250.0, // 250 grams
+          dimensions: const ProductDimensions(
+            length: 10.0,
+            width: 10.0,
+            height: 5.0,
+          ),
+          materials: ['Cotton', 'Polyester'],
+          careInstructions: 'Machine wash cold, tumble dry low',
+          isDigital: false,
+        ),
+        metadata: ProductMetadata(
+          tags: ['sample', 'demo', 'test'],
+          ageRange: null,
+          gender: null,
+          season: ['all'],
+          occasion: ['casual'],
+          style: ['modern'],
+          color: ['blue', 'white'],
+          pattern: ['solid'],
+        ),
+        pricing: ProductPricing(
+          basePrice: 1999, // $19.99 in cents
+          currency: 'USD',
+          compareAtPrice: 2499, // $24.99
+          taxCode: 'standard',
+          shippingTier: 'standard',
+        ),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        status: ProductStatus.active,
+      );
+
+      // Save the product
+      final productId = await productRepository.createProduct(sampleProduct);
+
+      // Refresh the product list
+      await _loadProducts();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sample product added!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error adding sample product: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          'Products',
+          style: AppTextStyles.headlineMedium,
+        ),
+        centerTitle: true,
+        actions: [
+          // Only show in debug mode or for demo
+          if (bool.fromEnvironment('dart.vm.product') == false) // Not in release mode
+            IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: 'Add Sample Product',
+              onPressed: _addSampleProduct,
+            ),
+        ],
+      ),
+      body: !_isInitialized
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: _loadProducts,
+              child: Column(
+                children: [
+                  // Search bar
+                  Padding(
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search products...',
+                        prefixIcon: Icon(Icons.search, color: AppColors.textTertiary),
+                        filled: true,
+                        fillColor: AppColors.card,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Products grid
+                  Expanded(
+                    child: FutureBuilder<List<Product>>(
+                      future: _productsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: AppColors.error),
+                            ),
+                          );
+                        }
+
+                        final products = snapshot.data ?? [];
+
+                        if (products.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.store_outlined,
+                                  size: 48,
+                                  color: AppColors.textTertiary,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No products found',
+                                  style: TextStyle(color: AppColors.textTertiary),
+                                ),
+                                const SizedBox(height: 8),
+                                if (bool.fromEnvironment('dart.vm.product') == false)
+                                  ElevatedButton.icon(
+                                    onPressed: _addSampleProduct,
+                                    icon: const Icon(Icons.add),
+                                    label: const Text('Add Sample Product'),
+                                  ),
+                              ],
+                            ),
+                          );
+                        }
+
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (scrollInfo) {
+                            if (scrollInfo.metrics.pixels >=
+                                scrollInfo.metrics.maxScrollExtent * 0.8 &&
+                                !_isLoadingMore) {
+                              _loadMoreProducts();
+                            }
+                            return false;
+                          },
+                          child: GridView.builder(
+                            padding: EdgeInsets.all(AppSpacing.md),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              final product = products[index];
+                              return ProductCard(product: product);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _addSampleProduct,
+        icon: const Icon(Icons.add),
+        label: const Text('Add Sample'),
+        backgroundColor: AppColors.primary,
+      ),
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
+  final Product product;
+
+  const ProductCard({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Product image placeholder
+          Expanded(
+            flex: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.card.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.image,
+                  size: 48,
+                  color: AppColors.textTertiary.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+          ),
+
+          // Product info
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.base.title,
+                    style: AppTextStyles.bodyLarge,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  // Add to cart button
+                  SizedBox(
+                    height: 32,
+                    child: PremiumButton(
+                      onPressed: () {
+                        // TODO: Implement add to cart functionality
+                      },
+                      label: 'Add to Cart',
+                      icon: Icons.add_shopping_cart,
+                      isSmall: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

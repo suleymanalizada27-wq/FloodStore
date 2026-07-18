@@ -12,6 +12,7 @@ import '../../features/auth/presentation/screens/phone_otp_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/security_center_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
+import '../../features/marketplace/presentation/screens/products_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -30,6 +31,7 @@ abstract final class AppRoutes {
   /// Placeholder destination reached only after a successful sign in —
   /// swap for the real home/marketplace shell route when it exists.
   static const home = '/home';
+  static const marketplaceProducts = '/marketplace/products';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -136,7 +138,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (context, state) => const _HomePlaceholder(),
+        builder: (context, state) => const ProductsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.marketplaceProducts,
+        pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
       ),
     ],
   );
@@ -158,19 +164,4 @@ CustomTransitionPage _heroPage(Widget child) {
       );
     },
   );
-}
-
-/// Temporary landing spot after a successful sign-in. Replace with the
-/// real FloodStore marketplace shell.
-class _HomePlaceholder extends StatelessWidget {
-  const _HomePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Welcome to FloodStore 🎉'),
-      ),
-    );
-  }
 }
