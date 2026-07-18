@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "448994899479",
+    "project_id": "floodstore-fbece",
+    "storage_bucket": "floodstore-fbece.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448994899479:android:8117f7164e0a2104d6ce52",
+        "android_client_info": {
+          "package_name": "com.example.flood_store"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbIRmYWD5aa6DKrtE9mjQ1t6RDtABAsPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
