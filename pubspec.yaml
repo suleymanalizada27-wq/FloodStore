@@ -27,44 +27,44 @@ dependencies:
   firebase_auth: ^5.1.4
 
   # Organization records (Business Login) and device-session logs
-  // (Security Center) — Firebase Auth has no concept of either, so both
-  // need a real document store. See OrganizationRepository /
-  // SecurityRepository.
+# (Security Center) — Firebase Auth has no concept of either, so both
+# need a real document store. See OrganizationRepository /
+# SecurityRepository.
   cloud_firestore: ^5.4.3
 
   # Deep-links into Gmail/Outlook/Apple Mail/the platform's default mail
-  // client from EmailVerificationScreen's "Open Gmail" etc. buttons.
+# client from EmailVerificationScreen's "Open Gmail" etc. buttons.
   url_launcher: ^6.3.0
 
-  // Social sign-in providers
+# Social sign-in providers
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.2
-  // GitHub and Microsoft both go through firebase_auth's generic
-  // OAuthProvider (see FirebaseAuthRepository) — no dedicated package
-  // needed for either.
+# GitHub and Microsoft both go through firebase_auth's generic
+# OAuthProvider (see FirebaseAuthRepository) — no dedicated package
+# needed for either.
 
-  // Secure, encrypted-at-rest storage for session/refresh tokens
-  // (Keychain on iOS, Keystore-backed EncryptedSharedPreferences on
-  // Android) — see lib/core/services/secure_token_service.dart.
+# Secure, encrypted-at-rest storage for session/refresh tokens
+# (Keychain on iOS, Keystore-backed EncryptedSharedPreferences on
+# Android) — see lib/core/services/secure_token_service.dart.
   flutter_secure_storage: ^9.2.2
 
-  // Lightweight, non-sensitive local prefs: "remember me" / "keep me
-  // signed in" flags, last-active timestamp, rate-limit counters.
+# Lightweight, non-sensitive local prefs: "remember me" / "keep me
+# signed in" flags, last-active timestamp, rate-limit counters.
   shared_preferences: ^2.3.3
 
-  // Micro-interactions for splash particles / success states
+# Micro-interactions for splash particles / success states
   lottie: ^3.1.2
 
-  // Value equality for immutable domain/state classes
+# Value equality for immutable domain/state classes
   equatable: ^2.0.5
 
-  // Biometric authentication
+# Biometric authentication
   local_auth: ^2.2.0
 
-  // Firebase Functions for server‑side token revocation etc.
+# Firebase Functions for server‑side token revocation etc.
   # firebase_functions: ^0.12.0
 
-  // UUID generation for demo/sample data
+# UUID generation for demo/sample data
   uuid: ^4.0.0
 
   cupertino_icons: ^1.0.6
