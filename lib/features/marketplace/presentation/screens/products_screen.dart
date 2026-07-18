@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/glass_card.dart';
-import '../../../core/widgets/premium_button.dart';
+import '../..//..//core/theme/app_colors.dart';
+import '../..//..//core/theme/app_spacing.dart';
+import '../..//..//core/theme/app_text_styles.dart';
+import '../..//..//core/widgets/glass_card.dart';
+import '../..//..//core/widgets/premium_button.dart';
 import '../../application/providers/product_providers.dart';
 import '../../domain/entities/product.dart';
-import '../../domain/entities/product_base.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/entities/product_metadata.dart';
-import '../../domain/entities/product_pricing.dart';
 import '../../domain/repositories/product_repository.dart';
 
 final _uuid = Uuid();
@@ -135,16 +132,25 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     }
   }
 
-  void _loadProducts() {
+  Future<void> _loadProducts() {
     final productRepository = ref.read(productRepositoryProvider);
     _productsFuture = productRepository.getProductsByCategory(
       'default',
       limit: _pageSize,
-    ).then((products) {
+    );
+    _productsFuture.then((products) {
       setState(() {
         _products = products;
         _lastDocumentId = products.isNotEmpty ? products.last.id : null;
       });
+    }).catchError((error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading products: $error'), backgroundColor: Colors.red),
+        );
+      }
+    });
+  });
     });
   }
 
@@ -154,6 +160,29 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     setState(() {
       _isLoadingMore = true;
     });
+
+    final productRepository = ref.read(productRepositoryProvider);
+    productRepository.getProductsByCategory(
+      'default',
+      limit: _pageSize,
+      lastDocumentId: _lastDocumentId,
+    ).then((moreProducts) {
+      setState(() {
+        _products.addAll(moreProducts);
+        _lastDocumentId = moreProducts.isNotEmpty ? moreProducts.last.id : null;
+        _isLoadingMore = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading more products: $error'), backgroundColor: Colors.red),
+        );
+      }
+    });
+  });
 
     final productRepository = ref.read(productRepositoryProvider);
     productRepository.getProductsByCategory(
@@ -273,7 +302,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               child: CircularProgressIndicator(),
             )
           : RefreshIndicator(
-              onRefresh: _loadProducts,
+              onRefresh: _refreshProducts,
               child: Column(
                 children: [
                   // Search bar
@@ -426,14 +455,14 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     product.base.title,
-                    style: AppTextStyles.bodyLarge,
+                    style: AppTextStyles.textTheme.bodyLarge,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
-                    style: AppTextStyles.bodyLarge.copyWith(
+                    style: AppTextStyles.textTheme.bodyLarge.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -448,7 +477,6 @@ class ProductCard extends StatelessWidget {
                       },
                       label: 'Add to Cart',
                       icon: Icons.add_shopping_cart,
-                      isSmall: true,
                     ),
                   ),
                 ],

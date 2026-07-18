@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/repositories/product_repository.dart';
-import '../sources/firestore_product_data_source.dart';
+import '../../data/sources/firestore_product_data_source.dart';
 
 /// Provider for the Firestore product data source
 final firestoreProductDataSourceProvider =
