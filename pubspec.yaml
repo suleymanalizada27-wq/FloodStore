@@ -1,4 +1,4 @@
-name: flood_store
+name: floodstore
 description: >
   FloodStore — a next-generation, premium marketplace. This package contains
   the authentication experience: splash, sign in, sign up and password

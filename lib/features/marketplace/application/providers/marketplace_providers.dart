@@ -10,6 +10,7 @@ import '../../domain/repositories/analytics_repository.dart';
 import '../../domain/repositories/loyalty_repository.dart';
 import '../../domain/repositories/visual_search_repository.dart';
 import '../../domain/repositories/coupon_repository.dart';
+import '../../domain/repositories/business_account_repository.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/chat_message.dart';
@@ -22,6 +23,7 @@ import '../../domain/entities/seller_analytics.dart';
 import '../../domain/entities/recommendation.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
+import '../../domain/entities/business_account.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 import '../../data/repositories/firestore_cart_repository.dart';
 import '../../data/repositories/firestore_order_repository.dart';
@@ -32,6 +34,7 @@ import '../../data/repositories/firestore_analytics_repository.dart';
 import '../../data/repositories/firestore_loyalty_repository.dart';
 import '../../data/repositories/firestore_visual_search_repository.dart';
 import '../../data/repositories/firestore_coupon_repository.dart';
+import '../../data/repositories/firestore_business_account_repository.dart';
 import '../../data/sources/firestore_product_data_source.dart';
 import '../../data/sources/product_image_service.dart';
 import '../state/product_list_notifier.dart';
@@ -82,6 +85,10 @@ final visualSearchRepositoryProvider = Provider<VisualSearchRepository>((ref) {
 
 final couponRepositoryProvider = Provider<CouponRepository>((ref) {
   return FirestoreCouponRepository();
+});
+
+final businessAccountRepositoryProvider = Provider<BusinessAccountRepository>((ref) {
+  return FirestoreBusinessAccountRepository();
 });
 
 final productImageServiceProvider = Provider<ProductImageService>((ref) {

@@ -18,7 +18,11 @@ class FirebaseAuthRepository implements AuthRepository {
     GoogleSignIn? googleSignIn,
     LocalAuthentication? localAuth,
   })  : _auth = firebaseAuth ?? fb.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn(),
+        _googleSignIn = googleSignIn ??
+            GoogleSignIn(
+              clientId: 'com.firebase.floodstore',
+              scopes: ['email', 'profile'],
+            ),
         _localAuth = localAuth ?? LocalAuthentication();
 
   @override
