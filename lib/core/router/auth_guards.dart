@@ -1,5 +1,3 @@
-import 'package:go_router/go_router.dart';
-
 import '../../features/auth/domain/entities/app_user.dart';
 import 'app_router.dart';
 

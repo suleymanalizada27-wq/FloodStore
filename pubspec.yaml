@@ -1,4 +1,4 @@
-name: flood_store
+name: floodstore
 description: >
   FloodStore — a next-generation, premium marketplace. This package contains
   the authentication experience: splash, sign in, sign up and password
@@ -25,12 +25,16 @@ dependencies:
   # Firebase (auth backend — wire up with `flutterfire configure`)
   firebase_core: ^3.3.0
   firebase_auth: ^5.1.4
+  firebase_storage: ^12.1.3
+  cloud_firestore: ^5.4.3
+
+  # Image picking (camera/gallery)
+  image_picker: ^1.1.2
 
   # Organization records (Business Login) and device-session logs
 # (Security Center) — Firebase Auth has no concept of either, so both
 # need a real document store. See OrganizationRepository /
 # SecurityRepository.
-  cloud_firestore: ^5.4.3
 
   # Deep-links into Gmail/Outlook/Apple Mail/the platform's default mail
 # client from EmailVerificationScreen's "Open Gmail" etc. buttons.

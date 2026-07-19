@@ -12,7 +12,12 @@ import '../../features/auth/presentation/screens/phone_otp_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/security_center_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
+import '../../features/marketplace/presentation/screens/cart_screen.dart';
+import '../../features/marketplace/presentation/screens/checkout_screen.dart';
+import '../../features/marketplace/presentation/screens/order_confirmation_screen.dart';
+import '../../features/marketplace/presentation/screens/order_detail_screen.dart';
 import '../../features/marketplace/presentation/screens/products_screen.dart';
+import '../../features/marketplace/presentation/screens/business_account_registration_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -32,6 +37,13 @@ abstract final class AppRoutes {
   /// swap for the real home/marketplace shell route when it exists.
   static const home = '/home';
   static const marketplaceProducts = '/marketplace/products';
+
+  // Marketplace routes
+  static const cart = '/cart';
+  static const checkout = '/checkout';
+  static const orderConfirmation = '/order/confirmation';
+  static const orderDetail = '/order/detail';
+  static const businessAccountRegister = '/business/register';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -143,6 +155,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.marketplaceProducts,
         pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.cart,
+        pageBuilder: (context, state) => _heroPage(const CartScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.checkout,
+        pageBuilder: (context, state) => _heroPage(const CheckoutScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.orderConfirmation,
+        pageBuilder: (context, state) => _heroPage(const OrderConfirmationScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.orderDetail,
+        pageBuilder: (context, state) => _heroPage(const OrderDetailScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.businessAccountRegister,
+        pageBuilder: (context, state) => _heroPage(const BusinessAccountRegistrationScreen()),
       ),
     ],
   );

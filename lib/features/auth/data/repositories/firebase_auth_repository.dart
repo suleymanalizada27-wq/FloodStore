@@ -18,7 +18,11 @@ class FirebaseAuthRepository implements AuthRepository {
     GoogleSignIn? googleSignIn,
     LocalAuthentication? localAuth,
   })  : _auth = firebaseAuth ?? fb.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn(),
+        _googleSignIn = googleSignIn ??
+            GoogleSignIn(
+              clientId: 'com.firebase.floodstore',
+              scopes: ['email', 'profile'],
+            ),
         _localAuth = localAuth ?? LocalAuthentication();
 
   @override
@@ -265,7 +269,7 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<bool> isMagicLink(String link) async {
-    return await _auth.isSignInWithEmailLink(link);
+    return _auth.isSignInWithEmailLink(link);
   }
 
   @override
@@ -442,6 +446,6 @@ class FirebaseAuthRepository implements AuthRepository {
         code: e.code,
       );
     }
-    return AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
+    return const AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
   }
 }

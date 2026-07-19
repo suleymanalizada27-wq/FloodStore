@@ -34,6 +34,9 @@ abstract class ProductRepository {
     double? maxPrice,
     String? sortBy, // relevance, price_low_high, price_high_low, newest, rating
     bool sortDesc = true,
+    bool inStockOnly = false,
+    bool freeShippingOnly = false,
+    double? ratingFilter,
   });
 
   /// Gets featured/recommended products
