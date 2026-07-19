@@ -1,4 +1,3 @@
-import '../entities/cart.dart';
 import '../entities/order.dart';
 
 /// Abstract repository for user-related operations in marketplace context

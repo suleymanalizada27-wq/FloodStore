@@ -6,13 +6,9 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
-import '../../application/providers/product_providers.dart';
+import '../../application/providers/marketplace_providers.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/entities/cart.dart';
-import '../../domain/repositories/product_repository.dart';
-import '../../domain/repositories/cart_repository.dart';
-import '../../../auth/application/providers/auth_providers.dart';
 
 final _uuid = const Uuid();
 
@@ -271,7 +267,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
   Future<void> _addToCart(Product product) async {
     try {
-      final userId = ref.read(authStateChangesProvider).value?.uid ?? 'demo-user-id';
+      final userId = ref.read(currentUserIdProvider) ?? 'demo-user-id';
       final cartRepository = ref.read(cartRepositoryProvider);
       await cartRepository.addItem(
         userId,

@@ -12,7 +12,6 @@ import '../../../../core/widgets/premium_button.dart';
 import '../../../../core/widgets/premium_text_field.dart';
 import '../../domain/entities/order.dart';
 import '../../application/providers/marketplace_providers.dart';
-import 'order_confirmation_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -109,7 +108,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       // Update payment status
       await ref.read(orderRepositoryProvider).updateOrderPaymentStatus(
         orderId,
-        PaymentStatus.paid,
+        PaymentStatus.captured,
         changedBy: userId,
       );
 
@@ -146,7 +145,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final userId = ref.watch(currentUserIdProvider);
-    final cartAsync = ref.watch(cartRepositoryProvider.select((repo) => repo.getCart(userId!)));
+    final cartAsync = ref.watch(cartForUserProvider(userId!));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -376,7 +375,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             onPressed: () => context.push(AppRoutes.marketplaceProducts),
           ),
         ],
-      );
+      ),
+    );
   }
 }
 

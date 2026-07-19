@@ -1,13 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import 'package:uuid/uuid.dart';
-import '../../domain/entities/user.dart';
-import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/repositories/user_repository.dart';
 
 class FirestoreUserRepository implements UserRepository {
   final fs.FirebaseFirestore _firestore;
-  final _uuid = const Uuid();
 
   FirestoreUserRepository({fs.FirebaseFirestore? firestore})
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;

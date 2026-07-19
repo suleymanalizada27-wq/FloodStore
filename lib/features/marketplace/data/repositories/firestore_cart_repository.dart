@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 
 class FirestoreCartRepository implements CartRepository {
   final FirebaseFirestore _firestore;
-  final _uuid = const Uuid();
+  final Uuid _uuid = const Uuid();
 
   FirestoreCartRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -81,7 +81,7 @@ class FirestoreCartRepository implements CartRepository {
         };
       } else {
         items.add({
-          'id': const Uuid().v4(),
+          'id': _uuid.v4(),
           'productId': productId,
           'variantId': variantId,
           'quantity': quantity,

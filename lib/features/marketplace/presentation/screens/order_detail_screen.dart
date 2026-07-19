@@ -17,7 +17,7 @@ class OrderDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orderId = GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
-    final orderAsync = ref.watch(orderRepositoryProvider.select((repo) => repo.getOrderById(orderId)));
+    final orderAsync = ref.watch(orderForIdProvider(orderId));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -60,7 +60,7 @@ class OrderDetailScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  _formatDate(order.placedAt),
+                                  _formatDate(order.placedAt ?? order.createdAt),
                                   style: AppTextStyles.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                                 ),
                               ],
@@ -227,7 +227,6 @@ class OrderDetailScreen extends ConsumerWidget {
                   PremiumButton(
                     label: 'Siparişi İptal Et',
                     icon: Icons.cancel_outlined,
-                    variant: PremiumButtonVariant.destructive,
                     expand: true,
                     onPressed: () => _showCancelDialog(context, ref, order),
                   ),
@@ -237,7 +236,6 @@ class OrderDetailScreen extends ConsumerWidget {
                 PremiumButton(
                   label: 'Fatura İndir',
                   icon: Icons.download_outlined,
-                  variant: PremiumButtonVariant.outline,
                   expand: true,
                   onPressed: () => _downloadInvoice(order),
                 ),
@@ -277,7 +275,7 @@ class OrderDetailScreen extends ConsumerWidget {
             onPressed: () => context.go(AppRoutes.home),
           ),
         ],
-      );
+      ),
     );
   }
 
@@ -295,7 +293,6 @@ class OrderDetailScreen extends ConsumerWidget {
           ),
           PremiumButton(
             label: 'Evet, İptal Et',
-            variant: PremiumButtonVariant.destructive,
             onPressed: () async {
               Navigator.pop(context);
               await ref.read(orderRepositoryProvider).cancelOrder(
@@ -339,6 +336,8 @@ class OrderDetailScreen extends ConsumerWidget {
         return 'Teslim Edildi';
       case OrderStatus.cancelled:
         return 'İptal Edildi';
+      case OrderStatus.returned:
+        return 'İade Edildi';
       case OrderStatus.refunded:
         return 'İade Edildi';
       case OrderStatus.failed:
@@ -352,6 +351,7 @@ class OrderDetailScreen extends ConsumerWidget {
         return 'Beklemede';
       case PaymentStatus.authorized:
         return 'Yetkilendirildi';
+      case PaymentStatus.captured:
       case PaymentStatus.paid:
         return 'Ödendi';
       case PaymentStatus.failed:
@@ -367,7 +367,8 @@ class OrderDetailScreen extends ConsumerWidget {
     switch (status) {
       case FulfillmentStatus.pending:
         return 'Beklemede';
-      case FulfillmentStatus.processing:
+      case FulfillmentStatus.picked:
+      case FulfillmentStatus.packed:
         return 'İşleniyor';
       case FulfillmentStatus.shipped:
         return 'Gönderildi';
@@ -395,6 +396,7 @@ class OrderDetailScreen extends ConsumerWidget {
         return AppColors.success;
       case OrderStatus.cancelled:
       case OrderStatus.failed:
+      case OrderStatus.returned:
         return AppColors.error;
       case OrderStatus.refunded:
         return AppColors.info;
@@ -407,6 +409,7 @@ class OrderDetailScreen extends ConsumerWidget {
         return AppColors.warning;
       case PaymentStatus.authorized:
         return AppColors.info;
+      case PaymentStatus.captured:
       case PaymentStatus.paid:
         return AppColors.success;
       case PaymentStatus.failed:
@@ -421,7 +424,8 @@ class OrderDetailScreen extends ConsumerWidget {
     switch (status) {
       case FulfillmentStatus.pending:
         return AppColors.warning;
-      case FulfillmentStatus.processing:
+      case FulfillmentStatus.picked:
+      case FulfillmentStatus.packed:
         return AppColors.info;
       case FulfillmentStatus.shipped:
         return AppColors.primary;
@@ -441,7 +445,7 @@ class OrderDetailScreen extends ConsumerWidget {
 
     events.add(_TimelineEvent(
       title: 'Sipariş Oluşturuldu',
-      subtitle: _formatDate(order.placedAt),
+      subtitle: _formatDate(order.placedAt ?? order.createdAt),
       icon: Icons.shopping_cart_checkout,
       color: AppColors.primary,
       isCompleted: true,
@@ -463,7 +467,8 @@ class OrderDetailScreen extends ConsumerWidget {
         subtitle: 'Kargoya verildi',
         icon: Icons.inventory_2_outlined,
         color: AppColors.info,
-        isCompleted: order.fulfillmentStatus != FulfillmentStatus.processing,
+        isCompleted: order.fulfillmentStatus != FulfillmentStatus.picked &&
+            order.fulfillmentStatus != FulfillmentStatus.packed,
       ));
     }
 
@@ -498,12 +503,6 @@ class OrderDetailScreen extends ConsumerWidget {
     }
 
     return events.map((e) => _TimelineEventTile(event: e, isLast: e == events.last)).toList();
-  }
-
-  Widget _buildHistoryTimeline(Order order) {
-    return Column(
-      children: _buildHistoryTimeline(order),
-    );
   }
 }
 
@@ -621,6 +620,7 @@ class _StatusChip extends StatelessWidget {
         return (background: AppColors.success.withValues(alpha: 0.15), border: AppColors.success, text: AppColors.success);
       case OrderStatus.cancelled:
       case OrderStatus.failed:
+      case OrderStatus.returned:
         return (background: AppColors.error.withValues(alpha: 0.15), border: AppColors.error, text: AppColors.error);
       case OrderStatus.refunded:
         return (background: AppColors.info.withValues(alpha: 0.15), border: AppColors.info, text: AppColors.info);
@@ -641,6 +641,8 @@ class _StatusChip extends StatelessWidget {
         return 'Teslim Edildi';
       case OrderStatus.cancelled:
         return 'İptal Edildi';
+      case OrderStatus.returned:
+        return 'İade Edildi';
       case OrderStatus.refunded:
         return 'İade Edildi';
       case OrderStatus.failed:

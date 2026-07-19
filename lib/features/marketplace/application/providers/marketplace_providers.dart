@@ -5,6 +5,7 @@ import '../../domain/repositories/cart_repository.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../../domain/entities/cart.dart';
+import '../../domain/entities/order.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 import '../../data/repositories/firestore_cart_repository.dart';
 import '../../data/repositories/firestore_order_repository.dart';
@@ -43,3 +44,11 @@ final cartProvider = StreamProvider<Cart?>((ref) {
 });
 
 final currentUserIdProvider = StateProvider<String?>((ref) => 'demo-user-id');
+
+final cartForUserProvider = FutureProvider.family<Cart?, String>((ref, userId) {
+  return ref.watch(cartRepositoryProvider).getCart(userId);
+});
+
+final orderForIdProvider = FutureProvider.family<Order?, String>((ref, orderId) {
+  return ref.watch(orderRepositoryProvider).getOrderById(orderId);
+});

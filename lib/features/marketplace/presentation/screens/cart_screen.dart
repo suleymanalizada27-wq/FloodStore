@@ -10,7 +10,6 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../domain/entities/cart.dart';
 import '../../application/providers/marketplace_providers.dart';
-import 'checkout_screen.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -18,7 +17,7 @@ class CartScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(currentUserIdProvider);
-    final cartAsync = ref.watch(cartRepositoryProvider.select((repo) => repo.getCart(userId!)));
+    final cartAsync = ref.watch(cartForUserProvider(userId!));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -107,7 +106,8 @@ class CartScreen extends ConsumerWidget {
             onPressed: () => context.push(AppRoutes.marketplaceProducts),
           ),
         ],
-      );
+      ),
+    );
   }
 
   void _showClearCartDialog(BuildContext context, WidgetRef ref, String userId) {

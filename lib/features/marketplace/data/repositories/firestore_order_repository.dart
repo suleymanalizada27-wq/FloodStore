@@ -6,16 +6,13 @@ import '../../domain/repositories/order_repository.dart';
 
 class FirestoreOrderRepository implements OrderRepository {
   final fs.FirebaseFirestore _firestore;
-  final _uuid = const Uuid();
+  final Uuid _uuid;
 
   FirestoreOrderRepository({fs.FirebaseFirestore? firestore})
-      : _firestore = firestore ?? fs.FirebaseFirestore.instance;
+      : _firestore = firestore ?? fs.FirebaseFirestore.instance,
+        _uuid = const Uuid();
 
   fs.CollectionReference get _ordersCollection => _firestore.collection('orders');
-  fs.CollectionReference _userOrdersCollection(String userId) =>
-      _firestore.collection('users').doc(userId).collection('orders');
-  fs.CollectionReference _sellerOrdersCollection(String sellerId) =>
-      _firestore.collection('sellers').doc(sellerId).collection('orders');
 
   @override
   Future<Order?> getOrderById(String orderId) async {
@@ -239,8 +236,6 @@ class FirestoreOrderRepository implements OrderRepository {
   }
 
   double _calculateShipping(List<CartItem> items) {
-    final hasDigital = false;
-    if (hasDigital) return 0.0;
     return 500 + (items.length * 100);
   }
 
@@ -461,7 +456,7 @@ class FirestoreOrderRepository implements OrderRepository {
       final base = productData['base'] as Map<String, dynamic>;
       
       final cartItem = CartItem(
-        id: Uuid().v4(),
+        id: _uuid.v4(),
         productId: productId,
         variantId: variantId,
         quantity: quantity,
@@ -584,7 +579,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final querySnapshot = await _firestore.collection('users').doc(userId).collection('saved_carts').get();
       return querySnapshot.docs
-          .map((doc) => Cart.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) => Cart.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
           .expand((cart) => cart.items)
           .toList();
     } catch (e) {

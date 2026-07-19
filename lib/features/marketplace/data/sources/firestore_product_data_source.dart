@@ -36,6 +36,7 @@ class FirestoreProductDataSource {
   CollectionReference get _productsCollection =>
       _firestore.collection('products');
 
+  // ignore: unused_element
   CollectionReference get _categoriesCollection =>
       _firestore.collection('categories');
 

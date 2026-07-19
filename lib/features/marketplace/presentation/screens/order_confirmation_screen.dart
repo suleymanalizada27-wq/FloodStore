@@ -10,7 +10,6 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../domain/entities/order.dart';
 import '../../application/providers/marketplace_providers.dart';
-import 'order_detail_screen.dart';
 
 class OrderConfirmationScreen extends ConsumerWidget {
   const OrderConfirmationScreen({super.key});
@@ -18,7 +17,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orderId = GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
-    final orderAsync = ref.watch(orderRepositoryProvider.select((repo) => repo.getOrderById(orderId)));
+    final orderAsync = ref.watch(orderForIdProvider(orderId));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -80,7 +79,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     children: [
-                      _OrderSummaryRow(label: 'Sipariş Tarihi', value: _formatDate(order.placedAt)),
+                      _OrderSummaryRow(label: 'Sipariş Tarihi', value: _formatDate(order.placedAt ?? order.createdAt)),
                       _OrderSummaryRow(label: 'Ödeme Durum', value: _formatStatus(order.status), valueColor: _getStatusColor(order.status)),
                       _OrderSummaryRow(label: 'Toplam Tutar', value: '\$${(order.totalAmount / 100).toStringAsFixed(2)}', isTotal: true),
                     ],
@@ -138,7 +137,6 @@ class OrderConfirmationScreen extends ConsumerWidget {
                     PremiumButton(
                       label: 'Alışverişe Devam Et',
                       icon: Icons.shopping_bag_outlined,
-                      variant: PremiumButtonVariant.outline,
                       expand: true,
                       onPressed: () => context.go(AppRoutes.marketplaceProducts),
                     ),
@@ -146,7 +144,6 @@ class OrderConfirmationScreen extends ConsumerWidget {
                     PremiumButton(
                       label: 'Ana Sayfa',
                       icon: Icons.home_outlined,
-                      variant: PremiumButtonVariant.ghost,
                       expand: true,
                       onPressed: () => context.go(AppRoutes.home),
                     ),
@@ -188,7 +185,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
             onPressed: () => context.go(AppRoutes.home),
           ),
         ],
-      );
+      ),
     );
   }
 
@@ -210,6 +207,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
         return 'Teslim Edildi';
       case OrderStatus.cancelled:
         return 'İptal Edildi';
+      case OrderStatus.returned:
+        return 'İade Edildi';
       case OrderStatus.refunded:
         return 'İade Edildi';
       case OrderStatus.failed:
@@ -230,6 +229,7 @@ class OrderConfirmationScreen extends ConsumerWidget {
         return AppColors.success;
       case OrderStatus.cancelled:
       case OrderStatus.failed:
+      case OrderStatus.returned:
         return AppColors.error;
       case OrderStatus.refunded:
         return AppColors.info;
