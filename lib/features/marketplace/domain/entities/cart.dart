@@ -62,7 +62,7 @@ class Cart extends Equatable {
       items.fold(0.0, (sum, item) => sum + item.totalPrice);
 
   /// Gets a cart item by productId and variantId
-  CartItem? getItem(String productId, String? variantId) {
+  CartItem getItem(String productId, String? variantId) {
     return items.firstWhere(
       (item) => item.productId == productId && item.variantId == variantId,
       orElse: () => CartItem.empty(),

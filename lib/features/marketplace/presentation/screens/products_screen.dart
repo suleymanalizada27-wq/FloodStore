@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../..//..//core/theme/app_colors.dart';
-import '../..//..//core/theme/app_spacing.dart';
-import '../..//..//core/theme/app_text_styles.dart';
-import '../..//..//core/widgets/glass_card.dart';
-import '../..//..//core/widgets/premium_button.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/premium_button.dart';
 import '../../application/providers/product_providers.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
@@ -132,26 +132,27 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     }
   }
 
-  Future<void> _loadProducts() {
+  Future<void> _loadProducts() async {
     final productRepository = ref.read(productRepositoryProvider);
-    _productsFuture = productRepository.getProductsByCategory(
-      'default',
-      limit: _pageSize,
-    );
-    _productsFuture.then((products) {
+    try {
+      final products = await productRepository.getProductsByCategory(
+        'default',
+        limit: _pageSize,
+      );
       setState(() {
         _products = products;
         _lastDocumentId = products.isNotEmpty ? products.last.id : null;
+        _productsFuture = Future.value(products);
       });
-    }).catchError((error) {
+    } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error loading products: $error'), backgroundColor: Colors.red),
         );
       }
-    });
-  });
-    });
+      rethrow;
+    }
+    return;
   }
 
   void _loadMoreProducts() {
@@ -182,24 +183,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         );
       }
     });
-  });
+  }
 
-    final productRepository = ref.read(productRepositoryProvider);
-    productRepository.getProductsByCategory(
-      'default',
-      limit: _pageSize,
-      lastDocumentId: _lastDocumentId,
-    ).then((moreProducts) {
-      setState(() {
-        _products.addAll(moreProducts);
-        _lastDocumentId = moreProducts.isNotEmpty ? moreProducts.last.id : null;
-        _isLoadingMore = false;
-      });
-    }).catchError((error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
-    });
+  Future<void> _refreshProducts() async {
+    await _loadProducts();
   }
 
   Future<void> _addSampleProduct() async {
@@ -462,8 +449,11 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
-                    style: AppTextStyles.textTheme.bodyLarge.copyWith(
+                    style: AppTextStyles.textTheme.bodyLarge?.copyWith(
                       color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ) ?? const TextStyle(
+                      color: Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

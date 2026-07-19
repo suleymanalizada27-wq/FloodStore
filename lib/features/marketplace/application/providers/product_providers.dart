@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../../data/sources/firestore_product_data_source.dart';
+import '../../data/repositories/firestore_product_repository.dart';
+
+export '../state/product_list_notifier.dart';
 
 /// Provider for the Firestore product data source
 final firestoreProductDataSourceProvider =
@@ -14,6 +17,3 @@ final productRepositoryProvider =
       final dataSource = ref.read(firestoreProductDataSourceProvider);
       return FirestoreProductRepository(dataSource: dataSource);
     });
-
-// Export the product list notifier provider from state layer
-export 'state/product_list_notifier.dart';
