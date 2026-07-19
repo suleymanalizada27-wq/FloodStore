@@ -1,4 +1,5 @@
 import '../../features/auth/domain/entities/app_user.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'app_router.dart';
 
 /// The "authentication middleware" for FloodStore: a small, pure set of
@@ -6,10 +7,10 @@ import 'app_router.dart';
 /// `app_router.dart` so each rule is independently testable and reads as a
 /// checklist instead of one long `if` chain.
 ///
-/// Every guard takes the same three things — the signed-in user (or
-/// `null`), the location being navigated to, and whether the session has
-/// gone idle — and returns either a redirect path or `null` ("this guard
-/// has no opinion, ask the next one").
+// Every guard takes the same three things — the signed-in user (or
+// `null`), the location being navigated to, and whether the session has
+// gone idle — and returns either a redirect path or `null` ("this guard
+// has no opinion, ask the next one").
 abstract final class AuthGuards {
   /// Unauthenticated users may only be on an `/auth/*` route.
   static String? requireAuth({
@@ -41,6 +42,8 @@ abstract final class AuthGuards {
   /// `/auth/verify-email` until they click the link. Guests, phone users,
   /// and every OAuth provider (whose emails Firebase already verified
   /// upstream, or who have no email at all) are exempt.
+  ///
+  /// In debug mode, email verification is bypassed to facilitate development.
   static String? requireEmailVerified({
     required AppUser? user,
     required String location,
@@ -48,6 +51,8 @@ abstract final class AuthGuards {
     if (user == null) return null;
     if (user.email == null) return null; // guest / phone-only account
     if (user.emailVerified) return null;
+    // In debug mode, allow bypassing email verification for easier testing
+    if (kDebugMode) return null;
     if (location == AppRoutes.verifyEmail) return null;
     // The Register wizard signs the user in as the very last step of
     // registerWithEmail, then shows its own "Finish" screen before
