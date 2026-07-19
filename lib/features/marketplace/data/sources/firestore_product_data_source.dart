@@ -1,22 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/product_variant.dart';
-import '../../domain/entities/category.dart';
 
-/// Firestore data source for product-related operations
+enum ProductSortField {
+  createdAt,
+  updatedAt,
+  basePrice,
+  rating,
+  popularity,
+}
+
+extension on ProductSortField {
+  String get firestoreField {
+    switch (this) {
+      case ProductSortField.createdAt:
+        return 'createdAt';
+      case ProductSortField.updatedAt:
+        return 'updatedAt';
+      case ProductSortField.basePrice:
+        return 'pricing.basePrice';
+      case ProductSortField.rating:
+        return 'rating';
+      case ProductSortField.popularity:
+        return 'popularity';
+    }
+  }
+}
+
 class FirestoreProductDataSource {
   final FirebaseFirestore _firestore;
 
   FirestoreProductDataSource({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  // Reference to the products collection
   CollectionReference get _productsCollection =>
       _firestore.collection('products');
 
-  // Reference to the categories collection
   CollectionReference get _categoriesCollection =>
       _firestore.collection('categories');
 
@@ -32,44 +51,44 @@ class FirestoreProductDataSource {
 
   Future<ProductVariant?> getProductVariantById(String variantId) async {
     try {
-      // This is a simplified implementation - in production, consider
-      // a separate variants collection or denormalization for performance
-      final querySnapshot = await _productsCollection
-          .where('variants.$variantId', isEqualTo: true)
+      final querySnapshot = await _firestore
+          .collectionGroup('variants')
+          .where('id', isEqualTo: variantId)
           .limit(1)
           .get();
 
       if (querySnapshot.docs.isEmpty) return null;
-
-      final productDoc = querySnapshot.docs.first;
-      final productData = productDoc.data() as Map<String, dynamic>;
-      final variantsData = (productData['variants'] as Map<String, dynamic>?)?[variantId];
-
-      if (variantsData == null) return null;
-
-      return _variantFromSnapshot(variantsData, productDoc.id);
+      final doc = querySnapshot.docs.first;
+      return _variantFromSnapshot(doc.data(), doc.id);
     } catch (e) {
       throw Exception('Failed to get product variant: $e');
     }
   }
 
-  Future<List<Product>> getProductsByCategory(String categoryId, {
+  Future<List<Product>> getProductsByCategory(
+    String categoryId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
   }) async {
     try {
-      Query query = _productsCollection
-          .where('categoryId', isEqualTo: categoryId)
-          .limit(limit);
+      Query query = _productsCollection.limit(limit);
+
+      if (categoryId.isNotEmpty) {
+        query = query.where('categoryId', isEqualTo: categoryId);
+      }
 
       if (activeOnly) {
-        query = query.where('status', isEqualTo: ProductStatus: ProductStatus.active.name);
+        query = query.where('status', isEqualTo: ProductStatus.active.name);
       }
+
+      query = query.orderBy('createdAt', descending: true);
 
       if (lastDocumentId != null) {
         final lastDoc = await _productsCollection.doc(lastDocumentId).get();
-        query = query.startAfterDocument(lastDoc);
+        if (lastDoc.exists) {
+          query = query.startAfterDocument(lastDoc);
+        }
       }
 
       final querySnapshot = await query.get();
@@ -82,7 +101,8 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<List<Product>> getProductsBySeller(String sellerId, {
+  Future<List<Product>> getProductsBySeller(
+    String sellerId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
@@ -96,9 +116,13 @@ class FirestoreProductDataSource {
         query = query.where('status', isEqualTo: ProductStatus.active.name);
       }
 
+      query = query.orderBy('createdAt', descending: true);
+
       if (lastDocumentId != null) {
         final lastDoc = await _productsCollection.doc(lastDocumentId).get();
-        query = query.startAfterDocument(lastDoc);
+        if (lastDoc.exists) {
+          query = query.startAfterDocument(lastDoc);
+        }
       }
 
       final querySnapshot = await query.get();
@@ -111,7 +135,13 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<List<Product>> searchProducts(String query, {
+  /// Searches products by query string and optional filters.
+  ///
+  /// Firestore does not support native full-text search. As a fallback
+  /// suitable for small catalogs, this performs a prefix search on the
+  /// lowercase title field, in addition to category and price filtering.
+  Future<List<Product>> searchProducts(
+    String query, {
     int limit = 20,
     String? lastDocumentId,
     List<String>? categoryIds,
@@ -121,45 +151,83 @@ class FirestoreProductDataSource {
     bool sortDesc = true,
   }) async {
     try {
-      // Note: This is a basic implementation - for production search,
-      // consider integrating with Algolia, Elasticsearch, or Firebase's
-      // native search capabilities when available
-      Query queryRef = _productsCollection
-          .where('status', isEqualTo: ProductStatus.active.name);
+      Query queryRef =
+          _productsCollection.where('status', isEqualTo: ProductStatus.active.name);
 
       if (categoryIds != null && categoryIds.isNotEmpty) {
         queryRef = queryRef.where('categoryId', whereIn: categoryIds);
       }
 
-      // TODO: Add price range filtering
-      // TODO: Add text search (requires third-party search solution)
-      // TODO: Add sorting based on sortBy parameter
+      if (minPrice != null) {
+        queryRef =
+            queryRef.where('pricing.basePrice', isGreaterThanOrEqualTo: minPrice);
+      }
+      if (maxPrice != null) {
+        queryRef =
+            queryRef.where('pricing.basePrice', isLessThanOrEqualTo: maxPrice);
+      }
+
+      final normalizedQuery = query.trim().toLowerCase();
+      if (normalizedQuery.isNotEmpty) {
+        queryRef = queryRef
+            .where('searchTitle', isGreaterThanOrEqualTo: normalizedQuery)
+            .where('searchTitle', isLessThanOrEqualTo: '$normalizedQuery\uf8ff');
+      }
+
+      final sortField = sortBy != null
+          ? ProductSortField.values
+              .firstWhere((e) => e.name == sortBy,
+                  orElse: () => ProductSortField.createdAt)
+          : ProductSortField.createdAt;
+      queryRef = queryRef.orderBy(
+        sortField.firestoreField,
+        descending: sortDesc,
+      );
 
       queryRef = queryRef.limit(limit);
 
       if (lastDocumentId != null) {
         final lastDoc = await _productsCollection.doc(lastDocumentId).get();
-        queryRef = queryRef.startAfterDocument(lastDoc);
+        if (lastDoc.exists) {
+          queryRef = queryRef.startAfterDocument(lastDoc);
+        }
       }
 
       final querySnapshot = await queryRef.get();
-      return querySnapshot.docs
+      final products = querySnapshot.docs
           .map((doc) => _productFromSnapshot(doc))
           .whereType<Product>()
           .toList();
+
+      if (normalizedQuery.isNotEmpty) {
+        final words = normalizedQuery.split(RegExp(r'\s+'));
+        final filtered = products.where((p) {
+          final haystacks = [
+            p.base.title.toLowerCase(),
+            p.base.description.toLowerCase(),
+            p.base.brand.toLowerCase(),
+            ...p.metadata.tags.map((t) => t.toLowerCase()),
+          ];
+          return words.every((word) =>
+              haystacks.any((h) => h.contains(word)));
+        }).toList();
+        // Return a possibly smaller list after filtering
+        return filtered.length <= limit ? filtered : filtered.sublist(0, limit);
+      }
+      return products;
     } catch (e) {
       throw Exception('Failed to search products: $e');
     }
   }
 
-  // Helper methods to convert Firestore documents to domain entities
   Product _productFromSnapshot(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Product(
       id: doc.id,
       sellerId: data['sellerId'] ?? '',
       categoryId: data['categoryId'] ?? '',
-      secondaryCategories: List<String>.from(data['secondaryCategories'] ?? []),
+      secondaryCategories:
+          List<String>.from(data['secondaryCategories'] ?? []),
       base: ProductBase(
         title: data['base']['title'] ?? '',
         description: data['base']['description'] ?? '',
@@ -167,9 +235,14 @@ class FirestoreProductDataSource {
         sku: data['base']['sku'] ?? '',
         weight: (data['base']['weight'] as num?)?.toDouble() ?? 0.0,
         dimensions: ProductDimensions(
-          length: (data['base']['dimensions']['length'] as num?)?.toDouble() ?? 0.0,
-          width: (data['base']['dimensions']['width'] as num?)?.toDouble() ?? 0.0,
-          height: (data['base']['dimensions']['height'] as num?)?.toDouble() ?? 0.0,
+          length:
+              (data['base']['dimensions']['length'] as num?)?.toDouble() ??
+                  0.0,
+          width:
+              (data['base']['dimensions']['width'] as num?)?.toDouble() ?? 0.0,
+          height:
+              (data['base']['dimensions']['height'] as num?)?.toDouble() ??
+                  0.0,
         ),
         materials: List<String>.from(data['base']['materials'] ?? []),
         careInstructions: data['base']['careInstructions'] ?? '',
@@ -185,7 +258,7 @@ class FirestoreProductDataSource {
             : null,
         gender: data['metadata']['gender'] != null
             ? Gender.values.firstWhere(
-                (e) => e.toString() == 'Gender.' + data['metadata']['gender'],
+                (e) => e.name == data['metadata']['gender'],
                 orElse: () => Gender.unisex,
               )
             : null,
@@ -198,33 +271,38 @@ class FirestoreProductDataSource {
       pricing: ProductPricing(
         basePrice: (data['pricing']['basePrice'] as num?)?.toDouble() ?? 0.0,
         currency: data['pricing']['currency'] ?? 'USD',
-        compareAtPrice: (data['pricing']['compareAtPrice'] as num?)?.toDouble(),
+        compareAtPrice:
+            (data['pricing']['compareAtPrice'] as num?)?.toDouble(),
         taxCode: data['pricing']['taxCode'] ?? '',
         shippingTier: data['pricing']['shippingTier'] ?? '',
       ),
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt:
+          (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt:
+          (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: ProductStatus.values.firstWhere(
-        (e) => e.toString() == 'ProductStatus.' + data['status'],
+        (e) => e.name == data['status'],
         orElse: () => ProductStatus.draft,
       ),
     );
   }
 
-  ProductVariant _variantFromSnapshot(Map<String, dynamic> data, String productId) {
+  ProductVariant _variantFromSnapshot(Map<String, dynamic> data, String id) {
     return ProductVariant(
-      id: data['id'] ?? '',
-      parentProductId: productId,
+      id: id,
+      parentProductId: data['parentProductId'] ?? '',
       sku: data['sku'] ?? '',
       attributes: Map<String, String>.from(data['attributes'] ?? {}),
       pricing: VariantPricing(
         price: (data['pricing']['price'] as num?)?.toDouble() ?? 0.0,
-        compareAtPrice: (data['pricing']['compareAtPrice'] as num?)?.toDouble(),
+        compareAtPrice:
+            (data['pricing']['compareAtPrice'] as num?)?.toDouble(),
       ),
       inventory: VariantInventory(
         total: (data['inventory']['total'] as int?) ?? 0,
         reserved: (data['inventory']['reserved'] as int?) ?? 0,
-        warehouses: Map<String, int>.from(data['inventory']['warehouses'] ?? {}),
+        warehouses:
+            Map<String, int>.from(data['inventory']['warehouses'] ?? {}),
       ),
       media: VariantMedia(
         primary: data['media']['primary'] ?? '',
@@ -232,7 +310,8 @@ class FirestoreProductDataSource {
         videos: List<String>.from(data['media']['videos'] ?? []),
         model3d: data['media']['model3d'],
       ),
-      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt:
+          (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 }

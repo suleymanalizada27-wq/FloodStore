@@ -1,19 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/repositories/product_repository.dart';
-import '../../data/sources/firestore_product_data_source.dart';
 
-/// Provider for the Firestore product data source
+import '../../domain/repositories/product_repository.dart';
+import '../../domain/repositories/cart_repository.dart';
+import '../../data/repositories/firestore_product_repository.dart';
+import '../../data/repositories/firestore_cart_repository.dart';
+import '../../data/sources/firestore_product_data_source.dart';
+import '../state/product_list_notifier.dart';
+
 final firestoreProductDataSourceProvider =
     Provider<FirestoreProductDataSource>((ref) {
   return FirestoreProductDataSource();
 });
 
-/// Provider for the product repository
-final productRepositoryProvider =
-    Provider<ProductRepository>((ref) {
-      final dataSource = ref.read(firestoreProductDataSourceProvider);
-      return FirestoreProductRepository(dataSource: dataSource);
-    });
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  final dataSource = ref.read(firestoreProductDataSourceProvider);
+  return FirestoreProductRepository(dataSource: dataSource);
+});
 
-// Export the product list notifier provider from state layer
-export 'state/product_list_notifier.dart';
+final cartRepositoryProvider = Provider<CartRepository>((ref) {
+  return FirestoreCartRepository();
+});
+
+final productListProvider =
+    StateNotifierProvider<ProductListNotifier, ProductListState>((ref) {
+  final repository = ref.read(productRepositoryProvider);
+  return ProductListNotifier(repository);
+});

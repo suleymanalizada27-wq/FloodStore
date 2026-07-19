@@ -72,6 +72,7 @@ class Cart extends Equatable {
   /// Gets the quantity of a specific product/variant in the cart
   int getQuantity(String productId, String? variantId) {
     final item = getItem(productId, variantId);
+    if (item == null) return 0;
     return item.isEmpty ? 0 : item.quantity;
   }
 }

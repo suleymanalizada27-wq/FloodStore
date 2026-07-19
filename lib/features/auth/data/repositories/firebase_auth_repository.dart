@@ -265,7 +265,7 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<bool> isMagicLink(String link) async {
-    return await _auth.isSignInWithEmailLink(link);
+    return _auth.isSignInWithEmailLink(link);
   }
 
   @override
@@ -442,6 +442,6 @@ class FirebaseAuthRepository implements AuthRepository {
         code: e.code,
       );
     }
-    return AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
+    return const AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
   }
 }
