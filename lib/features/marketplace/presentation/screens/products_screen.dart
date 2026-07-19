@@ -59,70 +59,475 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     try {
       final productRepository = ref.read(productRepositoryProvider);
 
-      final defaultCategory = Category(
-        id: 'default',
-        name: 'Default Category',
-        level: 0,
-        sortOrder: 0,
-        isActive: true,
-      );
+      // Create categories
+      final categories = [
+        Category(id: 'home_appliances', name: 'Ev Aletleri', level: 0, sortOrder: 1, isActive: true),
+        Category(id: 'electronics', name: 'Elektronik', level: 0, sortOrder: 2, isActive: true),
+        Category(id: 'building_materials', name: 'İnşaat Malzemeleri', level: 0, sortOrder: 3, isActive: true),
+        Category(id: 'tools', name: 'El Aletleri', level: 0, sortOrder: 4, isActive: true),
+        Category(id: 'lighting', name: 'Aydınlatma', level: 0, sortOrder: 5, isActive: true),
+      ];
 
-      try {
-        await productRepository.createCategory(defaultCategory);
-      } catch (e) {
-        // Category might already exist, which is fine
+      for (final category in categories) {
+        try {
+          await productRepository.createCategory(category);
+        } catch (e) {
+          // Category might already exist
+        }
       }
 
-      for (int i = 0; i < 5; i++) {
-        final sampleProduct = Product(
+      // Create subcategories
+      final subcategories = [
+        // Home Appliances
+        Category(id: 'refrigerators', name: 'Buzdolapları', level: 1, sortOrder: 1, isActive: true, parentId: 'home_appliances'),
+        Category(id: 'washing_machines', name: 'Çamaşır Makineleri', level: 1, sortOrder: 2, isActive: true, parentId: 'home_appliances'),
+        Category(id: 'dishwashers', name: 'Bulaşık Makineleri', level: 1, sortOrder: 3, isActive: true, parentId: 'home_appliances'),
+        Category(id: 'ovens', name: 'Fırınlar', level: 1, sortOrder: 4, isActive: true, parentId: 'home_appliances'),
+        Category(id: 'vacuums', name: 'Elektrikli Süpürgeler', level: 1, sortOrder: 5, isActive: true, parentId: 'home_appliances'),
+        // Electronics
+        Category(id: 'smartphones', name: 'Akıllı Telefonlar', level: 1, sortOrder: 1, isActive: true, parentId: 'electronics'),
+        Category(id: 'laptops', name: 'Laptoplar', level: 1, sortOrder: 2, isActive: true, parentId: 'electronics'),
+        Category(id: 'tablets', name: 'Tabletler', level: 1, sortOrder: 3, isActive: true, parentId: 'electronics'),
+        Category(id: 'wearables', name: 'Akıllı Saatler', level: 1, sortOrder: 4, isActive: true, parentId: 'electronics'),
+        Category(id: 'audio', name: 'Ses Sistemleri', level: 1, sortOrder: 5, isActive: true, parentId: 'electronics'),
+        // Building Materials
+        Category(id: 'cement', name: 'Çimento', level: 1, sortOrder: 1, isActive: true, parentId: 'building_materials'),
+        Category(id: 'bricks', name: 'Tuğla', level: 1, sortOrder: 2, isActive: true, parentId: 'building_materials'),
+        Category(id: 'steel', name: 'Çelik', level: 1, sortOrder: 3, isActive: true, parentId: 'building_materials'),
+        Category(id: 'paint', name: 'Boya', level: 1, sortOrder: 4, isActive: true, parentId: 'building_materials'),
+        Category(id: 'insulation', name: 'İzolasyon', level: 1, sortOrder: 5, isActive: true, parentId: 'building_materials'),
+      ];
+
+      for (final category in subcategories) {
+        try {
+          await productRepository.createCategory(category);
+        } catch (e) {
+          // Category might already exist
+        }
+      }
+
+      // Sample products for each category
+      final products = [
+        // Refrigerators
+        Product(
           id: _uuid.v4(),
-          sellerId: 'demo-seller-id',
-          categoryId: 'default',
-          secondaryCategories: const [],
+          sellerId: 'demo-seller-beko',
+          categoryId: 'refrigerators',
+          secondaryCategories: ['home_appliances'],
           base: ProductBase(
-            title: 'Sample Product ${i + 1}',
-            description:
-                'This is a sample product for demonstration purposes. This is product number $i+1.',
-            brand: 'SampleBrand',
-            sku:
-                'SAMPLE-${_uuid.v4().substring(0, 8).toUpperCase()}-$i',
-            weight: 250.0 + (i * 50.0),
-            dimensions: ProductDimensions(
-              length: 10.0 + (i * 2.0),
-              width: 10.0 + (i * 2.0),
-              height: 5.0 + (i * 1.0),
-            ),
-            materials: ['Cotton', 'Polyester'],
-            careInstructions: 'Machine wash cold, tumble dry low',
+            title: 'Beko 368L No-Frost Buzdolabı',
+            description: 'A+ enerji sınıfında, No-Frost teknolojili, 368 litre hacimli buzdolabı. Active Fresh Blue Light teknolojisi ile meyve ve sebzeler daha uzun taze kalır.',
+            brand: 'Beko',
+            sku: 'BEKO-RN368NF-001',
+            weight: 65000.0,
+            dimensions: ProductDimensions(length: 60.0, width: 65.0, height: 185.0),
+            materials: ['Metal', 'Cam', 'Plastik'],
+            careInstructions: 'İç kısım nemli bez ile silinir',
             isDigital: false,
           ),
           metadata: ProductMetadata(
-            tags: ['sample', 'demo', 'test', 'product$i'],
+            tags: ['buzdolabı', 'no-frost', 'enerji-verimli', 'beyaz-eşya'],
             ageRange: null,
             gender: null,
             season: ['all'],
-            occasion: ['casual'],
+            occasion: ['home'],
             style: ['modern'],
-            color: ['blue', 'white', 'black'][i % 3] == 'blue'
-                ? ['blue']
-                : ['white', 'black'][i % 3] == 'white'
-                    ? ['white']
-                    : ['black'],
+            color: ['beyaz', 'gümüş', 'siyah'],
             pattern: ['solid'],
           ),
           pricing: ProductPricing(
-            basePrice: 1999 + (i * 500),
-            currency: 'USD',
-            compareAtPrice: 2499 + (i * 500),
+            basePrice: 1899900,
+            currency: 'TRY',
+            compareAtPrice: 2199900,
             taxCode: 'standard',
-            shippingTier: 'standard',
+            shippingTier: 'large',
           ),
-          createdAt: DateTime.now().subtract(Duration(days: i)),
+          createdAt: DateTime.now().subtract(const Duration(days: 30)),
           updatedAt: DateTime.now(),
           status: ProductStatus.active,
-        );
+        ),
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-bosch',
+          categoryId: 'refrigerators',
+          secondaryCategories: ['home_appliances'],
+          base: ProductBase(
+            title: 'Bosch Series 6 450L French Door Buzdolabı',
+            description: 'Serie 6, VitaFresh Plus teknolojisi, Home Connect uygulaması ile uzaktan kontrol, 450 litre kapasite.',
+            brand: 'Bosch',
+            sku: 'BSH-KFN96APEA-001',
+            weight: 95000.0,
+            dimensions: ProductDimensions(length: 70.0, width: 75.0, height: 190.0),
+            materials: ['Metal', 'Cam', 'Plastik'],
+            careInstructions: 'İç kısım nemli bez ile silinir',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['buzdolabı', 'french-door', 'vitafresh', 'premium'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['home'],
+            style: ['modern', 'premium'],
+            color: ['inox', 'beyaz'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 4299900,
+            currency: 'TRY',
+            compareAtPrice: 4799900,
+            taxCode: 'standard',
+            shippingTier: 'large',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 15)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Washing Machines
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-arcelik',
+          categoryId: 'washing_machines',
+          secondaryCategories: ['home_appliances'],
+          base: ProductBase(
+            title: 'Arçelik 9kg 1400 Devir Çamaşır Makinesi',
+            description: 'ProSmart Inverter motoru, 9kg kapasite, 1400 devir/dakika, Hygiene+ programı, yıkama performansı A.',
+            brand: 'Arçelik',
+            sku: 'ARC-9140HP-001',
+            weight: 72000.0,
+            dimensions: ProductDimensions(length: 60.0, width: 60.0, height: 85.0),
+            materials: ['Metal', 'Paslanmaz Çelik', 'Plastik'],
+            careInstructions: 'Deterjan kasası düzenli temizlenmelidir',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['çamaşır-makinesi', 'inverter', 'hijyen', 'enerji-verimli'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['home'],
+            style: ['modern'],
+            color: ['beyaz', 'gümüş'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 1599900,
+            currency: 'TRY',
+            compareAtPrice: 1799900,
+            taxCode: 'standard',
+            shippingTier: 'large',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 20)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Smartphones
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-samsung',
+          categoryId: 'smartphones',
+          secondaryCategories: ['electronics'],
+          base: ProductBase(
+            title: 'Samsung Galaxy S24 Ultra 256GB',
+            description: '6.8" Dynamic AMOLED 2X, Snapdragon 8 Gen 3, 200MP ana kamera, 5000mAh batarya, S Pen dahil.',
+            brand: 'Samsung',
+            sku: 'SAM-S24U-256-001',
+            weight: 232.0,
+            dimensions: ProductDimensions(length: 7.9, width: 16.2, height: 0.86),
+            materials: ['Cam', 'Alüminyum', 'Titanyum'],
+            careInstructions: 'Suya dayanıklı (IP68), yumuşak bezle temizlenir',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['akıllı-telefon', 'flagship', 's-pen', '200mp-kamera'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['personal', 'business'],
+            style: ['premium', 'modern'],
+            color: ['titanyum-siyah', 'titanyum-gri', 'titanyum-mor', 'titanyum-sarı'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 4999900,
+            currency: 'TRY',
+            compareAtPrice: 5499900,
+            taxCode: 'standard',
+            shippingTier: 'small',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 10)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-apple',
+          categoryId: 'smartphones',
+          secondaryCategories: ['electronics'],
+          base: ProductBase(
+            title: 'iPhone 15 Pro Max 256GB',
+            description: '6.7" Super Retina XDR, A17 Pro çip, 48MP Ana Kamera, Titanyum tasarım, USB-C, 29 saat video oynatma.',
+            brand: 'Apple',
+            sku: 'APL-IP15PM-256-001',
+            weight: 221.0,
+            dimensions: ProductDimensions(length: 7.67, width: 15.99, height: 0.83),
+            materials: ['Titanyum', 'Cam', 'Seramik'],
+            careInstructions: 'Suya dayanıklı (IP68), yumuşak bezle temizlenir',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['iphone', 'pro-max', 'a17-pro', 'titanyum', 'usb-c'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['personal', 'business'],
+            style: ['premium', 'minimalist'],
+            color: ['doğal-titanyum', 'beyaz-titanyum', 'siyah-titanyum', 'mavi-titanyum'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 5499900,
+            currency: 'TRY',
+            compareAtPrice: 5999900,
+            taxCode: 'standard',
+            shippingTier: 'small',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 5)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Laptops
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-lenovo',
+          categoryId: 'laptops',
+          secondaryCategories: ['electronics'],
+          base: ProductBase(
+            title: 'Lenovo ThinkPad X1 Carbon Gen 12',
+            description: '14" WUXGA IPS, Intel Core Ultra 7 155H, 32GB RAM, 1TB SSD, Intel Arc Grafik, 57Wh batarya, 980g.',
+            brand: 'Lenovo',
+            sku: 'LNV-X1C12-U7-001',
+            weight: 980.0,
+            dimensions: ProductDimensions(length: 21.4, width: 31.5, height: 1.5),
+            materials: ['Karbon Fiber', 'Magnezyum Alüminyum'],
+            careInstructions: 'Yumuşak bezle temizlenir, sıvı kaçırmayın',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['laptop', 'ultrabook', 'thinkpad', 'carbon-fiber', 'iş-laptoptu'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['business', 'education'],
+            style: ['professional', 'minimalist'],
+            color: ['karbon-siyah'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 3899900,
+            currency: 'TRY',
+            compareAtPrice: 4299900,
+            taxCode: 'standard',
+            shippingTier: 'medium',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 25)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Building Materials - Cement
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-cimsa',
+          categoryId: 'cement',
+          secondaryCategories: ['building_materials'],
+          base: ProductBase(
+            title: 'Çimsa CEM I 42.5R Portland Çimento - 50kg',
+            description: 'Yüksek erken dayanımlı, TS EN 197-1 standardında, beton ve tuğla yapımında kullanım için ideal.',
+            brand: 'Çimsa',
+            sku: 'CMS-CEM1-425R-50KG',
+            weight: 50000.0,
+            dimensions: ProductDimensions(length: 40.0, width: 30.0, height: 15.0),
+            materials: ['Klinker', 'Jips', 'Kalsiyum Karbonat'],
+            careInstructions: 'Kuru ve nem almayan ortamda saklanmalıdır',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['çimento', 'portland', 'yapı-malzemesi', 'beton'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['construction'],
+            style: ['industrial'],
+            color: ['gri'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 18500,
+            currency: 'TRY',
+            compareAtPrice: 20000,
+            taxCode: 'standard',
+            shippingTier: 'heavy',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 40)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Steel
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-erdemis',
+          categoryId: 'steel',
+          secondaryCategories: ['building_materials'],
+          base: ProductBase(
+            title: 'Erdemir S235JR Yapı Çeliği - Ø12mm 12m',
+            description: 'TS 706 standardında, S235JR kalitesinde, betonarme yapılar için nervurlu beton çeliği.',
+            brand: 'Erdemir',
+            sku: 'ERD-S235JR-12MM-12M',
+            weight: 8880.0, // 12m * 0.74 kg/m
+            dimensions: ProductDimensions(length: 1200.0, width: 1.2, height: 1.2),
+            materials: ['Demir', 'Karbon', 'Mangan'],
+            careInstructions: 'Nemden korunmalı, paslanma önleyici yağı ile saklanmalı',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['çelik', 'betonarme', 'nervurlu', 's235jr', 'yapı-çeliği'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['construction'],
+            style: ['industrial'],
+            color: ['gri', 'siyah'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 45000,
+            currency: 'TRY',
+            compareAtPrice: 50000,
+            taxCode: 'standard',
+            shippingTier: 'heavy',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 35)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Paint
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-marshall',
+          categoryId: 'paint',
+          secondaryCategories: ['building_materials'],
+          base: ProductBase(
+            title: 'Marshall Akrilik Satin Duvar Boyası - 15L Beyaz',
+            description: 'Yüksek kaplama gücü, yıkanabilir, mat-satin görünüm, iç mekanlar için, düşük VOC.',
+            brand: 'Marshall',
+            sku: 'MRS-AKR-SAT-15L-BEYAZ',
+            weight: 18000.0,
+            dimensions: ProductDimensions(length: 30.0, width: 30.0, height: 40.0),
+            materials: ['Akrilik Polimer', 'Pigment', 'Su', 'Katkı Maddeler'],
+            careInstructions: 'Kapak kapalı, serin ve kuru yerde saklanmalı',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['boya', 'akrilik', 'satin', 'iç-mekân', 'beyaz'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['renovation', 'home-improvement'],
+            style: ['modern', 'classic'],
+            color: ['beyaz', 'krem', 'gri', 'bej', 'mavi', 'yeşil'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 85000,
+            currency: 'TRY',
+            compareAtPrice: 95000,
+            taxCode: 'standard',
+            shippingTier: 'medium',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 12)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Tools
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-bosch-tools',
+          categoryId: 'tools',
+          secondaryCategories: ['electronics'],
+          base: ProductBase(
+            title: 'Bosch Professional GSB 18V-55 Cordless Çekiceli Matkap',
+            description: '18V, 55Nm tork, brushless motor, 2x 4.0Ah battery, L-Boxx valiz, 2 hız, LED ışık.',
+            brand: 'Bosch Professional',
+            sku: 'BSH-GSB18V55-SET',
+            weight: 1800.0,
+            dimensions: ProductDimensions(length: 25.0, width: 8.5, height: 22.0),
+            materials: ['Metal', 'Plastik', 'Lityum-İyon Batarya'],
+            careInstructions: 'Bataryalar soğuk ortamda saklanmalı, düzenli şarj edilmeli',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['matkap', 'çekiceli', 'akülü', 'brushless', 'profesyonel', 'bosch'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['construction', 'diy', 'renovation'],
+            style: ['professional', 'industrial'],
+            color: ['mavi', 'siyah'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 429900,
+            currency: 'TRY',
+            compareAtPrice: 479900,
+            taxCode: 'standard',
+            shippingTier: 'medium',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 8)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+        // Lighting
+        Product(
+          id: _uuid.v4(),
+          sellerId: 'demo-seller-philips',
+          categoryId: 'lighting',
+          secondaryCategories: ['home_appliances'],
+          base: ProductBase(
+            title: 'Philips Hue White & Color Ambiance Starter Kit E27',
+            description: '3 adet akıllı ampul + Bridge, 16 milyon renk, Bluetooth + Zigbee, uygulama/ses kontrolü, zamanlayıcı.',
+            brand: 'Philips Hue',
+            sku: 'PHL-HUE-WCA-STARTER-E27',
+            weight: 450.0,
+            dimensions: ProductDimensions(length: 12.0, width: 12.0, height: 15.0),
+            materials: ['Cam', 'Alüminyum', 'Plastik'],
+            careInstructions: 'Yumuşak kuru bezle temizlenir',
+            isDigital: false,
+          ),
+          metadata: ProductMetadata(
+            tags: ['akıllı-ampul', 'philips-hue', 'rgb', 'iot', 'akıllı-ev', 'aydınlatma'],
+            ageRange: null,
+            gender: null,
+            season: ['all'],
+            occasion: ['home', 'ambiance'],
+            style: ['modern', 'smart-home'],
+            color: ['beyaz', 'renkli'],
+            pattern: ['solid'],
+          ),
+          pricing: ProductPricing(
+            basePrice: 129900,
+            currency: 'TRY',
+            compareAtPrice: 149900,
+            taxCode: 'standard',
+            shippingTier: 'small',
+          ),
+          createdAt: DateTime.now().subtract(const Duration(days: 3)),
+          updatedAt: DateTime.now(),
+          status: ProductStatus.active,
+        ),
+      ];
 
-        await productRepository.createProduct(sampleProduct);
+      for (final product in products) {
+        await productRepository.createProduct(product);
       }
     } catch (e) {
       debugPrint('Error creating sample data: $e');

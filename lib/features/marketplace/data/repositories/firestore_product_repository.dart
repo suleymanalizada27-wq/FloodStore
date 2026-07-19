@@ -64,6 +64,9 @@ class FirestoreProductRepository implements ProductRepository {
     double? maxPrice,
     String? sortBy,
     bool sortDesc = true,
+    bool inStockOnly = false,
+    bool freeShippingOnly = false,
+    double? ratingFilter,
   }) {
     return _dataSource.searchProducts(
       query,
@@ -74,6 +77,9 @@ class FirestoreProductRepository implements ProductRepository {
       maxPrice: maxPrice,
       sortBy: sortBy,
       sortDesc: sortDesc,
+      inStockOnly: inStockOnly,
+      freeShippingOnly: freeShippingOnly,
+      ratingFilter: ratingFilter,
     );
   }
 

@@ -150,6 +150,9 @@ class FirestoreProductDataSource {
     double? maxPrice,
     String? sortBy,
     bool sortDesc = true,
+    bool inStockOnly = false,
+    bool freeShippingOnly = false,
+    double? ratingFilter,
   }) async {
     try {
       Query queryRef =
