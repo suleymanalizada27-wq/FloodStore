@@ -289,7 +289,7 @@ class Wallet extends Equatable {
     final newBalance = (balance - amount).clamp(0.0, double.infinity);
     return copyWith(
       balance: newBalance,
-      lifetimeSpent: lifetimeSpend + (balance - newBalance),
+      lifetimeSpent: lifetimeSpent + (balance - newBalance),
       lastUpdated: DateTime.now(),
     );
   }

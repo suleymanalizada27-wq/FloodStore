@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Represents a customer order
 class Order extends Equatable {
@@ -154,10 +155,75 @@ class Order extends Equatable {
   /// Checks if the order is delivered
   bool get isDelivered => status == OrderStatus.delivered;
 
-  /// Checks if the order is paid
-  bool get isPaid =>
-      paymentStatus == PaymentStatus.captured ||
-      paymentStatus == PaymentStatus.partially_refunded;
+  /// Converts to Firestore document
+  Map<String, dynamic> toFirestore() {
+    return {
+      'userId': userId,
+      'sellerId': sellerId,
+      'status': status.name,
+      'fulfillmentStatus': fulfillmentStatus.name,
+      'paymentStatus': paymentStatus.name,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+      'placedAt': placedAt,
+      'completedAt': completedAt,
+      'subtotalAmount': subtotalAmount,
+      'taxAmount': taxAmount,
+      'shippingAmount': shippingAmount,
+      'discountAmount': discountAmount,
+      'totalAmount': totalAmount,
+      'currency': currency,
+      'customerNotes': customerNotes,
+      'internalNotes': internalNotes,
+      'shippingAddress': shippingAddress.toFirestore(),
+      'billingAddress': billingAddress.toFirestore(),
+      'items': items.map((item) => item.toFirestore()).toList(),
+      'discounts': discounts.map((d) => d.toFirestore()).toList(),
+      'payment': payment?.toFirestore(),
+      'tracking': tracking?.toFirestore(),
+      'history': history.map((h) => h.toFirestore()).toList(),
+    };
+  }
+
+  /// Creates an Order from Firestore document data
+  static Order fromFirestore(Map<String, dynamic> data, String documentId) {
+    return Order(
+      id: documentId,
+      userId: data['userId'] ?? '',
+      sellerId: data['sellerId'],
+      status: OrderStatus.values.firstWhere(
+        (e) => e.name == data['status'],
+        orElse: () => OrderStatus.pending,
+      ),
+      fulfillmentStatus: FulfillmentStatus.values.firstWhere(
+        (e) => e.name == data['fulfillmentStatus'],
+        orElse: () => FulfillmentStatus.pending,
+      ),
+      paymentStatus: PaymentStatus.values.firstWhere(
+        (e) => e.name == data['paymentStatus'],
+        orElse: () => PaymentStatus.pending,
+      ),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      placedAt: (data['placedAt'] as Timestamp?)?.toDate(),
+      completedAt: (data['completedAt'] as Timestamp?)?.toDate(),
+      subtotalAmount: (data['subtotalAmount'] as num?)?.toDouble() ?? 0.0,
+      taxAmount: (data['taxAmount'] as num?)?.toDouble() ?? 0.0,
+      shippingAmount: (data['shippingAmount'] as num?)?.toDouble() ?? 0.0,
+      discountAmount: (data['discountAmount'] as num?)?.toDouble() ?? 0.0,
+      totalAmount: (data['totalAmount'] as num?)?.toDouble() ?? 0.0,
+      currency: data['currency'] ?? 'USD',
+      customerNotes: data['customerNotes'],
+      internalNotes: data['internalNotes'],
+      shippingAddress: Address.fromFirestore(data['shippingAddress'] as Map<String, dynamic>),
+      billingAddress: Address.fromFirestore(data['billingAddress'] as Map<String, dynamic>),
+      items: (data['items'] as List?)?.map((item) => OrderItem.fromFirestore(item as Map<String, dynamic>)).toList() ?? [],
+      discounts: (data['discounts'] as List?)?.map((d) => Discount.fromFirestore(d as Map<String, dynamic>)).toList() ?? [],
+      payment: data['payment'] != null ? PaymentInfo.fromFirestore(data['payment'] as Map<String, dynamic>) : null,
+      tracking: data['tracking'] != null ? ShippingInfo.fromFirestore(data['tracking'] as Map<String, dynamic>) : null,
+      history: (data['history'] as List?)?.map((h) => OrderHistoryEntry.fromFirestore(h as Map<String, dynamic>)).toList() ?? [],
+    );
+  }
 }
 
 enum OrderStatus {
@@ -168,6 +234,8 @@ enum OrderStatus {
   delivered, // Order received by customer
   cancelled, // Order cancelled by customer or system
   returned, // Order returned by customer
+  failed, // Order failed
+  refunded, // Order refunded
 }
 
 enum FulfillmentStatus {
@@ -175,17 +243,20 @@ enum FulfillmentStatus {
   picked, // Items picked from inventory
   packed, // Items packed for shipment
   shipped, // Shipped to customer
-  out_for_delivery, // Out for final delivery
+  outForDelivery, // Out for final delivery
   delivered, // Delivered to customer
+  returned, // Returned by customer
+  cancelled, // Cancelled
 }
 
 enum PaymentStatus {
   pending, // Payment pending
   authorized, // Payment authorized but not captured
   captured, // Payment captured (charged)
+  paid, // Alias for captured
   failed, // Payment failed
   refunded, // Fully refunded
-  partially_refunded, // Partially refunded
+  partiallyRefunded, // Partially refunded
 }
 
 class OrderItem extends Equatable {
@@ -243,6 +314,33 @@ class OrderItem extends Equatable {
           variantAttributes ?? this.variantAttributes,
     );
   }
+
+  /// Firestore conversion methods for [OrderItem]
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'productId': productId,
+      'variantId': variantId,
+      'quantity': quantity,
+      'unitPrice': unitPrice,
+      'totalPrice': totalPrice,
+      'productTitle': productTitle,
+      'variantAttributes': variantAttributes,
+    };
+  }
+
+  static OrderItem fromFirestore(Map<String, dynamic> data) {
+    return OrderItem(
+      id: data['id'] ?? '',
+      productId: data['productId'] ?? '',
+      variantId: data['variantId'],
+      quantity: (data['quantity'] as num?)?.toInt() ?? 0,
+      unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
+      totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0.0,
+      productTitle: data['productTitle'] ?? '',
+      variantAttributes: Map<String, String>.from(data['variantAttributes'] ?? {}),
+    );
+  }
 }
 
 class Discount extends Equatable {
@@ -284,9 +382,32 @@ class Discount extends Equatable {
       description: description ?? this.description,
     );
   }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'promoId': promoId,
+      'code': code,
+      'type': type.name,
+      'value': value,
+      'description': description,
+    };
+  }
+
+  static Discount fromFirestore(Map<String, dynamic> data) {
+    return Discount(
+      promoId: data['promoId'] ?? '',
+      code: data['code'] ?? '',
+      type: DiscountType.values.firstWhere(
+        (e) => e.name == data['type'],
+        orElse: () => DiscountType.fixedAmount,
+      ),
+      value: (data['value'] as num?)?.toDouble() ?? 0.0,
+      description: data['description'],
+    );
+  }
 }
 
-enum DiscountType { percentage, fixed_amount, free_shipping }
+enum DiscountType { percentage, fixedAmount, freeShipping }
 
 class PaymentInfo extends Equatable {
   final PaymentProvider provider;
@@ -332,6 +453,31 @@ class PaymentInfo extends Equatable {
       details: details ?? this.details,
     );
   }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'provider': provider.name,
+      'providerPaymentId': providerPaymentId,
+      'status': status,
+      'amount': amount,
+      'currency': currency,
+      'details': details,
+    };
+  }
+
+  static PaymentInfo fromFirestore(Map<String, dynamic> data) {
+    return PaymentInfo(
+      provider: PaymentProvider.values.firstWhere(
+        (e) => e.name == data['provider'],
+        orElse: () => PaymentProvider.stripe,
+      ),
+      providerPaymentId: data['providerPaymentId'] ?? '',
+      status: data['status'] ?? '',
+      amount: (data['amount'] as num?)?.toDouble() ?? 0.0,
+      currency: data['currency'] ?? 'USD',
+      details: data['details'] as Map<String, dynamic>?,
+    );
+  }
 }
 
 enum PaymentProvider { stripe, paypal, apple_pay, google_pay }
@@ -375,6 +521,26 @@ class ShippingInfo extends Equatable {
       events: events ?? this.events,
     );
   }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'carrier': carrier,
+      'trackingNumber': trackingNumber,
+      'estimatedDelivery': estimatedDelivery,
+      'actualDelivery': actualDelivery,
+      'events': events.map((e) => e.toFirestore()).toList(),
+    };
+  }
+
+  static ShippingInfo fromFirestore(Map<String, dynamic> data) {
+    return ShippingInfo(
+      carrier: data['carrier'] ?? '',
+      trackingNumber: data['trackingNumber'] ?? '',
+      estimatedDelivery: (data['estimatedDelivery'] as Timestamp?)?.toDate(),
+      actualDelivery: (data['actualDelivery'] as Timestamp?)?.toDate(),
+      events: (data['events'] as List?)?.map((e) => TrackingEvent.fromFirestore(e as Map<String, dynamic>)).toList() ?? [],
+    );
+  }
 }
 
 class TrackingEvent extends Equatable {
@@ -409,6 +575,24 @@ class TrackingEvent extends Equatable {
       status: status ?? this.status,
       location: location ?? this.location,
       description: description ?? this.description,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'timestamp': timestamp,
+      'status': status,
+      'location': location,
+      'description': description,
+    };
+  }
+
+  static TrackingEvent fromFirestore(Map<String, dynamic> data) {
+    return TrackingEvent(
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      status: data['status'] ?? '',
+      location: data['location'],
+      description: data['description'] ?? '',
     );
   }
 }
@@ -455,6 +639,28 @@ class OrderHistoryEntry extends Equatable {
       changedBy: changedBy ?? this.changedBy,
       reason: reason ?? this.reason,
       notes: notes ?? this.notes,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'timestamp': timestamp,
+      'fromStatus': fromStatus,
+      'toStatus': toStatus,
+      'changedBy': changedBy,
+      'reason': reason,
+      'notes': notes,
+    };
+  }
+
+  static OrderHistoryEntry fromFirestore(Map<String, dynamic> data) {
+    return OrderHistoryEntry(
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      fromStatus: data['fromStatus'] ?? '',
+      toStatus: data['toStatus'] ?? '',
+      changedBy: data['changedBy'] ?? '',
+      reason: data['reason'],
+      notes: data['notes'],
     );
   }
 }
@@ -511,6 +717,32 @@ class Address extends Equatable {
       postalCode: postalCode ?? this.postalCode,
       country: country ?? this.country,
       phone: phone ?? this.phone,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'name': name,
+      'line1': line1,
+      'line2': line2,
+      'city': city,
+      'state': state,
+      'postalCode': postalCode,
+      'country': country,
+      'phone': phone,
+    };
+  }
+
+  static Address fromFirestore(Map<String, dynamic> data) {
+    return Address(
+      name: data['name'] ?? '',
+      line1: data['line1'] ?? '',
+      line2: data['line2'],
+      city: data['city'] ?? '',
+      state: data['state'] ?? '',
+      postalCode: data['postalCode'] ?? '',
+      country: data['country'] ?? '',
+      phone: data['phone'] ?? '',
     );
   }
 

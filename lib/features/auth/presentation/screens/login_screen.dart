@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/glass_card.dart';
-import '../../../../core/widgets/guest_mode_button.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../../../core/widgets/premium_text_field.dart';
 import '../../../../core/widgets/social_auth_button.dart';
-import '../../application/providers/auth_controllers.dart';
 import '../../application/providers/auth_providers.dart';
-import '../../application/providers/session_providers.dart';
-import '../../domain/entities/account_mode.dart';
-import '../../domain/repositories/auth_repository.dart';
-import '../widgets/account_mode_selector.dart';
-import '../widgets/auth_helpers.dart';
 import '../widgets/auth_shell.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -82,9 +73,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return AuthShell(
       child: SingleChildScrollView(
@@ -159,8 +148,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 12),
               SocialAuthButton(
-                provider: SocialProvider.phone, // Using phone as guest equivalent for now
-                onPressed: () => _handleSocialPress(_signInAsGuest),
+                provider: SocialProvider.phone,
+                onPressed: () => context.push(AppRoutes.phoneAuth),
               ),
               const SizedBox(height: 24),
 

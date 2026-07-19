@@ -15,7 +15,7 @@ class LockStatus {
   final DateTime? lockedUntil;
 
   Duration? get remaining =>
-      lockedUntil == null ? null : lockedUntil!.difference(DateTime.now());
+      lockedUntil?.difference(DateTime.now());
 
   static const notLocked = LockStatus(isLocked: false, attemptsRemaining: -1);
 }

@@ -6,9 +6,14 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/breathing_logo.dart';
 import '../../../core/widgets/particle_background.dart';
+import '../../../core/constants/app_constants.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({super.key, this.onNavigate});
+  
+  /// Called when splash duration completes. In production this navigates to auth.
+  /// In tests, this can be overridden to avoid timer issues.
+  final VoidCallback? onNavigate;
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -16,8 +21,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  static const _totalDuration = Duration(milliseconds: 2500);
-
   late final AnimationController _fadeController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
@@ -35,8 +38,14 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _fadeController.forward();
-    Future.delayed(_totalDuration, () {
-      if (mounted) context.go(AppRoutes.auth);
+    Future.delayed(AppConstants.splashDuration, () {
+      if (mounted) {
+        if (widget.onNavigate != null) {
+          widget.onNavigate!();
+        } else {
+          context.go(AppRoutes.auth);
+        }
+      }
     });
   }
 
