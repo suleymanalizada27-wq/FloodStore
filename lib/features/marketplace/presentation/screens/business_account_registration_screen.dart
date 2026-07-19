@@ -239,6 +239,7 @@ class _BusinessAccountRegistrationScreenState
                       ),
                     );
                   }),
+                ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Step ${_currentStep + 1} of $_totalSteps',

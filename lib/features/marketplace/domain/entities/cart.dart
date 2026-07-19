@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 /// Represents a shopping cart
@@ -19,6 +20,33 @@ class Cart extends Equatable {
     this.couponCode,
     this.isSavedForLater = false,
   });
+
+  factory Cart.fromFirestore(Map<String, dynamic> data, String documentId) {
+    return Cart(
+      id: documentId,
+      userId: data['userId'] ?? '',
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      items: List<CartItem>.from(
+        (data['items'] as List<dynamic>?)
+                ?.map((item) => CartItem.fromFirestore(item as Map<String, dynamic>))
+                .toList() ??
+            []),
+      couponCode: data['couponCode'],
+      isSavedForLater: data['isSavedForLater'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'userId': userId,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'updatedAt': Timestamp.fromDate(updatedAt),
+      'items': items.map((item) => item.toFirestore()).toList(),
+      'couponCode': couponCode,
+      'isSavedForLater': isSavedForLater,
+    };
+  }
 
   @override
   List<Object?> get props => [
@@ -97,6 +125,32 @@ class CartItem extends Equatable {
     required this.variantAttributes,
   });
 
+  factory CartItem.fromFirestore(Map<String, dynamic> data) {
+    return CartItem(
+      id: data['id'] ?? '',
+      productId: data['productId'] ?? '',
+      variantId: data['variantId'],
+      quantity: data['quantity'] ?? 0,
+      unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
+      totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0.0,
+      productTitle: data['productTitle'] ?? '',
+      variantAttributes: Map<String, String>.from(data['variantAttributes'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'productId': productId,
+      'variantId': variantId,
+      'quantity': quantity,
+      'unitPrice': unitPrice,
+      'totalPrice': totalPrice,
+      'productTitle': productTitle,
+      'variantAttributes': variantAttributes,
+    };
+  }
+
   /// Creates an empty cart item (used as sentinel value)
   factory CartItem.empty() => const CartItem(
         id: '',
@@ -141,8 +195,7 @@ class CartItem extends Equatable {
       unitPrice: unitPrice ?? this.unitPrice,
       totalPrice: totalPrice ?? this.totalPrice,
       productTitle: productTitle ?? this.productTitle,
-      variantAttributes:
-          variantAttributes ?? this.variantAttributes,
+      variantAttributes: variantAttributes ?? this.variantAttributes,
     );
   }
 }

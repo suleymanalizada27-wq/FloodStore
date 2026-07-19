@@ -78,6 +78,9 @@ class FirestoreProductRepository implements ProductRepository {
     double? maxPrice,
     String? sortBy,
     bool sortDesc = true,
+    bool inStockOnly = false,
+    bool freeShippingOnly = false,
+    double? ratingFilter,
   }) async {
     try {
       return await _dataSource.searchProducts(
@@ -89,6 +92,9 @@ class FirestoreProductRepository implements ProductRepository {
         maxPrice: maxPrice,
         sortBy: sortBy,
         sortDesc: sortDesc,
+        inStockOnly: inStockOnly,
+        freeShippingOnly: freeShippingOnly,
+        ratingFilter: ratingFilter,
       );
     } catch (e) {
       throw Exception('Failed to search products: $e');

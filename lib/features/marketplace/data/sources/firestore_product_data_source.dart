@@ -120,6 +120,9 @@ class FirestoreProductDataSource {
     double? maxPrice,
     String? sortBy,
     bool sortDesc = true,
+    bool inStockOnly = false,
+    bool freeShippingOnly = false,
+    double? ratingFilter,
   }) async {
     try {
       // Note: This is a basic implementation - for production search,
@@ -132,9 +135,24 @@ class FirestoreProductDataSource {
         queryRef = queryRef.where('categoryId', whereIn: categoryIds);
       }
 
-      // TODO: Add price range filtering
       // TODO: Add text search (requires third-party search solution)
-      // TODO: Add sorting based on sortBy parameter
+      // For now, we ignore the query parameter
+
+      // Price range filtering
+      if (minPrice != null) {
+        queryRef = queryRef.where('pricing.basePrice', isGreaterThanOrEqualTo: minPrice);
+      }
+      if (maxPrice != null) {
+        queryRef = queryRef.where('pricing.basePrice', isLessThanOrEqualTo: maxPrice);
+      }
+
+      // Sorting
+      if (sortBy != null && sortBy.isNotEmpty) {
+        queryRef = queryRef.orderBy(
+          sortBy,
+          descending: sortDesc,
+        );
+      }
 
       queryRef = queryRef.limit(limit);
 
