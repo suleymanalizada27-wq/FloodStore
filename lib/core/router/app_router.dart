@@ -18,6 +18,7 @@ import '../../features/marketplace/presentation/screens/order_confirmation_scree
 import '../../features/marketplace/presentation/screens/order_detail_screen.dart';
 import '../../features/marketplace/presentation/screens/home_screen.dart';
 import '../../features/marketplace/presentation/screens/products_screen.dart';
+import '../../features/marketplace/presentation/screens/product_detail_screen.dart';
 import '../../features/marketplace/presentation/screens/business_account_registration_screen.dart';
 import 'auth_guards.dart';
 
@@ -38,6 +39,7 @@ abstract final class AppRoutes {
   /// swap for the real home/marketplace shell route when it exists.
   static const home = '/home';
   static const marketplaceProducts = '/marketplace/products';
+  static const productDetail = '/marketplace/products/:productId';
 
   // Marketplace routes
   static const cart = '/cart';
@@ -153,10 +155,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.marketplaceProducts,
-        pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
-      ),
+       GoRoute(
+         path: AppRoutes.marketplaceProducts,
+         pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
+       ),
+       GoRoute(
+         path: AppRoutes.productDetail,
+         builder: (context, state) {
+           final productId = state.pathParameters['productId']!;
+           return ProductDetailScreen(productId: productId);
+         },
+       ),
       GoRoute(
         path: AppRoutes.cart,
         pageBuilder: (context, state) => _heroPage(const CartScreen()),

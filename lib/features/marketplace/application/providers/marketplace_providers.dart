@@ -100,6 +100,13 @@ final productListProvider = StateNotifierProvider<ProductListNotifier, ProductLi
   return ProductListNotifier(repository);
 });
 
+// Product Detail Provider
+final productDetailProvider = FutureProvider.family<Product?, String>((ref, productId) {
+  return ref.watch(productRepositoryProvider).getProductById(productId);
+});
+
+// Cart & Order Providers
+
 // Cart & Order Providers
 final cartProvider = StreamProvider<Cart?>((ref) {
   return const Stream.empty();
