@@ -1,122 +1,58 @@
-# FloodStore Agent Progress - FINAL STATE
+# Agent Progress – FloodStore
 
-**Last updated:** Session complete. Pushed to `origin/main` at commit `821ce27`.
-**Repo path:** `C:\Users\PC_COMP\AppData\Local\Temp\FloodStore`
-**Origin:** `https://github.com/suleymanalizada27-wq/FloodStore.git`
-**Git state:** Clean working tree on `main`.
+## Completed Features
 
----
+### 1. Marketplace Home (`HomeScreen`)
+- **File:** `lib/features/marketplace/presentation/screens/home_screen.dart`
+- **Capabilities**
+  - Search bar with focus handling and proper disposal.
+  - Horizontal sections: Featured Products, Categories, Trending, Flash Sale, Recommendations.
+  - Pull‑to‑refresh, shimmer placeholders, empty & error states.
+  - Navigation to product list (`/marketplace/products?filter=…`) and category (`/marketplace/products?categoryId=…`).
+- **Fixes applied**
+  - Replaced broken “Add to Cart” button with a single `PremiumButton`.
+  - Added missing `AppTextStyles.displaySmall` & `titleLarge` getters.
+  - Supplied required `size` argument to `AppTextStyles.body`.
+  - Fixed `FocusNode` lifecycle (`_searchFocusNode` created, listened, disposed).
+  - Rewrote `_buildRecommendations` to use a placeholder `Product` (avoids missing `Recommendation.title/description` and required `ProductPricing` fields).
+  - Removed unused imports (`auth_providers.dart`, `section_header.dart`).
 
-## 1. Project State
+### 2. Product Detail (`ProductDetailScreen`)
+- **Files**
+  - Provider: `productDetailProvider` in `lib/features/marketplace/application/providers/marketplace_providers.dart`
+  - Screen: `lib/features/marketplace/presentation/screens/product_detail_screen.dart`
+- **Capabilities**
+  - Fetches a single product by ID via `productRepository.getProductById`.
+  - Shows image carousel (first image or placeholder), title, description, brand, price (with strikethrough compare‑at price).
+  - “Sepete Ekle” button (stubbed for future cart integration).
+- **Routing**
+  - Added `AppRoutes.productDetail = '/marketplace/products/:productId'`.
+  - Imported screen in `app_router.dart` and added a `GoRoute` that extracts `productId` from `state.pathParameters`.
+  - Fixed a stray brace in the routes list and corrected parameter access.
 
-FloodStore is a Flutter marketplace application (SDK ≥3.3.0, Dart ≥3.6.0)
-using Riverpod 2.6 + GoRouter 14.8 + Firebase (Auth + Firestore).
-Existing modules: a complete `auth` feature and an early-stage `marketplace` feature.
+### 3. Core / Shared Fixes
+- **`AppTextStyles`** (`lib/core/theme/app_text_styles.dart`)
+  - Added static getters `displaySmall` and `titleLarge`.
+- **`ProductCard` widget** (`lib/features/marketplace/presentation/widgets/product_card.dart`)
+  - Corrected import path to `../../domain/entities/product.dart`.
+  - Fixed typo `AppColors:ary` → `AppColors.textTertiary`.
+- **`marketplace_providers.dart`**
+  - Removed stray `});` after `productDetailProvider`.
+- **`app_router.dart`**
+  - Fixed route list syntax, replaced `state.params` with `state.pathParameters`.
 
-**Current status:** **All build errors fixed**. Core auth + marketplace foundations compile cleanly. Debug APK builds successfully. 2 widget tests passing.
+## Build & Quality
+- `flutter analyze` – only pre‑existing warnings remain (no new errors).
+- `flutter build apk --debug` – succeeds.
+- All changes committed & pushed to `main`:
+  - `feat(home): complete`
+  - `feat(product-detail): add product detail screen and provider`
 
----
+## Next Feature (per roadmap)
+- **Seller Dashboard** – manage inventory, orders, analytics.
+- **Business Registration** – multi‑step onboarding for sellers.
+- **User Profile** – addresses, wishlist, order history.
+- **Cart / Checkout** – persistent cart, payment integration.
+- **Chat, Notifications, Payments, Search, Wishlist, Reviews, Orders, Coupons, Loyalty, Analytics, Admin Dashboard** – in planned order.
 
-## 2. Completed Tasks (This Session)
-
-| Area | Work Done |
-|------|-----------|
-| **Compilation Errors** | Reduced from **226 → 0** (core layer clean, UI layer clean) |
-| **Marketplace - Products** | `products_screen.dart` completely rewritten (removed 200-line duplicate block, fixed imports, seeded sample data, wired add-to-cart) |
-| **Marketplace - Data Layer** | Created `firestore_cart_repository.dart` (12 methods), `firestore_order_repository.dart` (25 methods), `firestore_user_repository.dart` (20 methods) |
-| **Domain Entities** | Added `toFirestore`/`fromFirestore` to ALL nested entities: Order, OrderItem, Discount, PaymentInfo, ShippingInfo, TrackingEvent, OrderHistoryEntry, Address, Cart, CartItem |
-| **Enums Fixed** | `DiscountType.fixedAmount`, `OrderStatus.returned/failed`, `PaymentStatus.captured`, `FulfillmentStatus.picked` |
-| **Firestore Repositories** | `FirestoreProductRepository` (fixed ambiguous extensions, implemented search/filter/sort), `FirestoreCartRepository` (12 methods), `FirestoreOrderRepository` (batch writes, history), `FirestoreUserRepository` |
-| **Providers** | Created `marketplace_providers.dart` with all repository + state providers + `FutureProvider.family` for cart/orders |
-| **UI Screens** | `ProductsScreen` (add-to-cart wired), `CartScreen`, `CheckoutScreen` (simulated payment), `OrderConfirmationScreen`, `OrderDetailScreen` — all `.when()` errors fixed |
-| **Auth Fixes** | `LoginScreen` (wired phone button), `SplashScreen` (testable `onNavigate`), `AuthRateLimiter` (null-aware), `FirebaseAuthRepository` (removed `await` on `bool`, const `AuthFailure`) |
-| **Routing** | Added `/cart`, `/checkout`, `/order/confirmation`, `/order/detail` to `app_router.dart` |
-| **Android Build** | `minSdk 23`, AGP 8.3, Gradle 8.4, namespace in `build.gradle` |
-| **Dependencies** | Removed `stripe_payment` (simplified checkout), added `uuid` |
-| **Code Quality** | Fixed `AuthRateLimiter` null-aware, `FirebaseAuthRepository` await-on-bool, `Address.fromFirestore` named params, `lifetimeSpend` → `lifetimeSpent`, `Cart.getQuantity` null-safety |
-| **Tests** | `widget_test.dart` (app build + splash navigation) — **2 passing** |
-| **Config** | `minSdk 23`, AGP 8.3, Gradle 8.4 |
-| **Build** | **Debug APK compiles cleanly** (Stripe removed, minSdk 23) |
-
----
-
-## 3. Files Modified/Created (Key)
-
-### Core Fixes
-- `lib/features/marketplace/presentation/screens/products_screen.dart` — **complete rewrite**
-- `lib/features/marketplace/data/repositories/firestore_product_repository.dart` — **complete rewrite**
-- `lib/features/marketplace/data/sources/firestore_product_data_source.dart` — **complete rewrite**
-- `lib/features/marketplace/data/repositories/firestore_cart_repository.dart` — **NEW** (12 methods)
-- `lib/features/marketplace/data/repositories/firestore_order_repository.dart` — **NEW** (25 methods)
-- `lib/features/marketplace/data/repositories/firestore_user_repository.dart` — **NEW** (20 methods)
-- `lib/features/marketplace/application/providers/marketplace_providers.dart` — **NEW**
-- `lib/features/marketplace/application/providers/product_providers.dart` — simplified to re-export
-
-### Domain Entities (Firestore Serialization)
-- `lib/features/marketplace/domain/entities/order.dart` — `toFirestore`/`fromFirestore` on Order, OrderItem, Discount, PaymentInfo, ShippingInfo, TrackingEvent, OrderHistoryEntry, Address
-- `lib/features/marketplace/domain/entities/cart.dart` — `toFirestore`/`fromFirestore` on Cart, CartItem
-- `lib/features/marketplace/domain/entities/user.dart` — typo fix `lifetimeSpent`
-
-### Auth & Routing
-- `lib/features/auth/presentation/screens/login_screen.dart` — phone button wired
-- `lib/features/splash/presentation/splash_screen.dart` — `onNavigate` callback
-- `lib/core/router/app_router.dart` — marketplace routes added
-- `lib/core/services/auth_rate_limiter.dart` — null-aware operator
-- `lib/features/auth/data/repositories/firebase_auth_repository.dart` — await-on-bool fix
-
-### Config
-- `android/app/build.gradle` — `minSdk 23`, AGP 8.3
-- `android/gradle/wrapper/gradle-wrapper.properties` — Gradle 8.4
-- `pubspec.yaml` — removed `stripe_payment`, added `uuid`
-
-### Tests
-- `test/widget_test.dart` — app build + splash navigation
-
----
-
-## 4. Verification Results
-
-```
-flutter analyze   → 0 errors, 61 info/warnings (style preferences only)
-flutter test      → 2/2 tests passing
-flutter build apk --debug  → ✅ SUCCESS (built build/app/outputs/flutter-apk/app-debug.apk)
-```
-
----
-
-## 5. Architecture Notes
-
-- **Clean Architecture maintained**: Domain layer has zero Firebase imports; data layer contains all Firestore logic
-- **Mapper Pattern**: `toFirestore`/`fromFirestore` as static methods on domain entities (no extension conflicts)
-- **Repository Pattern**: All repositories implement domain interfaces; providers inject concrete implementations
-- **State Management**: Riverpod providers for repositories + state notifiers + FutureProvider.family for cart/orders
-- **Routing**: GoRouter with auth guards; marketplace routes added
-- **Testability**: Repositories are interfaces — easy to fake in unit tests
-
----
-
-## 6. Quick Commands
-
-```bash
-# Analyze
-flutter analyze
-
-# Test
-flutter test
-
-# Build (debug)
-flutter build apk --debug
-
-# Build (release)
-flutter build apk --release
-```
-
----
-
-## 7. Next Steps (If Continuing)
-
-1. **CI/CD** — Add `.github/workflows/ci.yml` running analyze + test + build
-2. **Release Build** — `flutter build apk --release` / `flutter build web`
-3. **Firebase Config** — Complete `flutterfire configure` for production
-4. **UI Polish** — Add product images, improve checkout UX
-5. **Unit Tests** — Add repository/domain logic tests
+*Generated automatically by the development agent.*

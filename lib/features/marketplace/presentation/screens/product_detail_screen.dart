@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../application/providers/marketplace_providers.dart';
-import '../../domain/entities/product.dart';
 
 /// Detailed view for a single product.
 class ProductDetailScreen extends ConsumerWidget {
@@ -71,7 +71,7 @@ class ProductDetailScreen extends ConsumerWidget {
                         const SizedBox(width: 8),
                         Text('\$${(product.pricing.compareAtPrice! / 100).toStringAsFixed(2)}',
                             style: AppTextStyles.body(size: 14, color: AppColors.textTertiary)
-                                ?.copyWith(decoration: TextDecoration.lineThrough)),
+                                .copyWith(decoration: TextDecoration.lineThrough)),
                       ],
                     ],
                   ),
@@ -79,8 +79,43 @@ class ProductDetailScreen extends ConsumerWidget {
                   PremiumButton(
                     label: 'Sepete Ekle',
                     icon: Icons.add_shopping_cart,
-                    onPressed: () {
-                      // TODO: implement add‑to‑cart functionality
+                    onPressed: () async {
+                      final userId = ref.read(currentUserIdProvider);
+                      if (userId == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Lütfen giriş yapın')),
+                        );
+                        return;
+                      }
+                      try {
+                        final cartRepo = ref.read(cartRepositoryProvider);
+                        await cartRepo.addItem(
+                          userId,
+                          product.id,
+                          null, // variantId - null for now
+                          1, // quantity
+                          product.pricing.basePrice,
+                          product.base.title,
+                          {}, // variantAttributes - empty for now
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${product.base.title} sepete eklendi'),
+                              action: SnackBarAction(
+                                label: 'Sepeti Gör',
+                                onPressed: () => context.push(AppRoutes.cart),
+                              ),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Sepete eklenemedi: $e')),
+                          );
+                        }
+                      }
                     },
                   ),
                 ],
