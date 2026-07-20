@@ -47,6 +47,7 @@
 - All changes committed & pushed to `main`:
   - `feat(home): complete`
   - `feat(product-detail): add product detail screen and provider`
+  - `feat(cart): add add-to-cart functionality to ProductDetailScreen`
 
 ## Next Feature (per roadmap)
 - **Seller Dashboard** – manage inventory, orders, analytics.
