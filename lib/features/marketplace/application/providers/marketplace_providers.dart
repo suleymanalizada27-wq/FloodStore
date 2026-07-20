@@ -11,6 +11,7 @@ import '../../domain/repositories/loyalty_repository.dart';
 import '../../domain/repositories/visual_search_repository.dart';
 import '../../domain/repositories/coupon_repository.dart';
 import '../../domain/repositories/business_account_repository.dart';
+import '../../domain/repositories/wishlist_repository.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/chat_message.dart';
@@ -23,6 +24,7 @@ import '../../domain/entities/seller_analytics.dart';
 import '../../domain/entities/recommendation.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
+import '../../domain/entities/wishlist.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 import '../../data/repositories/firestore_cart_repository.dart';
 import '../../data/repositories/firestore_order_repository.dart';
@@ -34,6 +36,7 @@ import '../../data/repositories/firestore_loyalty_repository.dart';
 import '../../data/repositories/firestore_visual_search_repository.dart';
 import '../../data/repositories/firestore_coupon_repository.dart';
 import '../../data/repositories/firestore_business_account_repository.dart';
+import '../../data/repositories/firestore_wishlist_repository.dart';
 import '../../data/sources/firestore_product_data_source.dart';
 import '../../data/sources/product_image_service.dart';
 import '../state/product_list_notifier.dart';
@@ -90,6 +93,10 @@ final businessAccountRepositoryProvider = Provider<BusinessAccountRepository>((r
   return FirestoreBusinessAccountRepository();
 });
 
+final wishlistRepositoryProvider = Provider<WishlistRepository>((ref) {
+  return FirestoreWishlistRepository();
+});
+
 final productImageServiceProvider = Provider<ProductImageService>((ref) {
   return ProductImageService();
 });
@@ -108,8 +115,8 @@ final productDetailProvider = FutureProvider.family<Product?, String>((ref, prod
 // Cart & Order Providers
 
 // Cart & Order Providers
-final cartProvider = StreamProvider<Cart?>((ref) {
-  return const Stream.empty();
+final cartProvider = StreamProvider.family<Cart?, String>((ref, userId) {
+  return ref.watch(cartRepositoryProvider).watchCart(userId);
 });
 
 final currentUserIdProvider = StateProvider<String?>((ref) => 'demo-user-id');
@@ -163,6 +170,15 @@ final tierProgressProvider = FutureProvider.family<TierProgress, String>((ref, u
 
 final loyaltyLeaderboardProvider = FutureProvider<List<LeaderboardEntry>>((ref) {
   return ref.watch(loyaltyRepositoryProvider).getLeaderboard();
+});
+
+// Wishlist Providers
+final wishlistProvider = StreamProvider.family<Wishlist?, String>((ref, userId) {
+  return ref.watch(wishlistRepositoryProvider).watchWishlist(userId);
+});
+
+final wishlistForUserProvider = FutureProvider.family<Wishlist?, String>((ref, userId) {
+  return ref.watch(wishlistRepositoryProvider).getWishlist(userId);
 });
 
 // Visual Search Providers

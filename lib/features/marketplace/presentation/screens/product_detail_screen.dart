@@ -18,6 +18,7 @@ class ProductDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productAsync = ref.watch(productDetailProvider(productId));
+    final wishlistRepo = ref.watch(wishlistRepositoryProvider);
 
     return productAsync.when(
       data: (product) {
@@ -76,47 +77,95 @@ class ProductDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  PremiumButton(
-                    label: 'Sepete Ekle',
-                    icon: Icons.add_shopping_cart,
-                    onPressed: () async {
-                      final userId = ref.read(currentUserIdProvider);
-                      if (userId == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Lütfen giriş yapın')),
-                        );
-                        return;
-                      }
-                      try {
-                        final cartRepo = ref.read(cartRepositoryProvider);
-                        await cartRepo.addItem(
-                          userId,
-                          product.id,
-                          null, // variantId - null for now
-                          1, // quantity
-                          product.pricing.basePrice,
-                          product.base.title,
-                          {}, // variantAttributes - empty for now
-                        );
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${product.base.title} sepete eklendi'),
-                              action: SnackBarAction(
-                                label: 'Sepeti Gör',
-                                onPressed: () => context.push(AppRoutes.cart),
-                              ),
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Sepete eklenemedi: $e')),
-                          );
-                        }
-                      }
-                    },
+                  Row(
+                    children: [
+                      Expanded(
+                        child: PremiumButton(
+                          label: 'Sepete Ekle',
+                          icon: Icons.add_shopping_cart,
+                          onPressed: () async {
+                            final userId = ref.read(currentUserIdProvider);
+                            if (userId == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Lütfen giriş yapın')),
+                              );
+                              return;
+                            }
+                            try {
+                              final cartRepo = ref.read(cartRepositoryProvider);
+                              await cartRepo.addItem(
+                                userId,
+                                product.id,
+                                null, // variantId - null for now
+                                1, // quantity
+                                product.pricing.basePrice,
+                                product.base.title,
+                                {}, // variantAttributes - empty for now
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('${product.base.title} sepete eklendi'),
+                                    action: SnackBarAction(
+                                      label: 'Sepeti Gör',
+                                      onPressed: () => context.push(AppRoutes.cart),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Sepete eklenemedi: $e')),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: PremiumButton(
+                          label: 'İstek Listesine Ekle',
+                          icon: Icons.favorite_border,
+                          onPressed: () async {
+                            final userId = ref.read(currentUserIdProvider);
+                            if (userId == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Lütfen giriş yapın')),
+                              );
+                              return;
+                            }
+                            try {
+                              await wishlistRepo.addItem(
+                                userId,
+                                product.id,
+                                null, // variantId - null for now
+                                product.base.title,
+                                {}, // variantAttributes - empty for now
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('${product.base.title} istek listesine eklendi'),
+                                    action: SnackBarAction(
+                                      label: 'Listeyi Gör',
+                                      onPressed: () => context.push(AppRoutes.wishlist),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('İstek listesine eklenemedi: $e')),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

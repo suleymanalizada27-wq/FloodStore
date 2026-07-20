@@ -245,4 +245,17 @@ class FirestoreCartRepository implements CartRepository {
       'total': subtotal,
     };
   }
+
+  @override
+  Stream<Cart?> watchCart(String userId) {
+    try {
+      return _cartRef(userId).snapshots().map((doc) {
+        if (!doc.exists) return null;
+        final data = doc.data() as Map<String, dynamic>;
+        return Cart.fromFirestore(data, doc.id);
+      });
+    } catch (e) {
+      throw Exception('Failed to watch cart: $e');
+    }
+  }
 }

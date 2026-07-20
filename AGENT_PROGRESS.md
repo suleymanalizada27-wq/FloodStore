@@ -41,19 +41,95 @@
 - **`app_router.dart`**
   - Fixed route list syntax, replaced `state.params` with `state.pathParameters`.
 
+### 4. Cart (`CartScreen`)
+- **Files**
+  - Repository: `lib/features/marketplace/data/repositories/firestore_cart_repository.dart`
+    - Implemented `watchCart()` method for real-time cart updates
+    - Enhanced `calculateCartTotals()` method
+  - Provider: `lib/features/marketplace/application/providers/marketplace_providers.dart`
+    - Replaced `cartProvider` with `StreamProvider.family<Cart?, String>` that uses `watchCart()` for real-time updates
+    - Kept `cartForUserProvider` for one-time fetches
+  - Screen: `lib/features/marketplace/presentation/screens/cart_screen.dart`
+    - Updated to use the new `cartProvider` family instead of `cartForUserProvider` for real-time updates
+    - Added quantity increment/decrement buttons
+    - Added remove item functionality
+    - Added clear cart dialog
+    - Shows cart summary with subtotal, shipping, tax, and total
+    - Handles empty cart state
+    - Loading and error states
+- **Capabilities**
+  - Real-time cart updates using Firestore snapshots
+  - Add items to cart (from ProductDetailScreen)
+  - Remove items from cart
+  - Update item quantity (including removing when quantity reaches 0)
+  - Persistent cart storage in Firestore
+  - Clear cart functionality
+  - Cart summary with calculations
+  - Loading, empty, and error states
+- **Architecture**
+  - Follows Clean Architecture with Riverpod state management
+  - Cart entity and CartItem entity with Equatable for value equality
+  - Firestore implementation with proper error handling
+  - StreamProvider for real-time UI updates
+  - Proper separation of concerns: UI → Providers → Repositories → Entities
+
+### 5. Wishlist (`WishlistScreen`)
+- **Files**
+  - Entity: `lib/features/marketplace/domain/entities/wishlist.dart`
+    - Wishlist and WishlistItem entities with Firestore serialization/deserialization
+    - Methods for item management, equality checks, and copying
+  - Repository Interface: `lib/features/marketplace/domain/repositories/wishlist_repository.dart`
+    - Defines abstract contract for wishlist operations (get, save, add, remove, clear, watch)
+  - Firebase Implementation: `lib/features/marketplace/data/repositories/firestore_wishlist_repository.dart`
+    - Firebase implementation of wishlist repository using Firestore
+    - Handles all CRUD operations with proper error handling
+    - Implements real-time updates via Firestore snapshots
+  - Providers: `lib/features/marketplace/application/providers/marketplace_providers.dart`
+    - Added `wishlistRepositoryProvider`, `wishlistProvider` (StreamProvider.family), and `wishlistForUserProvider`
+  - Screens:
+    - `lib/features/marketplace/presentation/screens/wishlist_screen.dart`
+      - Complete UI for viewing and managing wishlist items
+      - Features: item removal, individual/batch move to cart, clear wishlist, empty state
+      - Integrates with product repository to fetch current product details when moving to cart
+    - Enhanced `lib/features/marketplace/presentation/screens/product_detail_screen.dart`
+      - Added "Add to Wishlist" button alongside existing "Add to Cart" button
+  - Routing: `lib/core/router/app_router.dart`
+    - Added wishlist route constant and GoRoute definition
+    - Enables navigation to wishlist screen from anywhere in the app
+- **Capabilities**
+  - Real-time wishlist updates using Firestore snapshots
+  - Add items to wishlist (from ProductDetailScreen)
+  - Remove items from wishlist
+  - Move individual items from wishlist to cart
+  - Move all items from wishlist to cart
+  - Clear entire wishlist
+  - Persistent wishlist storage in Firestore
+  - Loading, empty, and error states
+  - Seamless transfer of items from wishlist to cart with proper product data
+- **Architecture**
+  - Follows Clean Architecture with Riverpod state management
+  - Proper separation of concerns: UI → Providers → Repositories → Entities
+  - Uses StreamProvider.family for real-time updates
+  - Maintains immutability and value equality with Equatable
+
 ## Build & Quality
 - `flutter analyze` – only pre‑existing warnings remain (no new errors).
+- `flutter test` – all tests pass.
 - `flutter build apk --debug` – succeeds.
 - All changes committed & pushed to `main`:
   - `feat(home): complete`
   - `feat(product-detail): add product detail screen and provider`
-  - `feat(cart): add add-to-cart functionality to ProductDetailScreen`
+  - `feat(cart): add cart functionality with real-time updates`
 
 ## Next Feature (per roadmap)
-- **Seller Dashboard** – manage inventory, orders, analytics.
-- **Business Registration** – multi‑step onboarding for sellers.
-- **User Profile** – addresses, wishlist, order history.
-- **Cart / Checkout** – persistent cart, payment integration.
-- **Chat, Notifications, Payments, Search, Wishlist, Reviews, Orders, Coupons, Loyalty, Analytics, Admin Dashboard** – in planned order.
+- **Wishlist**
+- **Checkout**
+- **Payment Flow**
+- **Orders**
+- **Reviews**
+- **Advanced Search**
+- **Categories**
+- **Filters**
+- **Coupons**
 
 *Generated automatically by the development agent.*

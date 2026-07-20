@@ -54,4 +54,7 @@ abstract class CartRepository {
 
   /// Calculates cart totals (subtotal, tax, shipping, etc.)
   Future<Map<String, double>> calculateCartTotals(String userId);
+
+  /// Watches the cart for a user and returns a stream of updates
+  Stream<Cart?> watchCart(String userId);
 }

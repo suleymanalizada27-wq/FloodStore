@@ -20,6 +20,7 @@ import '../../features/marketplace/presentation/screens/home_screen.dart';
 import '../../features/marketplace/presentation/screens/products_screen.dart';
 import '../../features/marketplace/presentation/screens/product_detail_screen.dart';
 import '../../features/marketplace/presentation/screens/business_account_registration_screen.dart';
+import '../../features/marketplace/presentation/screens/wishlist_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -47,6 +48,7 @@ abstract final class AppRoutes {
   static const orderConfirmation = '/order/confirmation';
   static const orderDetail = '/order/detail';
   static const businessAccountRegister = '/business/register';
+  static const wishlist = '/wishlist';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -169,6 +171,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.cart,
         pageBuilder: (context, state) => _heroPage(const CartScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.wishlist,
+        pageBuilder: (context, state) => _heroPage(const WishlistScreen()),
       ),
       GoRoute(
         path: AppRoutes.checkout,

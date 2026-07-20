@@ -17,7 +17,7 @@ class CartScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(currentUserIdProvider);
-    final cartAsync = ref.watch(cartForUserProvider(userId!));
+    final cartAsync = ref.watch(cartProvider(userId!));
 
     return Scaffold(
       backgroundColor: AppColors.background,
