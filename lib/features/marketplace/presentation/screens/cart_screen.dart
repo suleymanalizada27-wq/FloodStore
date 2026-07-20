@@ -32,7 +32,7 @@ class CartScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            onPressed: () => _showClearCartDialog(context, ref, userId!),
+            onPressed: () => _showClearCartDialog(context, ref, userId),
             tooltip: 'Sepeti Temizle',
           ),
         ],
@@ -55,12 +55,12 @@ class CartScreen extends ConsumerWidget {
                       item: item,
                       onQuantityChanged: (newQuantity) {
                         if (newQuantity <= 0) {
-                          ref.read(cartRepositoryProvider).removeItem(userId!, item.productId, item.variantId);
+                          ref.read(cartRepositoryProvider).removeItem(userId, item.productId, item.variantId);
                         } else {
-                          ref.read(cartRepositoryProvider).updateItemQuantity(userId!, item.productId, item.variantId, newQuantity);
+                          ref.read(cartRepositoryProvider).updateItemQuantity(userId, item.productId, item.variantId, newQuantity);
                         }
                       },
-                      onRemove: () => ref.read(cartRepositoryProvider).removeItem(userId!, item.productId, item.variantId),
+                      onRemove: () => ref.read(cartRepositoryProvider).removeItem(userId, item.productId, item.variantId),
                     );
                   },
                 ),
@@ -301,7 +301,7 @@ class _CartSummary extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.card,
-        border: Border(top: BorderSide(color: AppColors.border)),
+        border: const Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),

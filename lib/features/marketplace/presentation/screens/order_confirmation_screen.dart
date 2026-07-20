@@ -297,7 +297,7 @@ class _AddressBlock extends StatelessWidget {
           Text(address.line2!, style: AppTextStyles.textTheme.bodyMedium),
         Text('${address.city}, ${address.state} ${address.postalCode}', style: AppTextStyles.textTheme.bodyMedium),
         Text(address.country, style: AppTextStyles.textTheme.bodyMedium),
-        if (address.phone != null && address.phone!.isNotEmpty) ...[
+        if (address.phone.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text('Tel: ${address.phone}', style: AppTextStyles.textTheme.bodyMedium),
         ],

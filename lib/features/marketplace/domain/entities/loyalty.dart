@@ -84,7 +84,7 @@ class LoyaltyTier extends Equatable {
 
   /// Default tiers for FloodStore
   static List<LoyaltyTier> get defaultTiers => [
-        LoyaltyTier(
+        const LoyaltyTier(
           id: 'bronze',
           name: 'bronze',
           displayName: 'Bronze',
@@ -99,7 +99,7 @@ class LoyaltyTier extends Equatable {
           pointMultiplier: 1.0,
           freeShippingThreshold: 50000, // \$500
         ),
-        LoyaltyTier(
+        const LoyaltyTier(
           id: 'silver',
           name: 'silver',
           displayName: 'Silver',
@@ -117,7 +117,7 @@ class LoyaltyTier extends Equatable {
           freeShippingThreshold: 10000, // \$100
           birthdayBonusPoints: 500,
         ),
-        LoyaltyTier(
+        const LoyaltyTier(
           id: 'gold',
           name: 'gold',
           displayName: 'Gold',
@@ -139,7 +139,7 @@ class LoyaltyTier extends Equatable {
           birthdayBonusPoints: 1500,
           prioritySupportLevel: 2,
         ),
-        LoyaltyTier(
+        const LoyaltyTier(
           id: 'platinum',
           name: 'platinum',
           displayName: 'Platinum',
@@ -163,7 +163,7 @@ class LoyaltyTier extends Equatable {
           birthdayBonusPoints: 5000,
           prioritySupportLevel: 3,
         ),
-        LoyaltyTier(
+        const LoyaltyTier(
           id: 'diamond',
           name: 'diamond',
           displayName: 'Diamond',

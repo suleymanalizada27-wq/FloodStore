@@ -23,7 +23,6 @@ import '../../domain/entities/seller_analytics.dart';
 import '../../domain/entities/recommendation.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/entities/business_account.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 import '../../data/repositories/firestore_cart_repository.dart';
 import '../../data/repositories/firestore_order_repository.dart';

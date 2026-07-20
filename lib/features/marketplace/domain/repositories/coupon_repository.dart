@@ -72,10 +72,10 @@ class CouponValidationResult {
 
 class _ValidCouponResult extends CouponValidationResult {
   const _ValidCouponResult({
-    required Coupon coupon,
-    required double discountAmount,
-    required List<String> applicableProductIds,
-  }) : super(isValid: true, coupon: coupon, discountAmount: discountAmount, applicableProductIds: applicableProductIds);
+    required Coupon super.coupon,
+    required super.discountAmount,
+    required super.applicableProductIds,
+  }) : super(isValid: true);
 }
 
 class _InvalidCouponResult extends CouponValidationResult {

@@ -754,6 +754,6 @@ class Address extends Equatable {
       '$city, $state $postalCode',
       country,
     ];
-    return lines.where((e) => e != null && (e is! String || e.isNotEmpty)).join('\n');
+    return lines.where((e) => e != null && (e.isNotEmpty)).join('\n');
   }
 }

@@ -111,12 +111,12 @@ class OrderDetailScreen extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: AppSpacing.md),
-                        if (order.tracking!.trackingNumber != null) ...[
-                          _TrackingRow(label: 'Takip Numarası', value: order.tracking!.trackingNumber!),
-                          const SizedBox(height: AppSpacing.sm),
-                        ],
-                        if (order.tracking!.carrier != null && order.tracking!.carrier!.isNotEmpty) ...[
-                          _TrackingRow(label: 'Kargo Firması', value: order.tracking!.carrier!),
+                        ...[
+                        _TrackingRow(label: 'Takip Numarası', value: order.tracking!.trackingNumber),
+                        const SizedBox(height: AppSpacing.sm),
+                      ],
+                        if (order.tracking!.carrier.isNotEmpty) ...[
+                          _TrackingRow(label: 'Kargo Firması', value: order.tracking!.carrier),
                           const SizedBox(height: AppSpacing.sm),
                         ],
                         if (order.tracking!.estimatedDelivery != null) ...[
@@ -452,7 +452,7 @@ class OrderDetailScreen extends ConsumerWidget {
     ));
 
     if (order.paymentStatus == PaymentStatus.paid || order.paymentStatus == PaymentStatus.authorized) {
-      events.add(_TimelineEvent(
+      events.add(const _TimelineEvent(
         title: 'Ödeme Onaylandı',
         subtitle: 'Ödeme başarıyla alındı',
         icon: Icons.payment,
@@ -727,7 +727,7 @@ class _TrackingEventTile extends StatelessWidget {
             width: 8,
             height: 8,
             margin: const EdgeInsets.only(top: 6),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.primary,
               shape: BoxShape.circle,
             ),
@@ -772,7 +772,7 @@ class _AddressBlock extends StatelessWidget {
           Text(address.line2!, style: AppTextStyles.textTheme.bodyMedium),
         Text('${address.city}, ${address.state} ${address.postalCode}', style: AppTextStyles.textTheme.bodyMedium),
         Text(address.country, style: AppTextStyles.textTheme.bodyMedium),
-        if (address.phone != null && address.phone!.isNotEmpty) ...[
+        if (address.phone.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text('Tel: ${address.phone}', style: AppTextStyles.textTheme.bodyMedium),
         ],

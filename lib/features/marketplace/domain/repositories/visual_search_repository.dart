@@ -1,5 +1,4 @@
 import '../entities/visual_search.dart';
-import '../entities/product.dart';
 
 abstract class VisualSearchRepository {
   /// Search products by image

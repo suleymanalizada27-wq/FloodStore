@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -174,7 +173,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 // Shipping Address Section
-                _SectionTitle(title: 'Teslimat Adresi'),
+                const _SectionTitle(title: 'Teslimat Adresi'),
                 GlassCard(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
@@ -269,7 +268,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // Payment Method Section
-                _SectionTitle(title: 'Ödeme Yöntemi'),
+                const _SectionTitle(title: 'Ödeme Yöntemi'),
                 GlassCard(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
@@ -296,7 +295,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // Order Summary Section
-                _SectionTitle(title: 'Sipariş Özeti'),
+                const _SectionTitle(title: 'Sipariş Özeti'),
                 GlassCard(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(

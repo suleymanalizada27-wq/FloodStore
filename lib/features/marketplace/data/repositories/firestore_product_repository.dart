@@ -1,9 +1,6 @@
 import '../../domain/entities/product.dart';
 import '../../domain/entities/product_variant.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/entities/order.dart';
-import '../../domain/entities/cart.dart';
-import '../../domain/entities/user.dart';
 import '../../domain/entities/review.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../sources/firestore_product_data_source.dart';

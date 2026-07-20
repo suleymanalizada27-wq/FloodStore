@@ -61,14 +61,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     await ref.read(authRepositoryProvider).signInWithApple();
   }
 
-  Future<void> _signInWithMicrosoft() async {
-    await ref.read(authRepositoryProvider).signInWithMicrosoft();
-  }
-
-  Future<void> _signInWithGithub() async {
-    await ref.read(authRepositoryProvider).signInWithGithub();
-  }
-
   Future<void> _signInAsGuest() async {
     await ref.read(authRepositoryProvider).signInAsGuest();
   }
@@ -81,9 +73,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return AuthShell(
       child: SingleChildScrollView(
@@ -158,23 +148,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 12),
               SocialAuthButton(
-                provider: SocialProvider.microsoft,
-                onPressed: () => _handleSocialPress(_signInWithMicrosoft),
-              ),
-              const SizedBox(height: 12),
-              SocialAuthButton(
-                provider: SocialProvider.github,
-                onPressed: () => _handleSocialPress(_signInWithGithub),
-              ),
-              const SizedBox(height: 12),
-              SocialAuthButton(
                 provider: SocialProvider.phone,
                 onPressed: () => context.push(AppRoutes.phoneAuth),
-              ),
-              const SizedBox(height: 12),
-              SocialAuthButton(
-                provider: SocialProvider.guest,
-                onPressed: () => _handleSocialPress(_signInAsGuest),
               ),
               const SizedBox(height: 24),
 

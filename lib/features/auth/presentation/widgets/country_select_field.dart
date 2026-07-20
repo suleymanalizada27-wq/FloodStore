@@ -102,7 +102,7 @@ class CountrySelectField extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.public_rounded,
                       size: 20,
                       color: AppColors.textTertiary,

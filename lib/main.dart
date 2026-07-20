@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -12,6 +13,32 @@ import 'features/auth/application/providers/security_providers.dart';
 // the import and DefaultFirebaseOptions.currentPlatform argument below.
 import 'firebase_options.dart';
 
+/// Theme mode preference key for SharedPreferences
+const String _kThemeModeKey = 'floodstore_theme_mode';
+
+/// Provider for the user's theme mode preference
+final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+  return ThemeModeNotifier();
+});
+
+class ThemeModeNotifier extends StateNotifier<ThemeMode> {
+  ThemeModeNotifier() : super(ThemeMode.system) {
+    _loadThemeMode();
+  }
+
+  Future<void> _loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeIndex = prefs.getInt(_kThemeModeKey) ?? 0; // 0 = system, 1 = light, 2 = dark
+    state = ThemeMode.values[themeIndex.clamp(0, ThemeMode.values.length - 1)];
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    state = mode;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kThemeModeKey, ThemeMode.values.indexOf(mode));
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -20,36 +47,27 @@ Future<void> main() async {
   runApp(const ProviderScope(child: FloodStoreApp()));
 }
 
-class FloodStoreApp extends ConsumerStatefulWidget {
+class FloodStoreApp extends ConsumerWidget {
   const FloodStoreApp({super.key});
 
   @override
-  ConsumerState<FloodStoreApp> createState() => _FloodStoreAppState();
-}
-
-class _FloodStoreAppState extends ConsumerState<FloodStoreApp> {
-  bool _sessionRecordedForCurrentUser = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     ref.listen(authStateChangesProvider, (previous, next) {
       final user = next.asData?.value;
-      if (user != null && !_sessionRecordedForCurrentUser) {
-        _sessionRecordedForCurrentUser = true;
+      if (user != null) {
         ref.read(securityRepositoryProvider).recordSession();
-      } else if (user == null) {
-        _sessionRecordedForCurrentUser = false;
       }
     });
 
     return MaterialApp.router(
       title: 'FloodStore',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
+      theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

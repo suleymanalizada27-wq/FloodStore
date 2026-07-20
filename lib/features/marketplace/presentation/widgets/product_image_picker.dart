@@ -8,7 +8,6 @@ import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/widgets/glass_card.dart';
 import '../../application/providers/marketplace_providers.dart';
-import '../../data/sources/product_image_service.dart';
 
 /// Widget for picking and uploading product images
 class ProductImagePicker extends ConsumerStatefulWidget {
@@ -179,7 +178,7 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_photo_alternate_outlined, size: 40, color: AppColors.textTertiary),
+            const Icon(Icons.add_photo_alternate_outlined, size: 40, color: AppColors.textTertiary),
             const SizedBox(height: 8),
             Text('Görsel Ekle', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 4),
@@ -281,7 +280,7 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_photo_alternate_outlined, size: 32, color: AppColors.textTertiary),
+            const Icon(Icons.add_photo_alternate_outlined, size: 32, color: AppColors.textTertiary),
             const SizedBox(height: 4),
             Text('Ekle', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary)),
           ],
@@ -361,7 +360,7 @@ class ProductImageGallery extends StatelessWidget {
   Widget _buildPlaceholder(BuildContext context) {
     return Container(
       color: AppColors.card.withValues(alpha: 0.2),
-      child: Center(
+      child: const Center(
         child: Icon(Icons.image_outlined, size: 64, color: AppColors.textTertiary),
       ),
     );

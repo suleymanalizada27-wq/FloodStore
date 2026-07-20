@@ -27,8 +27,8 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   bool _sortAscending = false;
   double _minPrice = 0;
   double _maxPrice = 10000;
-  List<String> _selectedBrands = [];
-  List<String> _selectedAttributes = [];
+  final List<String> _selectedBrands = [];
+  final List<String> _selectedAttributes = [];
   bool _showFilters = false;
   bool _inStockOnly = false;
   bool _freeShippingOnly = false;
@@ -92,7 +92,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
@@ -214,7 +214,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   Widget _buildFilterChips(AsyncValue<List<Category>> categoriesAsync) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
@@ -243,7 +243,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
     return categoriesAsync.when(
       data: (categories) {
         final allCategories = [
-          Category(id: 'all', name: 'Tümü', level: 0, sortOrder: 0, isActive: true),
+          const Category(id: 'all', name: 'Tümü', level: 0, sortOrder: 0, isActive: true),
           ...categories.where((c) => c.level == 0 && c.isActive),
         ];
         return PopupMenuButton<String>(
@@ -404,7 +404,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
+          const Icon(Icons.search_off, size: 64, color: AppColors.textTertiary),
           const SizedBox(height: AppSpacing.md),
           Text('Sonuç bulunamadı', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: AppSpacing.sm),
@@ -425,7 +425,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: AppColors.error),
+          const Icon(Icons.error_outline, size: 64, color: AppColors.error),
           const SizedBox(height: AppSpacing.md),
           Text('Arama hatası', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: AppColors.error)),
           const SizedBox(height: AppSpacing.sm),
@@ -481,7 +481,7 @@ class _ProductSearchCard extends StatelessWidget {
                             height: double.infinity,
                           ),
                         )
-                      : Center(child: Icon(Icons.image, size: 40, color: AppColors.textTertiary)),
+                      : const Center(child: Icon(Icons.image, size: 40, color: AppColors.textTertiary)),
                 ),
                 if (hasDiscount)
                   Positioned(
@@ -540,13 +540,12 @@ class _ProductSearchCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  if (product.base.brand != null)
-                    Text(
-                      product.base.brand!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  Text(
+                    product.base.brand,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const Spacer(),
                   Row(
                     children: [
@@ -572,7 +571,7 @@ class _ProductSearchCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.local_shipping_outlined, size: 12, color: AppColors.textTertiary),
+                      const Icon(Icons.local_shipping_outlined, size: 12, color: AppColors.textTertiary),
                       const SizedBox(width: 4),
                       Text(
                         product.pricing.freeShipping ? 'Ücretsiz Kargo' : 'Kargo: \$${(product.pricing.shippingCost / 100).toStringAsFixed(2)}',
@@ -604,7 +603,7 @@ class _FilterChip extends StatelessWidget {
       onDeleted: onDeleted,
       deleteIconColor: AppColors.primary,
       backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-      labelStyle: TextStyle(color: AppColors.primary),
+      labelStyle: const TextStyle(color: AppColors.primary),
       side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,

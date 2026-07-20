@@ -9,7 +9,6 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../application/providers/register_wizard_controller.dart';
 import '../../application/state/register_wizard_state.dart';
-import '../../domain/entities/account_mode.dart';
 import '../../domain/services/password_strength_service.dart';
 import '../widgets/auth_helpers.dart';
 import '../widgets/auth_shell.dart';

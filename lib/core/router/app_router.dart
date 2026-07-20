@@ -16,6 +16,7 @@ import '../../features/marketplace/presentation/screens/cart_screen.dart';
 import '../../features/marketplace/presentation/screens/checkout_screen.dart';
 import '../../features/marketplace/presentation/screens/order_confirmation_screen.dart';
 import '../../features/marketplace/presentation/screens/order_detail_screen.dart';
+import '../../features/marketplace/presentation/screens/home_screen.dart';
 import '../../features/marketplace/presentation/screens/products_screen.dart';
 import '../../features/marketplace/presentation/screens/business_account_registration_screen.dart';
 import 'auth_guards.dart';
@@ -150,7 +151,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (context, state) => const ProductsScreen(),
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: AppRoutes.marketplaceProducts,

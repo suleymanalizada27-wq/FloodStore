@@ -166,7 +166,7 @@ class FirestoreOrderRepository implements OrderRepository {
           totalAmount: totalAmount,
           currency: 'USD',
           customerNotes: notes,
-          shippingAddress: Address(
+          shippingAddress: const Address(
             name: '',
             line1: '',
             line2: null,
@@ -176,7 +176,7 @@ class FirestoreOrderRepository implements OrderRepository {
             country: '',
             phone: '',
           ),
-          billingAddress: Address(
+          billingAddress: const Address(
             name: '',
             line1: '',
             line2: null,
@@ -194,7 +194,7 @@ class FirestoreOrderRepository implements OrderRepository {
             value: discountAmount,
             description: 'Coupon: $couponCode',
           )] : [],
-          history: [],
+          history: const [],
         );
 
         final docRef = _firestore.collection('orders').doc();
@@ -217,7 +217,7 @@ class FirestoreOrderRepository implements OrderRepository {
           notes: 'Order created from cart',
         ).toFirestore());
 
-        if (firstOrderId == null) firstOrderId = docRef.id;
+        firstOrderId ??= docRef.id;
       }
 
       await batch.commit();
@@ -579,7 +579,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final querySnapshot = await _firestore.collection('users').doc(userId).collection('saved_carts').get();
       return querySnapshot.docs
-          .map((doc) => Cart.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => Cart.fromFirestore(doc.data(), doc.id))
           .expand((cart) => cart.items)
           .toList();
     } catch (e) {

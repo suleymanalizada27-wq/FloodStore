@@ -123,7 +123,7 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
         returningCustomers: 0,
         recentSales: recentSales,
         topProducts: topProducts.take(10).toList(),
-        topCategories: [],
+        topCategories: const [],
       );
     } catch (e) {
       throw Exception('Failed to get seller dashboard: $e');
@@ -288,7 +288,7 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   // Platform Analytics
   @override
   Future<PlatformAnalytics> getPlatformAnalytics({DateTimeRange? dateRange}) async {
-    return PlatformAnalytics(
+    return const PlatformAnalytics(
       totalRevenue: 0,
       totalOrders: 0,
       totalUsers: 0,

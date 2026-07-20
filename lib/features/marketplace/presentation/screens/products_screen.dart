@@ -9,12 +9,11 @@ import '../../../../core/widgets/premium_button.dart';
 import '../../application/providers/product_providers.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/repositories/product_repository.dart';
 
-final _uuid = Uuid();
+const _uuid = Uuid();
 
 class ProductsScreen extends ConsumerStatefulWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+  const ProductsScreen({super.key});
 
   @override
   ConsumerState<ProductsScreen> createState() => _ProductsScreenState();
@@ -66,7 +65,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       final productRepository = ref.read(productRepositoryProvider);
 
       // Create a default category if it doesn't exist
-      final defaultCategory = Category(
+      const defaultCategory = Category(
         id: 'default',
         name: 'Default Category',
         level: 0,
@@ -214,7 +213,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           careInstructions: 'Machine wash cold, tumble dry low',
           isDigital: false,
         ),
-        metadata: ProductMetadata(
+        metadata: const ProductMetadata(
           tags: ['sample', 'demo', 'test'],
           ageRange: null,
           gender: null,
@@ -224,7 +223,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           color: ['blue', 'white'],
           pattern: ['solid'],
         ),
-        pricing: ProductPricing(
+        pricing: const ProductPricing(
           basePrice: 1999, // $19.99 in cents
           currency: 'USD',
           compareAtPrice: 2499, // $24.99
@@ -276,7 +275,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         centerTitle: true,
         actions: [
           // Only show in debug mode or for demo
-          if (bool.fromEnvironment('dart.vm.product') == false) // Not in release mode
+          if (const bool.fromEnvironment('dart.vm.product') == false) // Not in release mode
             IconButton(
               icon: const Icon(Icons.add),
               tooltip: 'Add Sample Product',
@@ -294,11 +293,11 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                 children: [
                   // Search bar
                   Padding(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Search products...',
-                        prefixIcon: Icon(Icons.search, color: AppColors.textTertiary),
+                        prefixIcon: const Icon(Icons.search, color: AppColors.textTertiary),
                         filled: true,
                         fillColor: AppColors.card,
                         border: OutlineInputBorder(
@@ -324,7 +323,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                           return Center(
                             child: Text(
                               'Error: ${snapshot.error}',
-                              style: TextStyle(color: AppColors.error),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           );
                         }
@@ -342,12 +341,12 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                                   color: AppColors.textTertiary,
                                 ),
                                 const SizedBox(height: 16),
-                                Text(
+                                const Text(
                                   'No products found',
                                   style: TextStyle(color: AppColors.textTertiary),
                                 ),
                                 const SizedBox(height: 8),
-                                if (bool.fromEnvironment('dart.vm.product') == false)
+                                if (const bool.fromEnvironment('dart.vm.product') == false)
                                   ElevatedButton.icon(
                                     onPressed: _addSampleProduct,
                                     icon: const Icon(Icons.add),
@@ -368,7 +367,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                             return false;
                           },
                           child: GridView.builder(
-                            padding: EdgeInsets.all(AppSpacing.md),
+                            padding: const EdgeInsets.all(AppSpacing.md),
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 0.75,
@@ -402,9 +401,9 @@ class ProductCard extends StatelessWidget {
   final Product product;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -418,7 +417,7 @@ class ProductCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.card.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.vertical(
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
               ),
@@ -436,7 +435,7 @@ class ProductCard extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: EdgeInsets.all(AppSpacing.sm),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

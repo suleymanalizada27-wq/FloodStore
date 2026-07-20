@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import '../../domain/entities/visual_search.dart';
-import '../../domain/entities/product.dart';
 import '../../domain/repositories/visual_search_repository.dart';
 
 class FirestoreVisualSearchRepository implements VisualSearchRepository {
@@ -29,7 +28,7 @@ class FirestoreVisualSearchRepository implements VisualSearchRepository {
     return VisualSearchResult(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       imageUrl: imageUrl,
-      matches: [
+      matches: const [
         VisualMatch(
           productId: 'mock_1',
           productTitle: 'Benzer Ürün 1',

@@ -73,12 +73,12 @@ class _PremiumLoginOptionsState extends ConsumerState<PremiumLoginOptions> {
           onTap: _sent ? null : _sendMagicLink,
         ),
         const SizedBox(height: 10),
-        Row(
+        const Row(
           children: [
             Expanded(child: _ComingSoonChip(icon: Icons.fingerprint_rounded, label: 'Biometric')),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Expanded(child: _ComingSoonChip(icon: Icons.key_rounded, label: 'Passkey')),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Expanded(child: _ComingSoonChip(icon: Icons.qr_code_rounded, label: 'QR Code')),
           ],
         ),

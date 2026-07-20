@@ -38,7 +38,7 @@ class FirestoreChatRepository implements ChatRepository {
     try {
       final doc = await _firestore.collection('chat_sessions').doc(sessionId).get();
       if (!doc.exists) return null;
-      return ChatSession.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return ChatSession.fromFirestore(doc.data()!, doc.id);
     } catch (e) {
       throw Exception('Failed to get chat session: $e');
     }
@@ -109,7 +109,7 @@ class FirestoreChatRepository implements ChatRepository {
       // Update lastMessage in session if this is the latest
       final sessionDoc = await _firestore.collection('chat_sessions').doc(message.sessionId).get();
       if (sessionDoc.exists) {
-        final lastMsg = (sessionDoc.data()! as Map<String, dynamic>)['lastMessage'] as Map<String, dynamic>?;
+        final lastMsg = (sessionDoc.data()!)['lastMessage'] as Map<String, dynamic>?;
         if (lastMsg != null && lastMsg['id'] == message.id) {
           await _firestore.collection('chat_sessions').doc(message.sessionId).update({
             'lastMessage': message.toFirestore(),
@@ -164,7 +164,7 @@ class FirestoreChatRepository implements ChatRepository {
     return ChatMessage.assistant(
       sessionId: sessionId,
       content: 'AI yanıtı buraya gelecek. Mesajınız: "$userMessage"',
-      productSuggestions: [],
+      productSuggestions: const [],
     );
   }
 

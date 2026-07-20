@@ -22,7 +22,7 @@ class StepVerification extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          "Review your details before we create your account.",
+          'Review your details before we create your account.',
           style: AppTextStyles.body(size: 13, color: AppColors.textSecondary),
         ),
         const SizedBox(height: 16),

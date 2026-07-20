@@ -40,6 +40,9 @@ abstract final class AppTextStyles {
   static TextStyle get headlineLarge => heading(size: 24);
   static TextStyle get headlineMedium => heading(size: 20);
   static TextStyle get headlineSmall => heading(size: 18);
+
+  static TextStyle get displaySmall => display(size: 28);
+  static TextStyle get titleLarge => heading(size: 16);
   static TextStyle get titleMedium => heading(size: 15);
 
   static TextStyle display({

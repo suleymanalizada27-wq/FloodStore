@@ -770,7 +770,7 @@ class _BusinessAccountRegistrationScreenState
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: [
-                Icon(Icons.check_circle, color: AppColors.success, size: 16),
+                const Icon(Icons.check_circle, color: AppColors.success, size: 16),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Uploaded',
@@ -834,7 +834,7 @@ class _FilterChip extends StatelessWidget {
       onDeleted: onDeleted,
       deleteIconColor: AppColors.primary,
       backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-      labelStyle: TextStyle(color: AppColors.primary),
+      labelStyle: const TextStyle(color: AppColors.primary),
       side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,

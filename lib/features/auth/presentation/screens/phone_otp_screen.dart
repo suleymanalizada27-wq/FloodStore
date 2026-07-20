@@ -81,12 +81,11 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
                       .read(phoneAuthControllerProvider.notifier)
                       .resendCode(_phoneController.text);
                 },
-                onRequestCall: () async {
-                  try {
-                    await ref
-                        .read(authRepositoryProvider)
-                        .requestVoiceCall(_phoneController.text);
-                  } catch (_) {
+                onRequestCall: () {
+                  ref
+                      .read(authRepositoryProvider)
+                      .requestVoiceCall(_phoneController.text)
+                      .catchError((_) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -94,7 +93,7 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
                         ),
                       );
                     }
-                  }
+                  });
                 },
               ),
       ),

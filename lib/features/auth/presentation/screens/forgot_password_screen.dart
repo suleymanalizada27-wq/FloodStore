@@ -129,7 +129,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   String _subtitleFor(PasswordResetStep step) => switch (step) {
         PasswordResetStep.enterEmail => "We'll email you a secure link to get back in.",
-        PasswordResetStep.emailSent => "It may take a minute to arrive.",
+        PasswordResetStep.emailSent => 'It may take a minute to arrive.',
         PasswordResetStep.enterCode => 'Paste the code from the link in your email.',
         PasswordResetStep.newPassword => 'Make it something you have not used before.',
         PasswordResetStep.success => 'Your password has been updated.',
