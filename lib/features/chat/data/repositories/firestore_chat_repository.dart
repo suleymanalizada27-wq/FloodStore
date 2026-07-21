@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/chat_message.dart';
-import '../../domain/entities/chat_session.dart';
+import 'package:floodstore/features/chat/domain/entities/chat_message.dart';
+import 'package:floodstore/features/chat/domain/entities/chat_session.dart';
 import '../../domain/repositories/chat_repository.dart';
 
 class FirestoreChatRepository implements ChatRepository {

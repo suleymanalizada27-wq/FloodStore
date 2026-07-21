@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/seller_analytics.dart';
+import 'package:floodstore/features/business/domain/entities/seller_analytics.dart';
 import '../../domain/entities/recommendation.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/product.dart';

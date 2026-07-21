@@ -1,4 +1,4 @@
-import '../entities/seller_analytics.dart';
+import 'package:floodstore/features/business/domain/entities/seller_analytics.dart';
 import '../entities/recommendation.dart';
 
 abstract class AnalyticsRepository {
