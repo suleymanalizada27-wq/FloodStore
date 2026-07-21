@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/warehouse.dart';
+import 'package:floodstore/features/procurement/domain/entities/warehouse.dart';
 import '../../domain/repositories/warehouse_repository.dart';
 
 class FirestoreWarehouseRepository implements WarehouseRepository {

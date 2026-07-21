@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/loyalty.dart';
-import '../../domain/repositories/loyalty_repository.dart';
+import 'package:floodstore/features/business/domain/entities/loyalty.dart';
+import 'package:floodstore/features/business/domain/repositories/loyalty_repository.dart';
 
 class FirestoreLoyaltyRepository implements LoyaltyRepository {
   final fs.FirebaseFirestore _firestore;

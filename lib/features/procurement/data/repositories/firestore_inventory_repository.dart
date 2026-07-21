@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/inventory.dart';
+import 'package:floodstore/features/procurement/domain/entities/inventory.dart';
 import '../../domain/repositories/inventory_repository.dart';
 import '../../../../core/enums/inventory_status.dart';
 

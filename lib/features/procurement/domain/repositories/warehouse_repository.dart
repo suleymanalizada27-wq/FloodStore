@@ -1,4 +1,4 @@
-import '../entities/warehouse.dart';
+import 'package:floodstore/features/procurement/domain/entities/warehouse.dart';
 import '../../../core/enums/inventory.dart';
 import '../../../core/enums/inventory_status.dart';
 

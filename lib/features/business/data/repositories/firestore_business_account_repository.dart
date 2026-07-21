@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import '../../domain/entities/business_account.dart';
-import '../../domain/repositories/business_account_repository.dart';
+import 'package:floodstore/features/business/domain/entities/business_account.dart';
+import 'package:floodstore/features/business/domain/repositories/business_account_repository.dart';
 
 class FirestoreBusinessAccountRepository implements BusinessAccountRepository {
   final fs.FirebaseFirestore _firestore;
