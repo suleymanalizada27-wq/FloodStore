@@ -6,13 +6,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
-import '../../../../core/widgets/premium_button.dart';
-import '../../../auth/application/providers/auth_providers.dart';
 import '../../application/providers/marketplace_providers.dart';
-import '../../domain/entities/category.dart';
+import '../../domain/entities/category.dart' as CategoryEntity;
 import '../../domain/entities/product.dart';
 import '../widgets/category_card.dart';
-import '../widgets/section_header.dart';
 
 /// The main marketplace home screen featuring:
 /// - Search bar
@@ -51,7 +48,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  void _onCategoryTap(Category category) {
+  void _onCategoryTap(CategoryEntity.Category category) {
     context.go('/marketplace/products?categoryId=${category.id}');
   }
 
@@ -525,7 +522,7 @@ style: AppTextStyles.body(
 }
 
 // Simple ProductCard widget for use in the home screen
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   final Product product;
   final double width;
   final bool showDiscount;
@@ -540,7 +537,7 @@ class ProductCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -607,13 +604,41 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                       const Spacer(),
-// Add to cart button
-                      PremiumButton(
-                        label: 'Add to Cart',
-                        icon: Icons.add_shopping_cart,
-                        onPressed: () {
-                          // TODO: Implement add to cart functionality
+                      // Add to cart button
+                      ElevatedButton(
+                        onPressed: () async {
+                          final userId = ref.read(currentUserIdProvider);
+                          if (userId == null) {
+                            // Handle case where user ID is not available
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please log in to add items to cart')),
+                            );
+                            return;
+                          }
+
+                          final cartRepository = ref.read(cartRepositoryProvider);
+                          await cartRepository.addItem(
+                            userId,
+                            product.id,
+                            null, // variantId - not used in this simple product card
+                            1, // quantity
+                            product.pricing.basePrice, // unitPrice
+                            product.base.title, // productTitle
+                            {}, // variantAttributes - empty map since we don't have variants here
+                          );
+
+                            // Show success message
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Added to cart')),
+                              );
+                            }
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Add to Cart'),
                       ),
                     ],
                   ),

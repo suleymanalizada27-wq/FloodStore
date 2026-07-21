@@ -133,8 +133,9 @@ class FirestoreProductDataSource {
         queryRef = queryRef.where('categoryId', whereIn: categoryIds);
       }
 
-      // TODO: Add text search (requires third-party search solution)
-      // For now, we ignore the query parameter
+      // TODO: Implement text search (client-side filtering for MVP)
+      // For production, consider implementing a proper search solution
+      // or storing a lowercase title field for efficient querying
 
       // Price range filtering
       if (minPrice != null) {
@@ -160,10 +161,22 @@ class FirestoreProductDataSource {
       }
 
       final querySnapshot = await queryRef.get();
-      return querySnapshot.docs
+      final products = querySnapshot.docs
           .map((doc) => _productFromSnapshot(doc))
           .whereType<Product>()
           .toList();
+
+      // Apply client-side filtering for search query (case-insensitive)
+      if (query.isNotEmpty) {
+        final lowerQuery = query.toLowerCase();
+        return products.where((product) =>
+            product.base.title.toLowerCase().contains(lowerQuery) ||
+            product.base.description.toLowerCase().contains(lowerQuery) ||
+            product.base.brand.toLowerCase().contains(lowerQuery))
+            .toList();
+      }
+
+      return products;
     } catch (e) {
       throw Exception('Failed to search products: $e');
     }
