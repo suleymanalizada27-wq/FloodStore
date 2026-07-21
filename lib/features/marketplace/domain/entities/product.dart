@@ -18,6 +18,26 @@ class Product extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final ProductStatus status;
+  // Product type classification
+  final String? productType; // e.g., 'general', 'construction_material', 'equipment'
+  // Construction-specific fields
+  final String? materialType; // e.g., 'concrete', 'steel', 'lumber'
+  final String? grade; // e.g., 'C30/37', 'A36', 'No. 2'
+  final List<String>? specifications; // e.g., ['ASTM C150', 'ISO 9001']
+  final List<String>? sustainabilityCertifications; // e.g., ['LEED', 'FSC']
+  final String? unitOfMeasure; // e.g., 'kg', 'ton', 'm3', 'ft3', 'piece', 'm', 'ft', 'l', 'gal'
+  final double? quantityPerUnit; // Quantity of unitOfMeasure per product unit
+  // Equipment-specific fields
+  final String? equipmentType; // e.g., 'excavator', 'crane', 'bulldozer'
+  final String? capacity; // e.g., '1.5 cu yd', '20 ton'
+  final String? fuelType; // e.g., 'diesel', 'electric', 'gasoline'
+  final int? hoursOfOperation; // total hours used
+  final String? condition; // e.g., 'new', 'used', 'refurbished'
+  final bool? isForRent;
+  final bool? isForSale;
+  final double? rentalRatePerDay; // in cents
+  final double? rentalRatePerHour; // in cents
+  final double? rentalRatePerMonth; // in cents
 
   const Product({
     required this.id,
@@ -35,6 +55,23 @@ class Product extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     required this.status,
+    this.productType,
+    this.materialType,
+    this.grade,
+    this.specifications,
+    this.sustainabilityCertifications,
+    this.unitOfMeasure,
+    this.quantityPerUnit,
+    this.equipmentType,
+    this.capacity,
+    this.fuelType,
+    this.hoursOfOperation,
+    this.condition,
+    this.isForRent,
+    this.isForSale,
+    this.rentalRatePerDay,
+    this.rentalRatePerHour,
+    this.rentalRatePerMonth,
   });
 
   @override
@@ -54,6 +91,23 @@ class Product extends Equatable {
         createdAt,
         updatedAt,
         status,
+        productType,
+        materialType,
+        grade,
+        specifications,
+        sustainabilityCertifications,
+        unitOfMeasure,
+        quantityPerUnit,
+        equipmentType,
+        capacity,
+        fuelType,
+        hoursOfOperation,
+        condition,
+        isForRent,
+        isForSale,
+        rentalRatePerDay,
+        rentalRatePerHour,
+        rentalRatePerMonth,
       ];
 
   Product copyWith({
@@ -72,6 +126,23 @@ class Product extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     ProductStatus? status,
+    String? productType,
+    String? materialType,
+    String? grade,
+    List<String>? specifications,
+    List<String>? sustainabilityCertifications,
+    String? unitOfMeasure,
+    double? quantityPerUnit,
+    String? equipmentType,
+    String? capacity,
+    String? fuelType,
+    int? hoursOfOperation,
+    String? condition,
+    bool? isForRent,
+    bool? isForSale,
+    double? rentalRatePerDay,
+    double? rentalRatePerHour,
+    double? rentalRatePerMonth,
   }) {
     return Product(
       id: id ?? this.id,
@@ -89,6 +160,24 @@ class Product extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       status: status ?? this.status,
+      productType: productType ?? this.productType,
+      materialType: materialType ?? this.materialType,
+      grade: grade ?? this.grade,
+      specifications: specifications ?? this.specifications,
+      sustainabilityCertifications:
+          sustainabilityCertifications ?? this.sustainabilityCertifications,
+      unitOfMeasure: unitOfMeasure ?? this.unitOfMeasure,
+      quantityPerUnit: quantityPerUnit ?? this.quantityPerUnit,
+      equipmentType: equipmentType ?? this.equipmentType,
+      capacity: capacity ?? this.capacity,
+      fuelType: fuelType ?? this.fuelType,
+      hoursOfOperation: hoursOfOperation ?? this.hoursOfOperation,
+      condition: condition ?? this.condition,
+      isForRent: isForRent ?? this.isForRent,
+      isForSale: isForSale ?? this.isForSale,
+      rentalRatePerDay: rentalRatePerDay ?? this.rentalRatePerDay,
+      rentalRatePerHour: rentalRatePerHour ?? this.rentalRatePerHour,
+      rentalRatePerMonth: rentalRatePerMonth ?? this.rentalRatePerMonth,
     );
   }
 
@@ -108,8 +197,29 @@ class Product extends Equatable {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'status': status.name,
+      'productType': productType,
+      // Construction-specific fields
+      'materialType': materialType,
+      'grade': grade,
+      'specifications': specifications,
+      'sustainabilityCertifications': sustainabilityCertifications,
+      'unitOfMeasure': unitOfMeasure,
+      'quantityPerUnit': quantityPerUnit,
+      // Equipment-specific fields
+      'equipmentType': equipmentType,
+      'capacity': capacity,
+      'fuelType': fuelType,
+      'hoursOfOperation': hoursOfOperation,
+      'condition': condition,
+      'isForRent': isForRent,
+      'isForSale': isForSale,
+      'rentalRatePerDay': rentalRatePerDay,
+      'rentalRatePerHour': rentalRatePerHour,
+      'rentalRatePerMonth': rentalRatePerMonth,
     };
   }
+<parameter=new_string>
+}
 
   static Product fromFirestore(Map<String, dynamic> data, String documentId) {
     return Product(
@@ -131,6 +241,16 @@ class Product extends Equatable {
         (s) => s.name == data['status'],
         orElse: () => ProductStatus.draft,
       ),
+      materialType: data['materialType'],
+      grade: data['grade'],
+      specifications: data['specifications'] != null
+          ? List<String>.from(data['specifications'])
+          : null,
+      sustainabilityCertifications: data['sustainabilityCertifications'] != null
+          ? List<String>.from(data['sustainabilityCertifications'])
+          : null,
+      unitOfMeasure: data['unitOfMeasure'],
+      quantityPerUnit: (data['quantityPerUnit'] as num?)?.toDouble(),
     );
   }
 }

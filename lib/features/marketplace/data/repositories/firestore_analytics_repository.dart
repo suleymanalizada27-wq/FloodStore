@@ -32,12 +32,12 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
           .where('createdAt', isLessThanOrEqualTo: end)
           .get();
 
-      final orders = ordersQuery.docs.map((doc) => Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id)).toList();
+      final orders = ordersQuery.docs.map((doc) => Order.fromFirestore((doc.data() as Map<String, dynamic>?) ?? {}, doc.id)).toList();
       
       final productsQuery = await _productsRef()
           .where('sellerId', isEqualTo: sellerId)
           .get();
-      final products = productsQuery.docs.map((doc) => Product.fromFirestore(doc.data() as Map<String, dynamic>, doc.id)).toList();
+      final products = productsQuery.docs.map((doc) => Product.fromFirestore((doc.data() as Map<String, dynamic>?) ?? {}, doc.id)).toList();
 
       double totalRevenue = orders.fold(0, (sum, o) => sum + o.totalAmount);
       int totalOrders = orders.length;
@@ -56,7 +56,7 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
 
       final dailySalesMap = <String, DailySales>{};
       for (final doc in dailySalesQuery.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data() ?? {};
         final date = (data['createdAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now();
         final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
         final revenue = (data['totalAmount'] as num?)?.toDouble() ?? 0;

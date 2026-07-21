@@ -25,6 +25,14 @@ class BusinessAccount extends Equatable {
   final DateTime updatedAt;
   final DateTime? approvedAt;
   final String? approvedBy; // Admin UID
+  // Construction-specific qualifications
+  final List<String>? licenses; // Contractor license numbers
+  final List<String>? certifications; // e.g., OSHA, ISO certifications
+  final List<String>? insurancePolicies; // e.g., general liability, workers' comp
+  final double? bondingCapacity; // in currency (e.g., USD) for bonding capacity
+  final List<String>? serviceAreas; // e.g., ['New York', 'California']
+  final List<String>? equipmentFleet; // list of equipment IDs or types owned
+  final List<String>? projectPortfolio; // list of project IDs or descriptions
 
   const BusinessAccount({
     required this.id,
@@ -50,6 +58,13 @@ class BusinessAccount extends Equatable {
     required this.updatedAt,
     this.approvedAt,
     this.approvedBy,
+    this.licenses,
+    this.certifications,
+    this.insurancePolicies,
+    this.bondingCapacity,
+    this.serviceAreas,
+    this.equipmentFleet,
+    this.projectPortfolio,
   });
 
   @override
@@ -77,6 +92,13 @@ class BusinessAccount extends Equatable {
         updatedAt,
         approvedAt,
         approvedBy,
+        licenses,
+        certifications,
+        insurancePolicies,
+        bondingCapacity,
+        serviceAreas,
+        equipmentFleet,
+        projectPortfolio,
       ];
 
   BusinessAccount copyWith({
@@ -103,6 +125,13 @@ class BusinessAccount extends Equatable {
     DateTime? updatedAt,
     DateTime? approvedAt,
     String? approvedBy,
+    List<String>? licenses,
+    List<String>? certifications,
+    List<String>? insurancePolicies,
+    double? bondingCapacity,
+    List<String>? serviceAreas,
+    List<String>? equipmentFleet,
+    List<String>? projectPortfolio,
   }) {
     return BusinessAccount(
       id: id ?? this.id,
@@ -128,6 +157,13 @@ class BusinessAccount extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
       approvedAt: approvedAt ?? this.approvedAt,
       approvedBy: approvedBy ?? this.approvedBy,
+      licenses: licenses ?? this.licenses,
+      certifications: certifications ?? this.certifications,
+      insurancePolicies: insurancePolicies ?? this.insurancePolicies,
+      bondingCapacity: bondingCapacity ?? this.bondingCapacity,
+      serviceAreas: serviceAreas ?? this.serviceAreas,
+      equipmentFleet: equipmentFleet ?? this.equipmentFleet,
+      projectPortfolio: projectPortfolio ?? this.projectPortfolio,
     );
   }
 
@@ -155,6 +191,14 @@ class BusinessAccount extends Equatable {
       'updatedAt': updatedAt.toIso8601String(),
       'approvedAt': approvedAt?.toIso8601String(),
       'approvedBy': approvedBy,
+      // Construction-specific qualifications
+      'licenses': licenses,
+      'certifications': certifications,
+      'insurancePolicies': insurancePolicies,
+      'bondingCapacity': bondingCapacity,
+      'serviceAreas': serviceAreas,
+      'equipmentFleet': equipmentFleet,
+      'projectPortfolio': projectPortfolio,
     };
   }
 
@@ -186,6 +230,16 @@ class BusinessAccount extends Equatable {
       updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
       approvedAt: data['approvedAt'] != null ? DateTime.parse(data['approvedAt']) : null,
       approvedBy: data['approvedBy'],
+      // Construction-specific qualifications
+      licenses: data['licenses'] != null ? List<String>.from(data['licenses']) : null,
+      certifications: data['certifications'] != null ? List<String>.from(data['certifications']) : null,
+      insurancePolicies:
+          data['insurancePolicies'] != null ? List<String>.from(data['insurancePolicies']) : null,
+      bondingCapacity: (data['bondingCapacity'] as num?)?.toDouble(),
+      serviceAreas: data['serviceAreas'] != null ? List<String>.from(data['serviceAreas']) : null,
+      equipmentFleet: data['equipmentFleet'] != null ? List<String>.from(data['equipmentFleet']) : null,
+      projectPortfolio:
+          data['projectPortfolio'] != null ? List<String>.from(data['projectPortfolio']) : null,
     );
   }
 }

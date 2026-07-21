@@ -12,6 +12,9 @@ import '../../domain/repositories/visual_search_repository.dart';
 import '../../domain/repositories/coupon_repository.dart';
 import '../../domain/repositories/business_account_repository.dart';
 import '../../domain/repositories/wishlist_repository.dart';
+import '../../domain/repositories/warehouse_repository.dart';
+import '../../domain/repositories/inventory_repository.dart';
+import '../../domain/repositories/rfq_repository.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/chat_message.dart';
@@ -37,6 +40,9 @@ import '../../data/repositories/firestore_visual_search_repository.dart';
 import '../../data/repositories/firestore_coupon_repository.dart';
 import '../../data/repositories/firestore_business_account_repository.dart';
 import '../../data/repositories/firestore_wishlist_repository.dart';
+import '../../data/repositories/firestore_warehouse_repository.dart';
+import '../../data/repositories/firestore_inventory_repository.dart';
+import '../../data/repositories/firestore_rfq_repository.dart';
 import '../../data/sources/firestore_product_data_source.dart';
 import '../../data/sources/product_image_service.dart';
 import '../state/product_list_notifier.dart';
@@ -95,6 +101,19 @@ final businessAccountRepositoryProvider = Provider<BusinessAccountRepository>((r
 
 final wishlistRepositoryProvider = Provider<WishlistRepository>((ref) {
   return FirestoreWishlistRepository();
+});
+
+// Warehouse and Inventory Repository Providers
+final warehouseRepositoryProvider = Provider<WarehouseRepository>((ref) {
+  return FirestoreWarehouseRepository();
+});
+
+final inventoryRepositoryProvider = Provider<InventoryRepository>((ref) {
+  return FirestoreInventoryRepository();
+});
+
+final rfqRepositoryProvider = Provider<RFQRepository>((ref) {
+  return FirestoreRFQRepository();
 });
 
 final productImageServiceProvider = Provider<ProductImageService>((ref) {
