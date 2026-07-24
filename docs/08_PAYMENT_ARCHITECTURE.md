@@ -1,10 +1,15 @@
 # Payment Architecture
 
-## Current state: not implemented
+## Current state: no real payment integration — and an active fake-payment security hole
 
-There is no payment integration in the codebase. `checkout_screen.dart` is a stub. A
-`transactions` collection is referenced in code but appears to be placeholder/dead — verify
-before building on it (`docs/04_DATABASE_SCHEMA.md`).
+There is no real payment provider integration in the codebase. But `checkout_screen.dart` is
+**not** a stub — it's a complete UI that calls `_placeOrder()`, which writes
+`PaymentInfo(status: 'paid', providerPaymentId: 'mock_payment_<timestamp>')` straight to
+Firestore client-side and marks the order `OrderStatus.confirmed`. Combined with the missing
+`firestore.rules` (`06_FIREBASE_RULES.md`), this is a live, exploitable "free order" path
+today, not a future risk. See `docs/modules/ORDERS.md` for the fix required before anything
+else in that module. A `transactions` collection is also referenced in code but appears to be
+placeholder/dead — verify before building on it (`docs/04_DATABASE_SCHEMA.md`).
 
 ## Non-negotiable rule
 

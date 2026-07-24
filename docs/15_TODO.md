@@ -1,7 +1,12 @@
 # TODO (live — agents update this as they work)
 
 ## CRITICAL
-- [ ] Write and deploy `firestore.rules` — currently no security rules exist at all (`06_FIREBASE_RULES.md`)
+- [ ] **Live exploit — fix first:** `checkout_screen.dart._placeOrder()` writes a fake
+      `PaymentInfo(status: 'paid', providerPaymentId: 'mock_payment_...')` directly to
+      Firestore and confirms the order — no real payment check at all. Remove/gate this path
+      immediately (`docs/modules/ORDERS.md`, `docs/08_PAYMENT_ARCHITECTURE.md`)
+- [ ] Write and deploy `firestore.rules` — currently no security rules exist at all
+      (`06_FIREBASE_RULES.md`) — this is what would have blocked the exploit above
 - [ ] Resolve `wishlist` vs `wishlists` collection duplication (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
 - [ ] Audit `messages` vs `chat_messages` — confirm which is live before dropping either (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
 - [x] ~~Resolve `sellers` vs `business_accounts` relationship~~ — resolved via `decisions/ADR-006-IDENTITY-MODEL.md` (merge into `organizations` + `seller_profiles`); Firestore-side collections can stay split until Seller module migrates
