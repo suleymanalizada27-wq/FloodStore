@@ -49,9 +49,8 @@ class AuthFormState extends Equatable {
       succeeded: succeeded ?? this.succeeded,
       isLocked: clearLock ? false : (isLocked ?? this.isLocked),
       lockedUntil: clearLock ? null : (lockedUntil ?? this.lockedUntil),
-      attemptsRemaining: clearLock
-          ? -1
-          : (attemptsRemaining ?? this.attemptsRemaining),
+      attemptsRemaining:
+          clearLock ? -1 : (attemptsRemaining ?? this.attemptsRemaining),
     );
   }
 

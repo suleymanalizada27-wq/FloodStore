@@ -10,8 +10,7 @@ class FirestoreRFQRepository implements RFQRepository {
 
   // Collection references
   fs.CollectionReference get _rfqsRef => _firestore.collection('rfqs');
-  fs.CollectionReference get _rfqItemsRef =>
-      _firestore.collection('rfq_items');
+  fs.CollectionReference get _rfqItemsRef => _firestore.collection('rfq_items');
   fs.CollectionReference get _rfqResponsesRef =>
       _firestore.collection('rfq_responses');
   fs.CollectionReference get _rfqResponseItemsRef =>
@@ -39,7 +38,8 @@ class FirestoreRFQRepository implements RFQRepository {
   }
 
   @override
-  Future<List<RFQ>> getRFQsByBuyer(String buyerId, {
+  Future<List<RFQ>> getRFQsByBuyer(
+    String buyerId, {
     int limit = 20,
     String? lastDocumentId,
     String? status,
@@ -64,7 +64,8 @@ class FirestoreRFQRepository implements RFQRepository {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => RFQ.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              RFQ.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQs by buyer: $e');
@@ -72,7 +73,8 @@ class FirestoreRFQRepository implements RFQRepository {
   }
 
   @override
-  Future<List<RFQ>> getRFQsByStatus(String status, {
+  Future<List<RFQ>> getRFQsByStatus(
+    String status, {
     int limit = 20,
     String? lastDocumentId,
   }) async {
@@ -92,7 +94,8 @@ class FirestoreRFQRepository implements RFQRepository {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => RFQ.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              RFQ.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQs by status: $e');
@@ -150,7 +153,8 @@ class FirestoreRFQRepository implements RFQRepository {
           .get();
 
       return snapshot.docs
-          .map((doc) => RFQItem.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => RFQItem.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQ items: $e');
@@ -190,7 +194,8 @@ class FirestoreRFQRepository implements RFQRepository {
     try {
       final doc = await _rfqResponsesRef.doc(id).get();
       if (!doc.exists) return null;
-      return RFQResponse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return RFQResponse.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get RFQ response: $e');
     }
@@ -205,7 +210,8 @@ class FirestoreRFQRepository implements RFQRepository {
           .get();
 
       return snapshot.docs
-          .map((doc) => RFQResponse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => RFQResponse.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQ responses: $e');
@@ -213,7 +219,8 @@ class FirestoreRFQRepository implements RFQRepository {
   }
 
   @override
-  Future<List<RFQResponse>> getRFQResponsesBySupplier(String supplierId, {
+  Future<List<RFQResponse>> getRFQResponsesBySupplier(
+    String supplierId, {
     int limit = 20,
     String? lastDocumentId,
   }) async {
@@ -233,7 +240,8 @@ class FirestoreRFQRepository implements RFQRepository {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => RFQResponse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => RFQResponse.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQ responses by supplier: $e');
@@ -273,14 +281,16 @@ class FirestoreRFQRepository implements RFQRepository {
     try {
       final doc = await _rfqResponseItemsRef.doc(id).get();
       if (!doc.exists) return null;
-      return RFQResponseItem.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return RFQResponseItem.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get RFQ response item: $e');
     }
   }
 
   @override
-  Future<List<RFQResponseItem>> getRFQResponseItems(String rfqResponseId) async {
+  Future<List<RFQResponseItem>> getRFQResponseItems(
+      String rfqResponseId) async {
     try {
       final snapshot = await _rfqResponseItemsRef
           .where('rfqResponseId', isEqualTo: rfqResponseId)
@@ -288,7 +298,8 @@ class FirestoreRFQRepository implements RFQRepository {
           .get();
 
       return snapshot.docs
-          .map((doc) => RFQResponseItem.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => RFQResponseItem.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get RFQ response items: $e');
@@ -314,7 +325,8 @@ class FirestoreRFQRepository implements RFQRepository {
   }
 
   @override
-  Future<void> awardRFQ(String rfqId, String winningSupplierId, String? notes) async {
+  Future<void> awardRFQ(
+      String rfqId, String winningSupplierId, String? notes) async {
     try {
       // Update the RFQ status to awarded
       final rfqDoc = await _rfqsRef.doc(rfqId).get();
@@ -334,7 +346,8 @@ class FirestoreRFQRepository implements RFQRepository {
       });
 
       // Update all responses to reflect their status
-      final responsesSnapshot = await _rfqResponsesRef.where('rfqId', isEqualTo: rfqId).get();
+      final responsesSnapshot =
+          await _rfqResponsesRef.where('rfqId', isEqualTo: rfqId).get();
       final batch = _firestore.batch();
 
       for (final doc in responsesSnapshot.docs) {

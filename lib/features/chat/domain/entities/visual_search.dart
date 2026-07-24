@@ -19,7 +19,8 @@ class VisualSearchResult extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, imageUrl, matches, searchedAt, status, errorMessage];
+  List<Object?> get props =>
+      [id, imageUrl, matches, searchedAt, status, errorMessage];
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -31,7 +32,8 @@ class VisualSearchResult extends Equatable {
     };
   }
 
-  static VisualSearchResult fromFirestore(Map<String, dynamic> data, String id) {
+  static VisualSearchResult fromFirestore(
+      Map<String, dynamic> data, String id) {
     return VisualSearchResult(
       id: id,
       imageUrl: data['imageUrl'] ?? '',
@@ -39,7 +41,8 @@ class VisualSearchResult extends Equatable {
               ?.map((m) => VisualMatch.fromFirestore(m))
               .toList() ??
           [],
-      searchedAt: DateTime.parse(data['searchedAt'] ?? DateTime.now().toIso8601String()),
+      searchedAt: DateTime.parse(
+          data['searchedAt'] ?? DateTime.now().toIso8601String()),
       status: VisualSearchStatus.values.firstWhere(
         (s) => s.name == data['status'],
         orElse: () => VisualSearchStatus.completed,
@@ -151,7 +154,8 @@ class VisualSearchHistory extends Equatable {
     };
   }
 
-  static VisualSearchHistory fromFirestore(Map<String, dynamic> data, String id) {
+  static VisualSearchHistory fromFirestore(
+      Map<String, dynamic> data, String id) {
     return VisualSearchHistory(
       userId: data['userId'] ?? '',
       searches: (data['searches'] as List?)
@@ -248,7 +252,8 @@ class VisualSearchPreference {
       preferredStyles: List<String>.from(data['preferredStyles'] ?? []),
       preferredPatterns: List<String>.from(data['preferredPatterns'] ?? []),
       categoryWeights: Map<String, double>.from(data['categoryWeights'] ?? {}),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }

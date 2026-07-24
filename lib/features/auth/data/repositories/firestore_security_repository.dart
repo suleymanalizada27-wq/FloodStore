@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 
 import '../../domain/entities/device_session.dart';
 import '../../domain/repositories/security_repository.dart';
@@ -90,7 +91,8 @@ class FirestoreSecurityRepository implements SecurityRepository {
 
   @override
   Future<List<DeviceSession>> listSessions() async {
-    final snapshot = await _sessions.orderBy('lastActiveAt', descending: true).get();
+    final snapshot =
+        await _sessions.orderBy('lastActiveAt', descending: true).get();
     return snapshot.docs.map((doc) {
       final d = doc.data();
       return DeviceSession(
@@ -101,7 +103,8 @@ class FirestoreSecurityRepository implements SecurityRepository {
         ipPlaceholder: null,
         countryPlaceholder: null,
         createdAt: (d['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-        lastActiveAt: (d['lastActiveAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+        lastActiveAt:
+            (d['lastActiveAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
         isCurrent: doc.id == _sessionId,
         isTrusted: d['isTrusted'] as bool? ?? false,
       );
@@ -132,13 +135,17 @@ class FirestoreSecurityRepository implements SecurityRepository {
 
   @override
   Future<void> markDeviceTrusted(String sessionId, bool trusted) async {
-    await _sessions.doc(sessionId).set({'isTrusted': trusted}, SetOptions(merge: true));
+    await _sessions
+        .doc(sessionId)
+        .set({'isTrusted': trusted}, SetOptions(merge: true));
   }
 
   @override
   Future<List<LoginHistoryEntry>> listLoginHistory({int limit = 20}) async {
-    final snapshot =
-        await _history.orderBy('occurredAt', descending: true).limit(limit).get();
+    final snapshot = await _history
+        .orderBy('occurredAt', descending: true)
+        .limit(limit)
+        .get();
     return snapshot.docs.map((doc) {
       final d = doc.data();
       return LoginHistoryEntry(

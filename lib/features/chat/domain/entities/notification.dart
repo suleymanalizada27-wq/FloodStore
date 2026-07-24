@@ -121,9 +121,11 @@ class Notification extends Equatable {
         (p) => p.name == data['priority'],
         orElse: () => NotificationPriority.normal,
       ),
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
       readAt: data['readAt'] != null ? DateTime.parse(data['readAt']) : null,
-      expiresAt: data['expiresAt'] != null ? DateTime.parse(data['expiresAt']) : null,
+      expiresAt:
+          data['expiresAt'] != null ? DateTime.parse(data['expiresAt']) : null,
       isRead: data['isRead'] ?? false,
       isArchived: data['isArchived'] ?? false,
       actionUrl: data['actionUrl'],
@@ -206,7 +208,8 @@ class NotificationPreferences extends Equatable {
       'emailEnabled': emailEnabled,
       'smsEnabled': smsEnabled,
       'typeEnabled': typeEnabled.map((k, v) => MapEntry(k.name, v)),
-      'preferredChannel': preferredChannel.map((k, v) => MapEntry(k.name, v.name)),
+      'preferredChannel':
+          preferredChannel.map((k, v) => MapEntry(k.name, v.name)),
       'quietHoursEnabled': quietHoursEnabled,
       'quietHoursStart': '${quietHoursStart.hour}:${quietHoursStart.minute}',
       'quietHoursEnd': '${quietHoursEnd.hour}:${quietHoursEnd.minute}',
@@ -214,25 +217,32 @@ class NotificationPreferences extends Equatable {
     };
   }
 
-  static NotificationPreferences fromFirestore(Map<String, dynamic> data, String id) {
+  static NotificationPreferences fromFirestore(
+      Map<String, dynamic> data, String id) {
     return NotificationPreferences(
       userId: data['userId'] ?? '',
       pushEnabled: data['pushEnabled'] ?? true,
       emailEnabled: data['emailEnabled'] ?? true,
       smsEnabled: data['smsEnabled'] ?? false,
       typeEnabled: (data['typeEnabled'] as Map?)?.map((k, v) => MapEntry(
-            NotificationType.values.firstWhere((t) => t.name == k, orElse: () => NotificationType.general),
-            v as bool,
-          )) ??
+                NotificationType.values.firstWhere((t) => t.name == k,
+                    orElse: () => NotificationType.general),
+                v as bool,
+              )) ??
           {},
-      preferredChannel: (data['preferredChannel'] as Map?)?.map((k, v) => MapEntry(
-            NotificationType.values.firstWhere((t) => t.name == k, orElse: () => NotificationType.general),
-            NotificationChannel.values.firstWhere((c) => c.name == v, orElse: () => NotificationChannel.push),
-          )) ??
-          {},
+      preferredChannel:
+          (data['preferredChannel'] as Map?)?.map((k, v) => MapEntry(
+                    NotificationType.values.firstWhere((t) => t.name == k,
+                        orElse: () => NotificationType.general),
+                    NotificationChannel.values.firstWhere((c) => c.name == v,
+                        orElse: () => NotificationChannel.push),
+                  )) ??
+              {},
       quietHoursEnabled: data['quietHoursEnabled'] ?? false,
-      quietHoursStart: _parseTime(data['quietHoursStart']) ?? const TimeOfDay(hour: 22, minute: 0),
-      quietHoursEnd: _parseTime(data['quietHoursEnd']) ?? const TimeOfDay(hour: 8, minute: 0),
+      quietHoursStart: _parseTime(data['quietHoursStart']) ??
+          const TimeOfDay(hour: 22, minute: 0),
+      quietHoursEnd: _parseTime(data['quietHoursEnd']) ??
+          const TimeOfDay(hour: 8, minute: 0),
       timezone: data['timezone'] ?? 'UTC',
     );
   }
@@ -241,7 +251,8 @@ class NotificationPreferences extends Equatable {
     if (timeStr == null) return null;
     final parts = timeStr.split(':');
     if (parts.length != 2) return null;
-    return TimeOfDay(hour: int.tryParse(parts[0]) ?? 0, minute: int.tryParse(parts[1]) ?? 0);
+    return TimeOfDay(
+        hour: int.tryParse(parts[0]) ?? 0, minute: int.tryParse(parts[1]) ?? 0);
   }
 }
 

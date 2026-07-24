@@ -30,11 +30,17 @@ class WizardProgressIndicator extends StatelessWidget {
           children: [
             Text(
               'Step ${currentIndex + 1} of $totalSteps',
-              style: AppTextStyles.body(size: 11.5, weight: FontWeight.w600, color: AppColors.textTertiary),
+              style: AppTextStyles.body(
+                  size: 11.5,
+                  weight: FontWeight.w600,
+                  color: AppColors.textTertiary),
             ),
             Text(
               stepTitle,
-              style: AppTextStyles.body(size: 11.5, weight: FontWeight.w600, color: AppColors.secondary),
+              style: AppTextStyles.body(
+                  size: 11.5,
+                  weight: FontWeight.w600,
+                  color: AppColors.secondary),
             ),
           ],
         ),

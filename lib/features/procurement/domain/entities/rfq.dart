@@ -13,7 +13,8 @@ class RFQ extends Equatable {
   final String status; // draft, issued, closed, awarded, cancelled
   final String? notes; // Internal notes from buyer
   final List<String>? tags; // Tags for categorization/search
-  final Map<String, dynamic>? customFields; // Custom fields for specific industries
+  final Map<String, dynamic>?
+      customFields; // Custom fields for specific industries
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -142,7 +143,8 @@ class RFQItem extends Equatable {
   final String? deliveryLocation; // Where items should be delivered
   final DateTime? deliveryDate; // When items are needed by
   final String? notes; // Additional notes for this line item
-  final Map<String, dynamic>? customFields; // Custom fields for specific industries
+  final Map<String, dynamic>?
+      customFields; // Custom fields for specific industries
 
   RFQItem({
     String? id,
@@ -253,7 +255,8 @@ class RFQResponse extends Equatable {
   final String? currency; // Currency code (USD, EUR, etc.)
   final DateTime? validUntil; // How long the quote is valid for
   final List<String>? attachedDocuments; // URLs to supporting documents
-  final Map<String, dynamic>? customFields; // Custom fields for specific industries
+  final Map<String, dynamic>?
+      customFields; // Custom fields for specific industries
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -342,7 +345,8 @@ class RFQResponse extends Equatable {
     };
   }
 
-  static RFQResponse fromFirestore(Map<String, dynamic> data, String documentId) {
+  static RFQResponse fromFirestore(
+      Map<String, dynamic> data, String documentId) {
     return RFQResponse(
       id: documentId,
       rfqId: data['rfqId'] ?? '',
@@ -376,7 +380,8 @@ class RFQResponseItem extends Equatable {
   final String id;
   final String rfqResponseId; // Reference to parent RFQ response
   final String rfqItemId; // Reference to the RFQ item being quoted
-  final String? supplierProductId; // Supplier's internal product ID (if different)
+  final String?
+      supplierProductId; // Supplier's internal product ID (if different)
   final String? supplierProductName; // Supplier's product name/description
   final double quantityQuoted; // Quantity supplier is quoting
   final String unitOfMeasure; // Should match RFQ item's unit of measure
@@ -385,7 +390,8 @@ class RFQResponseItem extends Equatable {
   final String? notes; // Supplier's notes about this line item
   final int? leadTimeDays; // Delivery lead time in days
   final String? warrantyInfo; // Warranty information
-  final Map<String, dynamic>? customFields; // Custom fields for specific industries
+  final Map<String, dynamic>?
+      customFields; // Custom fields for specific industries
 
   RFQResponseItem({
     String? id,
@@ -469,7 +475,8 @@ class RFQResponseItem extends Equatable {
     };
   }
 
-  static RFQResponseItem fromFirestore(Map<String, dynamic> data, String documentId) {
+  static RFQResponseItem fromFirestore(
+      Map<String, dynamic> data, String documentId) {
     return RFQResponseItem(
       id: documentId,
       rfqResponseId: data['rfqResponseId'] ?? '',

@@ -39,9 +39,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref
-          .read(authRepositoryProvider)
-          .signInWithEmail(
+      await ref.read(authRepositoryProvider).signInWithEmail(
             email: _emailController.text.trim(),
             password: _passwordController.text,
           );
@@ -183,8 +181,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: () =>
-                        context.push(AppRoutes.forgotPassword),
+                    onPressed: () => context.push(AppRoutes.forgotPassword),
                     child: Text(
                       'Forgot Password?',
                       style: AppTextStyles.body(
@@ -193,11 +190,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ),
-                  const Text(' | ',
-                      style: TextStyle(color: AppColors.border)),
+                  const Text(' | ', style: TextStyle(color: AppColors.border)),
                   TextButton(
-                    onPressed: () =>
-                        context.push(AppRoutes.register),
+                    onPressed: () => context.push(AppRoutes.register),
                     child: Text(
                       'Create Account',
                       style: AppTextStyles.body(

@@ -6,13 +6,15 @@ abstract class UserRepository {
   Future<Map<String, dynamic>?> getUserProfile(String userId);
 
   /// Updates user profile information
-  Future<void> updateUserProfile(String userId, Map<String, dynamic> profileData);
+  Future<void> updateUserProfile(
+      String userId, Map<String, dynamic> profileData);
 
   /// Gets user preferences
   Future<Map<String, dynamic>?> getUserPreferences(String userId);
 
   /// Updates user preferences
-  Future<void> updateUserPreferences(String userId, Map<String, dynamic> preferences);
+  Future<void> updateUserPreferences(
+      String userId, Map<String, dynamic> preferences);
 
   /// Gets user wallet/balance information
   Future<Map<String, dynamic>?> getUserWallet(String userId);
@@ -24,13 +26,15 @@ abstract class UserRepository {
   Future<void> deductFromWallet(String userId, double amount);
 
   /// Gets user's order history
-  Future<List<Order>> getUserOrderHistory(String userId, {
+  Future<List<Order>> getUserOrderHistory(
+    String userId, {
     int limit = 20,
     String? lastDocumentId,
   });
 
   /// Gets user's wishlist/saved items
-  Future<List<Map<String, dynamic>>> getUserWishlist(String userId, {
+  Future<List<Map<String, dynamic>>> getUserWishlist(
+    String userId, {
     int limit = 20,
   });
 
@@ -41,7 +45,8 @@ abstract class UserRepository {
   Future<void> removeFromWishlist(String userId, String productId);
 
   /// Gets user's recently viewed products
-  Future<List<String>> getRecentlyViewed(String userId, {
+  Future<List<String>> getRecentlyViewed(
+    String userId, {
     int limit = 10,
   });
 
@@ -55,10 +60,12 @@ abstract class UserRepository {
   Future<List<Map<String, dynamic>>> getUserAddresses(String userId);
 
   /// Adds a shipping address for user
-  Future<String> addUserAddress(String userId, Map<String, dynamic> addressData);
+  Future<String> addUserAddress(
+      String userId, Map<String, dynamic> addressData);
 
   /// Updates a user's address
-  Future<void> updateUserAddress(String userId, String addressId, Map<String, dynamic> addressData);
+  Future<void> updateUserAddress(
+      String userId, String addressId, Map<String, dynamic> addressData);
 
   /// Deletes a user's address
   Future<void> deleteUserAddress(String userId, String addressId);

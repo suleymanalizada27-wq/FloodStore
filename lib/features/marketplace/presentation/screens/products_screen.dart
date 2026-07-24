@@ -41,7 +41,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     try {
       // Try to get a small sample of products from default category to see if any exist
       final sampleProducts = await productRepository.getProductsByCategory(
-        'default',  // Try to get from default category first
+        'default', // Try to get from default category first
         limit: 1,
       );
 
@@ -84,12 +84,14 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       for (int i = 0; i < 5; i++) {
         final sampleProduct = Product(
           id: _uuid.v4(),
-          sellerId: 'demo-seller-id', // In real app, this would be current user's ID
+          sellerId:
+              'demo-seller-id', // In real app, this would be current user's ID
           categoryId: 'default',
           secondaryCategories: const [],
           base: ProductBase(
             title: 'Sample Product ${i + 1}',
-            description: 'This is a sample product for demonstration purposes. This is product number $i+1.',
+            description:
+                'This is a sample product for demonstration purposes. This is product number $i+1.',
             brand: 'SampleBrand',
             sku: 'SAMPLE-${_uuid.v4().substring(0, 8).toUpperCase()}-$i',
             weight: 250.0 + (i * 50.0), // Vary the weight
@@ -109,7 +111,11 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             season: ['all'],
             occasion: ['casual'],
             style: ['modern'],
-            color: ['blue', 'white', 'black'][i % 3] == 0 ? ['blue'] : ['white', 'black'][i % 3] == 1 ? ['white'] : ['black'],
+            color: ['blue', 'white', 'black'][i % 3] == 0
+                ? ['blue']
+                : ['white', 'black'][i % 3] == 1
+                    ? ['white']
+                    : ['black'],
             pattern: ['solid'],
           ),
           pricing: ProductPricing(
@@ -147,7 +153,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading products: $error'), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text('Error loading products: $error'),
+              backgroundColor: Colors.red),
         );
       }
       rethrow;
@@ -163,11 +171,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     });
 
     final productRepository = ref.read(productRepositoryProvider);
-    productRepository.getProductsByCategory(
+    productRepository
+        .getProductsByCategory(
       'default',
       limit: _pageSize,
       lastDocumentId: _lastDocumentId,
-    ).then((moreProducts) {
+    )
+        .then((moreProducts) {
       setState(() {
         _products.addAll(moreProducts);
         _lastDocumentId = moreProducts.isNotEmpty ? moreProducts.last.id : null;
@@ -179,7 +189,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading more products: $error'), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text('Error loading more products: $error'),
+              backgroundColor: Colors.red),
         );
       }
     });
@@ -196,7 +208,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       // Create a sample product
       final sampleProduct = Product(
         id: _uuid.v4(),
-        sellerId: 'demo-seller-id', // In real app, this would be current user's ID
+        sellerId:
+            'demo-seller-id', // In real app, this would be current user's ID
         categoryId: 'default', // Use default category
         secondaryCategories: const [],
         base: ProductBase(
@@ -276,7 +289,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         centerTitle: true,
         actions: [
           // Only show in debug mode or for demo
-          if (const bool.fromEnvironment('dart.vm.product') == false) // Not in release mode
+          if (const bool.fromEnvironment('dart.vm.product') ==
+              false) // Not in release mode
             IconButton(
               icon: const Icon(Icons.add),
               tooltip: 'Add Sample Product',
@@ -298,7 +312,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Search products...',
-                        prefixIcon: const Icon(Icons.search, color: AppColors.textTertiary),
+                        prefixIcon: const Icon(Icons.search,
+                            color: AppColors.textTertiary),
                         filled: true,
                         fillColor: AppColors.card,
                         border: OutlineInputBorder(
@@ -314,7 +329,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     child: FutureBuilder<List<Product>>(
                       future: _productsFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -344,10 +360,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                                 const SizedBox(height: 16),
                                 const Text(
                                   'No products found',
-                                  style: TextStyle(color: AppColors.textTertiary),
+                                  style:
+                                      TextStyle(color: AppColors.textTertiary),
                                 ),
                                 const SizedBox(height: 8),
-                                if (const bool.fromEnvironment('dart.vm.product') == false)
+                                if (const bool.fromEnvironment(
+                                        'dart.vm.product') ==
+                                    false)
                                   ElevatedButton.icon(
                                     onPressed: _addSampleProduct,
                                     icon: const Icon(Icons.add),
@@ -361,7 +380,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         return NotificationListener<ScrollNotification>(
                           onNotification: (scrollInfo) {
                             if (scrollInfo.metrics.pixels >=
-                                scrollInfo.metrics.maxScrollExtent * 0.8 &&
+                                    scrollInfo.metrics.maxScrollExtent * 0.8 &&
                                 !_isLoadingMore) {
                               _loadMoreProducts();
                             }
@@ -369,7 +388,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                           },
                           child: GridView.builder(
                             padding: const EdgeInsets.all(AppSpacing.md),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 0.75,
                               crossAxisSpacing: 16,
@@ -450,12 +470,13 @@ class ProductCard extends StatelessWidget {
                   Text(
                     '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
                     style: AppTextStyles.textTheme.bodyLarge?.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ) ?? const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ) ??
+                        const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const Spacer(),
                   // Add to cart button

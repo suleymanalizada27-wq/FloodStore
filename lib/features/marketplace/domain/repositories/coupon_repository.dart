@@ -67,7 +67,8 @@ class CouponValidationResult {
     required List<String> applicableProductIds,
   }) = _ValidCouponResult;
 
-  factory CouponValidationResult.invalid(String errorMessage) = _InvalidCouponResult;
+  factory CouponValidationResult.invalid(String errorMessage) =
+      _InvalidCouponResult;
 }
 
 class _ValidCouponResult extends CouponValidationResult {
@@ -79,5 +80,6 @@ class _ValidCouponResult extends CouponValidationResult {
 }
 
 class _InvalidCouponResult extends CouponValidationResult {
-  const _InvalidCouponResult(String errorMessage) : super(isValid: false, errorMessage: errorMessage);
+  const _InvalidCouponResult(String errorMessage)
+      : super(isValid: false, errorMessage: errorMessage);
 }

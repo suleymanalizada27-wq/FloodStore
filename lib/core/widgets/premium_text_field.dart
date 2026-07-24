@@ -103,9 +103,11 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
               hintText: widget.hint,
               prefixIcon: widget.prefixIcon == null
                   ? null
-                  : Icon(widget.prefixIcon, size: 20, color: _focused
-                      ? AppColors.secondary
-                      : AppColors.textTertiary),
+                  : Icon(widget.prefixIcon,
+                      size: 20,
+                      color: _focused
+                          ? AppColors.secondary
+                          : AppColors.textTertiary),
               suffixIcon: widget.suffixIcon,
             ),
           ),

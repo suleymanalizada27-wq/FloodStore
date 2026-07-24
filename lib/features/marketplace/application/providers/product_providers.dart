@@ -12,8 +12,7 @@ final firestoreProductDataSourceProvider =
 });
 
 /// Provider for the product repository
-final productRepositoryProvider =
-    Provider<ProductRepository>((ref) {
-      final dataSource = ref.read(firestoreProductDataSourceProvider);
-      return FirestoreProductRepository(dataSource: dataSource);
-    });
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  final dataSource = ref.read(firestoreProductDataSourceProvider);
+  return FirestoreProductRepository(dataSource: dataSource);
+});

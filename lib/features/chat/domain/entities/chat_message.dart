@@ -113,7 +113,8 @@ class ChatMessage extends Equatable {
       'role': role.name,
       'content': content,
       'attachments': attachments.map((a) => a.toFirestore()).toList(),
-      'productSuggestions': productSuggestions.map((p) => p.toFirestore()).toList(),
+      'productSuggestions':
+          productSuggestions.map((p) => p.toFirestore()).toList(),
       'createdAt': createdAt.toIso8601String(),
       'isStreaming': isStreaming,
       'metadata': metadata,
@@ -137,7 +138,8 @@ class ChatMessage extends Equatable {
               ?.map((p) => ProductSuggestion.fromFirestore(p))
               .toList() ??
           [],
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
       isStreaming: data['isStreaming'] ?? false,
       metadata: data['metadata'] as Map<String, dynamic>?,
     );
@@ -166,7 +168,8 @@ class ChatAttachment extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, type, url, thumbnailUrl, fileName, fileSize, duration];
+  List<Object?> get props =>
+      [id, type, url, thumbnailUrl, fileName, fileSize, duration];
 
   Map<String, dynamic> toFirestore() {
     return {

@@ -59,7 +59,8 @@ class _EmailVerificationScreenState
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (scheme != 'message://') {
       // Generic fallback: the platform's registered handler for `mailto:`.
-      await launchUrl(Uri.parse('mailto:'), mode: LaunchMode.externalApplication);
+      await launchUrl(Uri.parse('mailto:'),
+          mode: LaunchMode.externalApplication);
     }
   }
 
@@ -101,7 +102,8 @@ class _EmailVerificationScreenState
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not update email. Please try again.')),
+          const SnackBar(
+              content: Text('Could not update email. Please try again.')),
         );
       }
     }
@@ -110,7 +112,8 @@ class _EmailVerificationScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(emailVerificationControllerProvider);
-    final email = ref.watch(authRepositoryProvider).currentUser?.email ?? 'your email';
+    final email =
+        ref.watch(authRepositoryProvider).currentUser?.email ?? 'your email';
 
     ref.listen(emailVerificationControllerProvider, (previous, next) {
       if (next.isVerified && previous?.isVerified != true) {
@@ -154,7 +157,8 @@ class _EmailVerificationScreenState
             Text(
               'We sent a verification link to $email. Click it, then come back '
               'here — this screen updates automatically.',
-              style: AppTextStyles.body(size: 13, color: AppColors.textSecondary),
+              style:
+                  AppTextStyles.body(size: 13, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 24),
             Wrap(
@@ -162,15 +166,24 @@ class _EmailVerificationScreenState
               runSpacing: 8,
               alignment: WrapAlignment.center,
               children: [
-                _MailAppChip(label: 'Gmail', onTap: () => _openMailApp('googlegmail://')),
-                _MailAppChip(label: 'Outlook', onTap: () => _openMailApp('ms-outlook://')),
-                _MailAppChip(label: 'Apple Mail', onTap: () => _openMailApp('message://')),
-                _MailAppChip(label: 'Mail App', onTap: () => _openMailApp('mailto:')),
+                _MailAppChip(
+                    label: 'Gmail',
+                    onTap: () => _openMailApp('googlegmail://')),
+                _MailAppChip(
+                    label: 'Outlook',
+                    onTap: () => _openMailApp('ms-outlook://')),
+                _MailAppChip(
+                    label: 'Apple Mail',
+                    onTap: () => _openMailApp('message://')),
+                _MailAppChip(
+                    label: 'Mail App', onTap: () => _openMailApp('mailto:')),
               ],
             ),
             const SizedBox(height: 20),
             PremiumButton(
-              label: state.canResend ? 'Resend Email' : 'Sent — you can resend shortly',
+              label: state.canResend
+                  ? 'Resend Email'
+                  : 'Sent — you can resend shortly',
               loading: state.isSending,
               onPressed: state.canResend
                   ? () => ref
@@ -183,8 +196,9 @@ class _EmailVerificationScreenState
               label: "I've verified my email",
               loading: state.isChecking,
               expand: true,
-              onPressed: () =>
-                  ref.read(emailVerificationControllerProvider.notifier).checkVerified(),
+              onPressed: () => ref
+                  .read(emailVerificationControllerProvider.notifier)
+                  .checkVerified(),
             ),
             const SizedBox(height: 18),
             Center(
@@ -242,7 +256,10 @@ class _MailAppChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: AppTextStyles.body(size: 12, weight: FontWeight.w600, color: AppColors.textSecondary),
+          style: AppTextStyles.body(
+              size: 12,
+              weight: FontWeight.w600,
+              color: AppColors.textSecondary),
         ),
       ),
     );

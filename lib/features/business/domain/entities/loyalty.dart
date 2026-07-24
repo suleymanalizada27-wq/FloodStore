@@ -77,7 +77,8 @@ class LoyaltyTier extends Equatable {
           [],
       pointMultiplier: (data['pointMultiplier'] as num?)?.toDouble() ?? 1.0,
       freeShippingThreshold: data['freeShippingThreshold'] ?? 0,
-      birthdayBonusPoints: (data['birthdayBonusPoints'] as num?)?.toDouble() ?? 0,
+      birthdayBonusPoints:
+          (data['birthdayBonusPoints'] as num?)?.toDouble() ?? 0,
       prioritySupportLevel: data['prioritySupportLevel'] ?? 0,
     );
   }
@@ -93,8 +94,14 @@ class LoyaltyTier extends Equatable {
           color: '#CD7F32',
           icon: 'workspace_premium',
           benefits: [
-            LoyaltyBenefit(type: BenefitType.pointsEarn, value: '1x', description: 'Her \$1 harcamada 1 puan'),
-            LoyaltyBenefit(type: BenefitType.earlyAccess, value: '24h', description: 'Kampanyalara 24 saat erken erişim'),
+            LoyaltyBenefit(
+                type: BenefitType.pointsEarn,
+                value: '1x',
+                description: 'Her \$1 harcamada 1 puan'),
+            LoyaltyBenefit(
+                type: BenefitType.earlyAccess,
+                value: '24h',
+                description: 'Kampanyalara 24 saat erken erişim'),
           ],
           pointMultiplier: 1.0,
           freeShippingThreshold: 50000, // \$500
@@ -108,10 +115,22 @@ class LoyaltyTier extends Equatable {
           color: '#C0C0C0',
           icon: 'workspace_premium',
           benefits: [
-            LoyaltyBenefit(type: BenefitType.pointsEarn, value: '1.25x', description: 'Her \$1 harcamada 1.25 puan'),
-            LoyaltyBenefit(type: BenefitType.freeShipping, value: '100', description: '\$100 üzeri ücretsiz kargo'),
-            LoyaltyBenefit(type: BenefitType.earlyAccess, value: '48h', description: 'Kampanyalara 48 saat erken erişim'),
-            LoyaltyBenefit(type: BenefitType.birthdayBonus, value: '500', description: 'Doğum günü 500 bonus puan'),
+            LoyaltyBenefit(
+                type: BenefitType.pointsEarn,
+                value: '1.25x',
+                description: 'Her \$1 harcamada 1.25 puan'),
+            LoyaltyBenefit(
+                type: BenefitType.freeShipping,
+                value: '100',
+                description: '\$100 üzeri ücretsiz kargo'),
+            LoyaltyBenefit(
+                type: BenefitType.earlyAccess,
+                value: '48h',
+                description: 'Kampanyalara 48 saat erken erişim'),
+            LoyaltyBenefit(
+                type: BenefitType.birthdayBonus,
+                value: '500',
+                description: 'Doğum günü 500 bonus puan'),
           ],
           pointMultiplier: 1.25,
           freeShippingThreshold: 10000, // \$100
@@ -126,13 +145,34 @@ class LoyaltyTier extends Equatable {
           color: '#FFD700',
           icon: 'workspace_premium',
           benefits: [
-            LoyaltyBenefit(type: BenefitType.pointsEarn, value: '1.5x', description: 'Her \$1 harcamada 1.5 puan'),
-            LoyaltyBenefit(type: BenefitType.freeShipping, value: '0', description: 'Tüm siparişlerde ücretsiz kargo'),
-            LoyaltyBenefit(type: BenefitType.earlyAccess, value: '72h', description: 'Kampanyalara 72 saat erken erişim'),
-            LoyaltyBenefit(type: BenefitType.birthdayBonus, value: '1500', description: 'Doğum günü 1500 bonus puan'),
-            LoyaltyBenefit(type: BenefitType.prioritySupport, value: 'chat', description: 'Öncelikli canlı destek'),
-            LoyaltyBenefit(type: BenefitType.exclusiveDeals, value: '', description: 'Özel Gold üye indirimleri'),
-            LoyaltyBenefit(type: BenefitType.freeReturns, value: '', description: 'Ücretsiz iade hakki'),
+            LoyaltyBenefit(
+                type: BenefitType.pointsEarn,
+                value: '1.5x',
+                description: 'Her \$1 harcamada 1.5 puan'),
+            LoyaltyBenefit(
+                type: BenefitType.freeShipping,
+                value: '0',
+                description: 'Tüm siparişlerde ücretsiz kargo'),
+            LoyaltyBenefit(
+                type: BenefitType.earlyAccess,
+                value: '72h',
+                description: 'Kampanyalara 72 saat erken erişim'),
+            LoyaltyBenefit(
+                type: BenefitType.birthdayBonus,
+                value: '1500',
+                description: 'Doğum günü 1500 bonus puan'),
+            LoyaltyBenefit(
+                type: BenefitType.prioritySupport,
+                value: 'chat',
+                description: 'Öncelikli canlı destek'),
+            LoyaltyBenefit(
+                type: BenefitType.exclusiveDeals,
+                value: '',
+                description: 'Özel Gold üye indirimleri'),
+            LoyaltyBenefit(
+                type: BenefitType.freeReturns,
+                value: '',
+                description: 'Ücretsiz iade hakki'),
           ],
           pointMultiplier: 1.5,
           freeShippingThreshold: 0,
@@ -148,15 +188,42 @@ class LoyaltyTier extends Equatable {
           color: '#E5E4E2',
           icon: 'diamond',
           benefits: [
-            LoyaltyBenefit(type: BenefitType.pointsEarn, value: '2x', description: 'Her \$1 harcamada 2 puan'),
-            LoyaltyBenefit(type: BenefitType.freeShipping, value: '0', description: 'Tüm siparişlerde ücretsiz ekspres kargo'),
-            LoyaltyBenefit(type: BenefitType.earlyAccess, value: '1w', description: 'Kampanyalara 1 hafta erken erişim'),
-            LoyaltyBenefit(type: BenefitType.birthdayBonus, value: '5000', description: 'Doğum günü 5000 bonus puan'),
-            LoyaltyBenefit(type: BenefitType.prioritySupport, value: 'phone', description: 'Öncelikli telefon desteği'),
-            LoyaltyBenefit(type: BenefitType.exclusiveDeals, value: '', description: 'Özel Platinum indirimleri'),
-            LoyaltyBenefit(type: BenefitType.freeReturns, value: '', description: 'Sınırsız ücretsiz iade'),
-            LoyaltyBenefit(type: BenefitType.personalShopper, value: '', description: 'Kişisel alışveriş asistanı'),
-            LoyaltyBenefit(type: BenefitType.anniversaryGift, value: '', description: 'Yıldönümü hediyesi'),
+            LoyaltyBenefit(
+                type: BenefitType.pointsEarn,
+                value: '2x',
+                description: 'Her \$1 harcamada 2 puan'),
+            LoyaltyBenefit(
+                type: BenefitType.freeShipping,
+                value: '0',
+                description: 'Tüm siparişlerde ücretsiz ekspres kargo'),
+            LoyaltyBenefit(
+                type: BenefitType.earlyAccess,
+                value: '1w',
+                description: 'Kampanyalara 1 hafta erken erişim'),
+            LoyaltyBenefit(
+                type: BenefitType.birthdayBonus,
+                value: '5000',
+                description: 'Doğum günü 5000 bonus puan'),
+            LoyaltyBenefit(
+                type: BenefitType.prioritySupport,
+                value: 'phone',
+                description: 'Öncelikli telefon desteği'),
+            LoyaltyBenefit(
+                type: BenefitType.exclusiveDeals,
+                value: '',
+                description: 'Özel Platinum indirimleri'),
+            LoyaltyBenefit(
+                type: BenefitType.freeReturns,
+                value: '',
+                description: 'Sınırsız ücretsiz iade'),
+            LoyaltyBenefit(
+                type: BenefitType.personalShopper,
+                value: '',
+                description: 'Kişisel alışveriş asistanı'),
+            LoyaltyBenefit(
+                type: BenefitType.anniversaryGift,
+                value: '',
+                description: 'Yıldönümü hediyesi'),
           ],
           pointMultiplier: 2.0,
           freeShippingThreshold: 0,
@@ -172,17 +239,50 @@ class LoyaltyTier extends Equatable {
           color: '#B9F2FF',
           icon: 'diamond',
           benefits: [
-            LoyaltyBenefit(type: BenefitType.pointsEarn, value: '3x', description: 'Her \$1 harcamada 3 puan'),
-            LoyaltyBenefit(type: BenefitType.freeShipping, value: '0', description: 'Ücretsiz same-day delivery'),
-            LoyaltyBenefit(type: BenefitType.earlyAccess, value: 'unlimited', description: 'Sınırsız erken erişim'),
-            LoyaltyBenefit(type: BenefitType.birthdayBonus, value: '20000', description: 'Doğum günü 20000 bonus puan'),
-            LoyaltyBenefit(type: BenefitType.prioritySupport, value: 'dedicated', description: 'Özel müşteri temsilcisi'),
-            LoyaltyBenefit(type: BenefitType.exclusiveDeals, value: '', description: 'Özel Diamond fiyatları'),
-            LoyaltyBenefit(type: BenefitType.freeReturns, value: '', description: 'Sınırsız ücretsiz iade + kurye gelip alır'),
-            LoyaltyBenefit(type: BenefitType.personalShopper, value: '', description: '7/24 kişisel asistan'),
-            LoyaltyBenefit(type: BenefitType.anniversaryGift, value: 'premium', description: 'Lüks yıldönümü hediyesi'),
-            LoyaltyBenefit(type: BenefitType.vipEvents, value: '', description: 'Özel etkinlik davetleri'),
-            LoyaltyBenefit(type: BenefitType.concierge, value: '', description: 'Kişisel konseyer hizmeti'),
+            LoyaltyBenefit(
+                type: BenefitType.pointsEarn,
+                value: '3x',
+                description: 'Her \$1 harcamada 3 puan'),
+            LoyaltyBenefit(
+                type: BenefitType.freeShipping,
+                value: '0',
+                description: 'Ücretsiz same-day delivery'),
+            LoyaltyBenefit(
+                type: BenefitType.earlyAccess,
+                value: 'unlimited',
+                description: 'Sınırsız erken erişim'),
+            LoyaltyBenefit(
+                type: BenefitType.birthdayBonus,
+                value: '20000',
+                description: 'Doğum günü 20000 bonus puan'),
+            LoyaltyBenefit(
+                type: BenefitType.prioritySupport,
+                value: 'dedicated',
+                description: 'Özel müşteri temsilcisi'),
+            LoyaltyBenefit(
+                type: BenefitType.exclusiveDeals,
+                value: '',
+                description: 'Özel Diamond fiyatları'),
+            LoyaltyBenefit(
+                type: BenefitType.freeReturns,
+                value: '',
+                description: 'Sınırsız ücretsiz iade + kurye gelip alır'),
+            LoyaltyBenefit(
+                type: BenefitType.personalShopper,
+                value: '',
+                description: '7/24 kişisel asistan'),
+            LoyaltyBenefit(
+                type: BenefitType.anniversaryGift,
+                value: 'premium',
+                description: 'Lüks yıldönümü hediyesi'),
+            LoyaltyBenefit(
+                type: BenefitType.vipEvents,
+                value: '',
+                description: 'Özel etkinlik davetleri'),
+            LoyaltyBenefit(
+                type: BenefitType.concierge,
+                value: '',
+                description: 'Kişisel konseyer hizmeti'),
           ],
           pointMultiplier: 3.0,
           freeShippingThreshold: 0,
@@ -300,7 +400,8 @@ class LoyaltyAccount extends Equatable {
       userId: userId ?? this.userId,
       currentPoints: currentPoints ?? this.currentPoints,
       lifetimePointsEarned: lifetimePointsEarned ?? this.lifetimePointsEarned,
-      lifetimePointsRedeemed: lifetimePointsRedeemed ?? this.lifetimePointsRedeemed,
+      lifetimePointsRedeemed:
+          lifetimePointsRedeemed ?? this.lifetimePointsRedeemed,
       currentTierId: currentTierId ?? this.currentTierId,
       tierAchievedAt: tierAchievedAt ?? this.tierAchievedAt,
       nextTierProgressAt: nextTierProgressAt ?? this.nextTierProgressAt,
@@ -317,7 +418,8 @@ class LoyaltyAccount extends Equatable {
     if (currentIndex == -1 || currentIndex == tiers.length - 1) return 1.0;
     final nextTier = tiers[currentIndex + 1];
     final currentTier = tiers[currentIndex];
-    final progress = (currentPoints - currentTier.requiredPoints) / (nextTier.requiredPoints - currentTier.requiredPoints);
+    final progress = (currentPoints - currentTier.requiredPoints) /
+        (nextTier.requiredPoints - currentTier.requiredPoints);
     return progress.clamp(0.0, 1.0);
   }
 
@@ -344,14 +446,19 @@ class LoyaltyAccount extends Equatable {
       lifetimePointsEarned: data['lifetimePointsEarned'] ?? 0,
       lifetimePointsRedeemed: data['lifetimePointsRedeemed'] ?? 0,
       currentTierId: data['currentTierId'] ?? 'bronze',
-      tierAchievedAt: DateTime.parse(data['tierAchievedAt'] ?? DateTime.now().toIso8601String()),
-      nextTierProgressAt: data['nextTierProgressAt'] != null ? DateTime.parse(data['nextTierProgressAt']) : null,
+      tierAchievedAt: DateTime.parse(
+          data['tierAchievedAt'] ?? DateTime.now().toIso8601String()),
+      nextTierProgressAt: data['nextTierProgressAt'] != null
+          ? DateTime.parse(data['nextTierProgressAt'])
+          : null,
       pointsToNextTier: data['pointsToNextTier'] ?? 0,
       transactions: (data['transactions'] as List?)
               ?.map((t) => PointTransaction.fromFirestore(t))
               .toList() ??
           [],
-      lastBirthdayBonusAt: data['lastBirthdayBonusAt'] != null ? DateTime.parse(data['lastBirthdayBonusAt']) : null,
+      lastBirthdayBonusAt: data['lastBirthdayBonusAt'] != null
+          ? DateTime.parse(data['lastBirthdayBonusAt'])
+          : null,
       metadata: Map<String, dynamic>.from(data['metadata'] ?? {}),
     );
   }
@@ -420,7 +527,8 @@ class PointTransaction extends Equatable {
       description: data['description'] ?? '',
       referenceId: data['referenceId'],
       metadata: Map<String, dynamic>.from(data['metadata'] ?? {}),
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
@@ -479,5 +587,6 @@ class LeaderboardEntry extends Equatable {
   });
 
   @override
-  List<Object?> get props => [userId, userName, userAvatar, points, tierId, rank];
+  List<Object?> get props =>
+      [userId, userName, userAvatar, points, tierId, rank];
 }

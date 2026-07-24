@@ -85,8 +85,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   bool _validateCurrentStep(RegisterWizardStep step) {
     return switch (step) {
-      RegisterWizardStep.personalInfo => _step1Key.currentState?.validate() ?? true,
-      RegisterWizardStep.accountInfo => _step2Key.currentState?.validate() ?? true,
+      RegisterWizardStep.personalInfo =>
+        _step1Key.currentState?.validate() ?? true,
+      RegisterWizardStep.accountInfo =>
+        _step2Key.currentState?.validate() ?? true,
       RegisterWizardStep.security => _step3Key.currentState?.validate() ?? true,
       RegisterWizardStep.verification => true,
       RegisterWizardStep.finish => true,
@@ -94,17 +96,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   void _syncControllersIntoState(WidgetRef ref) {
-    ref.read(registerWizardControllerProvider.notifier).update((s) => s.copyWith(
-          firstName: _firstNameController.text,
-          lastName: _lastNameController.text,
-          companyName: _companyNameController.text,
-          username: _usernameController.text,
-          email: _emailController.text,
-          phone: _phoneController.text,
-          companyEmail: _companyEmailController.text,
-          organizationId: _organizationIdController.text,
-          workspaceUrl: _workspaceUrlController.text,
-        ));
+    ref
+        .read(registerWizardControllerProvider.notifier)
+        .update((s) => s.copyWith(
+              firstName: _firstNameController.text,
+              lastName: _lastNameController.text,
+              companyName: _companyNameController.text,
+              username: _usernameController.text,
+              email: _emailController.text,
+              phone: _phoneController.text,
+              companyEmail: _companyEmailController.text,
+              organizationId: _organizationIdController.text,
+              workspaceUrl: _workspaceUrlController.text,
+            ));
   }
 
   Future<void> _handleNext(RegisterWizardState state) async {
@@ -118,11 +122,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (state.step == RegisterWizardStep.verification) {
       if (!state.agreeToTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please agree to the Terms & Privacy Policy.')),
+          const SnackBar(
+              content: Text('Please agree to the Terms & Privacy Policy.')),
         );
         return;
       }
-      await ref.read(registerWizardControllerProvider.notifier).submit(_passwordController.text);
+      await ref
+          .read(registerWizardControllerProvider.notifier)
+          .submit(_passwordController.text);
       return;
     }
 
@@ -146,14 +153,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
           TextButton(
             onPressed: () async {
-              await ref.read(registerWizardControllerProvider.notifier).discardDraft();
+              await ref
+                  .read(registerWizardControllerProvider.notifier)
+                  .discardDraft();
               if (context.mounted) Navigator.of(context).pop(true);
             },
             child: const Text('Discard'),
           ),
           FilledButton(
             onPressed: () async {
-              await ref.read(registerWizardControllerProvider.notifier).saveDraftAndExit();
+              await ref
+                  .read(registerWizardControllerProvider.notifier)
+                  .saveDraftAndExit();
               if (context.mounted) Navigator.of(context).pop(true);
             },
             child: const Text('Save Draft'),
@@ -175,7 +186,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Draft restored — pick up where you left off.')),
+            const SnackBar(
+                content: Text('Draft restored — pick up where you left off.')),
           );
         });
       }
@@ -208,8 +220,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 transitionBuilder: (child, animation) => FadeTransition(
                   opacity: animation,
                   child: SlideTransition(
-                    position: Tween(begin: const Offset(0.03, 0), end: Offset.zero)
-                        .animate(animation),
+                    position:
+                        Tween(begin: const Offset(0.03, 0), end: Offset.zero)
+                            .animate(animation),
                     child: child,
                   ),
                 ),
@@ -227,7 +240,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         child: OutlinedButton(
                           onPressed: () {
                             _syncControllersIntoState(ref);
-                            ref.read(registerWizardControllerProvider.notifier).goBack();
+                            ref
+                                .read(registerWizardControllerProvider.notifier)
+                                .goBack();
                           },
                           child: const Text('Back'),
                         ),
@@ -250,7 +265,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: TextButton(
                     onPressed: () async {
                       _syncControllersIntoState(ref);
-                      await ref.read(registerWizardControllerProvider.notifier).saveDraftAndExit();
+                      await ref
+                          .read(registerWizardControllerProvider.notifier)
+                          .saveDraftAndExit();
                       if (context.mounted) context.pop();
                     },
                     child: Text(
@@ -280,8 +297,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           lastNameController: _lastNameController,
           companyNameController: _companyNameController,
           state: state,
-          onAccountModeChanged: (mode) =>
-              ref.read(registerWizardControllerProvider.notifier).setAccountMode(mode),
+          onAccountModeChanged: (mode) => ref
+              .read(registerWizardControllerProvider.notifier)
+              .setAccountMode(mode),
         );
       case RegisterWizardStep.accountInfo:
         return StepAccountInfo(
@@ -306,8 +324,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           obscurePassword: _obscurePassword,
           obscureConfirm: _obscureConfirm,
           onPasswordChanged: (v) => setState(() => _passwordValue = v),
-          onToggleObscurePassword: () => setState(() => _obscurePassword = !_obscurePassword),
-          onToggleObscureConfirm: () => setState(() => _obscureConfirm = !_obscureConfirm),
+          onToggleObscurePassword: () =>
+              setState(() => _obscurePassword = !_obscurePassword),
+          onToggleObscureConfirm: () =>
+              setState(() => _obscureConfirm = !_obscureConfirm),
           onGenerate: () {
             final generated = PasswordStrengthService.generateStrongPassword();
             _passwordController.text = generated;

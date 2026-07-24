@@ -12,7 +12,8 @@ class FirestoreOrderRepository implements OrderRepository {
       : _firestore = firestore ?? fs.FirebaseFirestore.instance,
         _uuid = const Uuid();
 
-  fs.CollectionReference get _ordersCollection => _firestore.collection('orders');
+  fs.CollectionReference get _ordersCollection =>
+      _firestore.collection('orders');
 
   @override
   Future<Order?> getOrderById(String orderId) async {
@@ -58,7 +59,8 @@ class FirestoreOrderRepository implements OrderRepository {
 
       final querySnapshot = await query.get();
       return querySnapshot.docs
-          .map((doc) => Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get user orders: $e');
@@ -98,7 +100,8 @@ class FirestoreOrderRepository implements OrderRepository {
 
       final querySnapshot = await query.get();
       return querySnapshot.docs
-          .map((doc) => Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get seller orders: $e');
@@ -120,9 +123,14 @@ class FirestoreOrderRepository implements OrderRepository {
       // Group items by seller
       final sellerItems = <String, List<CartItem>>{};
       for (final item in cart.items) {
-        final productDoc = await _firestore.collection('products').doc(item.productId).get();
-        final sellerId = productDoc.data() is Map ? (productDoc.data() as Map)['sellerId'] as String? : 'unknown-seller';
-        sellerItems.putIfAbsent(sellerId ?? 'unknown-seller', () => []).add(item);
+        final productDoc =
+            await _firestore.collection('products').doc(item.productId).get();
+        final sellerId = productDoc.data() is Map
+            ? (productDoc.data() as Map)['sellerId'] as String?
+            : 'unknown-seller';
+        sellerItems
+            .putIfAbsent(sellerId ?? 'unknown-seller', () => [])
+            .add(item);
       }
 
       String? firstOrderId;
@@ -132,22 +140,27 @@ class FirestoreOrderRepository implements OrderRepository {
         final sellerId = entry.key;
         final items = entry.value;
 
-        final orderItems = items.map((item) => OrderItem(
-          id: item.id,
-          productId: item.productId,
-          variantId: item.variantId,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          totalPrice: item.totalPrice,
-          productTitle: item.productTitle,
-          variantAttributes: item.variantAttributes,
-        )).toList();
+        final orderItems = items
+            .map((item) => OrderItem(
+                  id: item.id,
+                  productId: item.productId,
+                  variantId: item.variantId,
+                  quantity: item.quantity,
+                  unitPrice: item.unitPrice,
+                  totalPrice: item.totalPrice,
+                  productTitle: item.productTitle,
+                  variantAttributes: item.variantAttributes,
+                ))
+            .toList();
 
         final subtotal = items.fold(0.0, (sum, item) => sum + item.totalPrice);
         final shippingAmount = _calculateShipping(items);
         final taxAmount = subtotal * 0.18;
-        final discountAmount = couponCode != null ? await _calculateDiscount(couponCode, subtotal) : 0.0;
-        final totalAmount = subtotal + shippingAmount + taxAmount - discountAmount;
+        final discountAmount = couponCode != null
+            ? await _calculateDiscount(couponCode, subtotal)
+            : 0.0;
+        final totalAmount =
+            subtotal + shippingAmount + taxAmount - discountAmount;
 
         final order = Order(
           id: '',
@@ -187,35 +200,57 @@ class FirestoreOrderRepository implements OrderRepository {
             phone: '',
           ),
           items: orderItems,
-          discounts: couponCode != null ? [Discount(
-            promoId: couponCode,
-            code: couponCode,
-            type: DiscountType.fixedAmount,
-            value: discountAmount,
-            description: 'Coupon: $couponCode',
-          )] : [],
+          discounts: couponCode != null
+              ? [
+                  Discount(
+                    promoId: couponCode,
+                    code: couponCode,
+                    type: DiscountType.fixedAmount,
+                    value: discountAmount,
+                    description: 'Coupon: $couponCode',
+                  )
+                ]
+              : [],
           history: const [],
         );
 
         final docRef = _firestore.collection('orders').doc();
         batch.set(docRef, order.toFirestore());
-        
+
         // Also add to user's orders subcollection
-        batch.set(_firestore.collection('users').doc(userId).collection('orders').doc(docRef.id), order.copyWith(id: docRef.id).toFirestore());
-        
+        batch.set(
+            _firestore
+                .collection('users')
+                .doc(userId)
+                .collection('orders')
+                .doc(docRef.id),
+            order.copyWith(id: docRef.id).toFirestore());
+
         // Add to seller's orders subcollection
-        batch.set(_firestore.collection('sellers').doc(sellerId).collection('orders').doc(docRef.id), order.copyWith(id: docRef.id).toFirestore());
+        batch.set(
+            _firestore
+                .collection('sellers')
+                .doc(sellerId)
+                .collection('orders')
+                .doc(docRef.id),
+            order.copyWith(id: docRef.id).toFirestore());
 
         // Add history entry
-        final historyRef = _firestore.collection('orders').doc(docRef.id).collection('history').doc();
-        batch.set(historyRef, OrderHistoryEntry(
-          timestamp: DateTime.now(),
-          fromStatus: '',
-          toStatus: OrderStatus.pending.name,
-          changedBy: userId,
-          reason: 'Order created',
-          notes: 'Order created from cart',
-        ).toFirestore());
+        final historyRef = _firestore
+            .collection('orders')
+            .doc(docRef.id)
+            .collection('history')
+            .doc();
+        batch.set(
+            historyRef,
+            OrderHistoryEntry(
+              timestamp: DateTime.now(),
+              fromStatus: '',
+              toStatus: OrderStatus.pending.name,
+              changedBy: userId,
+              reason: 'Order created',
+              notes: 'Order created from cart',
+            ).toFirestore());
 
         firstOrderId ??= docRef.id;
       }
@@ -254,7 +289,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final orderDoc = await _ordersCollection.doc(orderId).get();
       if (!orderDoc.exists) throw Exception('Order not found');
-      
+
       final currentStatus = OrderStatus.values.firstWhere(
         (e) => e.name == (orderDoc.data() as Map)['status'],
         orElse: () => OrderStatus.pending,
@@ -265,14 +300,17 @@ class FirestoreOrderRepository implements OrderRepository {
         'updatedAt': fs.FieldValue.serverTimestamp(),
       });
 
-      await _ordersCollection.doc(orderId).collection('history').add(OrderHistoryEntry(
-        timestamp: DateTime.now(),
-        fromStatus: currentStatus.name,
-        toStatus: status.name,
-        changedBy: changedBy ?? 'system',
-        reason: reason ?? 'Status updated',
-        notes: notes,
-      ).toFirestore());
+      await _ordersCollection
+          .doc(orderId)
+          .collection('history')
+          .add(OrderHistoryEntry(
+            timestamp: DateTime.now(),
+            fromStatus: currentStatus.name,
+            toStatus: status.name,
+            changedBy: changedBy ?? 'system',
+            reason: reason ?? 'Status updated',
+            notes: notes,
+          ).toFirestore());
     } catch (e) {
       throw Exception('Failed to update order status: $e');
     }
@@ -288,7 +326,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final orderDoc = await _ordersCollection.doc(orderId).get();
       if (!orderDoc.exists) throw Exception('Order not found');
-      
+
       final currentStatus = FulfillmentStatus.values.firstWhere(
         (e) => e.name == (orderDoc.data() as Map)['fulfillmentStatus'],
         orElse: () => FulfillmentStatus.pending,
@@ -299,14 +337,17 @@ class FirestoreOrderRepository implements OrderRepository {
         'updatedAt': fs.FieldValue.serverTimestamp(),
       });
 
-      await _ordersCollection.doc(orderId).collection('history').add(OrderHistoryEntry(
-        timestamp: DateTime.now(),
-        fromStatus: currentStatus.name,
-        toStatus: status.name,
-        changedBy: changedBy ?? 'system',
-        reason: 'Fulfillment status updated',
-        notes: notes,
-      ).toFirestore());
+      await _ordersCollection
+          .doc(orderId)
+          .collection('history')
+          .add(OrderHistoryEntry(
+            timestamp: DateTime.now(),
+            fromStatus: currentStatus.name,
+            toStatus: status.name,
+            changedBy: changedBy ?? 'system',
+            reason: 'Fulfillment status updated',
+            notes: notes,
+          ).toFirestore());
     } catch (e) {
       throw Exception('Failed to update fulfillment status: $e');
     }
@@ -322,7 +363,7 @@ class FirestoreOrderRepository implements OrderRepository {
     try {
       final orderDoc = await _ordersCollection.doc(orderId).get();
       if (!orderDoc.exists) throw Exception('Order not found');
-      
+
       final currentStatus = PaymentStatus.values.firstWhere(
         (e) => e.name == (orderDoc.data() as Map)['paymentStatus'],
         orElse: () => PaymentStatus.pending,
@@ -333,14 +374,17 @@ class FirestoreOrderRepository implements OrderRepository {
         'updatedAt': fs.FieldValue.serverTimestamp(),
       });
 
-      await _ordersCollection.doc(orderId).collection('history').add(OrderHistoryEntry(
-        timestamp: DateTime.now(),
-        fromStatus: currentStatus.name,
-        toStatus: status.name,
-        changedBy: changedBy ?? 'system',
-        reason: 'Payment status updated',
-        notes: notes,
-      ).toFirestore());
+      await _ordersCollection
+          .doc(orderId)
+          .collection('history')
+          .add(OrderHistoryEntry(
+            timestamp: DateTime.now(),
+            fromStatus: currentStatus.name,
+            toStatus: status.name,
+            changedBy: changedBy ?? 'system',
+            reason: 'Payment status updated',
+            notes: notes,
+          ).toFirestore());
     } catch (e) {
       throw Exception('Failed to update payment status: $e');
     }
@@ -382,7 +426,10 @@ class FirestoreOrderRepository implements OrderRepository {
     OrderHistoryEntry entry,
   ) async {
     try {
-      await _ordersCollection.doc(orderId).collection('history').add(entry.toFirestore());
+      await _ordersCollection
+          .doc(orderId)
+          .collection('history')
+          .add(entry.toFirestore());
     } catch (e) {
       throw Exception('Failed to add order history entry: $e');
     }
@@ -448,35 +495,39 @@ class FirestoreOrderRepository implements OrderRepository {
     int quantity,
   ) async {
     try {
-      final productDoc = await _firestore.collection('products').doc(productId).get();
+      final productDoc =
+          await _firestore.collection('products').doc(productId).get();
       if (!productDoc.exists) throw Exception('Product not found');
-      
+
       final productData = productDoc.data() as Map<String, dynamic>;
       final pricing = productData['pricing'] as Map<String, dynamic>;
       final base = productData['base'] as Map<String, dynamic>;
-      
+
       final cartItem = CartItem(
         id: _uuid.v4(),
         productId: productId,
         variantId: variantId,
         quantity: quantity,
         unitPrice: (pricing['basePrice'] as num?)?.toDouble() ?? 0.0,
-        totalPrice: ((pricing['basePrice'] as num?)?.toDouble() ?? 0.0) * quantity,
+        totalPrice:
+            ((pricing['basePrice'] as num?)?.toDouble() ?? 0.0) * quantity,
         productTitle: base['title'] as String? ?? '',
         variantAttributes: variantId != null ? {'variantId': variantId} : {},
       );
 
       final cartRef = _firestore.collection('carts').doc(userId);
       final cartDoc = await cartRef.get();
-      
+
       if (cartDoc.exists) {
-        final items = List<Map<String, dynamic>>.from((cartDoc.data() as Map)['items'] ?? []);
+        final items = List<Map<String, dynamic>>.from(
+            (cartDoc.data() as Map)['items'] ?? []);
         final existingIndex = items.indexWhere(
           (i) => i['productId'] == productId && i['variantId'] == variantId,
         );
-        
+
         if (existingIndex >= 0) {
-          final currentQty = (items[existingIndex]['quantity'] as num?)?.toInt() ?? 0;
+          final currentQty =
+              (items[existingIndex]['quantity'] as num?)?.toInt() ?? 0;
           final newQty = currentQty + quantity;
           items[existingIndex] = {
             ...items[existingIndex],
@@ -487,7 +538,7 @@ class FirestoreOrderRepository implements OrderRepository {
         } else {
           items.add(cartItem.toFirestore());
         }
-        
+
         await cartRef.update({
           'items': items,
           'updatedAt': fs.FieldValue.serverTimestamp(),
@@ -517,18 +568,19 @@ class FirestoreOrderRepository implements OrderRepository {
         await removeItemFromCart(userId, productId, variantId);
         return;
       }
-      
+
       final cartRef = _firestore.collection('carts').doc(userId);
       final cartDoc = await cartRef.get();
       if (!cartDoc.exists) return;
-      
-      final items = List<Map<String, dynamic>>.from((cartDoc.data() as Map)['items'] ?? []);
+
+      final items = List<Map<String, dynamic>>.from(
+          (cartDoc.data() as Map)['items'] ?? []);
       final index = items.indexWhere(
         (i) => i['productId'] == productId && i['variantId'] == variantId,
       );
-      
+
       if (index < 0) return;
-      
+
       final unitPrice = (items[index]['unitPrice'] as num?)?.toDouble() ?? 0.0;
       items[index] = {
         ...items[index],
@@ -536,7 +588,7 @@ class FirestoreOrderRepository implements OrderRepository {
         'totalPrice': quantity * unitPrice,
         'updatedAt': fs.FieldValue.serverTimestamp(),
       };
-      
+
       await cartRef.update({'items': items});
     } catch (e) {
       throw Exception('Failed to update cart item quantity: $e');
@@ -553,12 +605,13 @@ class FirestoreOrderRepository implements OrderRepository {
       final cartRef = _firestore.collection('carts').doc(userId);
       final cartDoc = await cartRef.get();
       if (!cartDoc.exists) return;
-      
-      final items = List<Map<String, dynamic>>.from((cartDoc.data() as Map)['items'] ?? []);
+
+      final items = List<Map<String, dynamic>>.from(
+          (cartDoc.data() as Map)['items'] ?? []);
       items.removeWhere(
         (i) => i['productId'] == productId && i['variantId'] == variantId,
       );
-      
+
       await cartRef.update({'items': items});
     } catch (e) {
       throw Exception('Failed to remove item from cart: $e');
@@ -568,7 +621,12 @@ class FirestoreOrderRepository implements OrderRepository {
   @override
   Future<void> saveCartForLater(String userId, Cart cart) async {
     try {
-      await _firestore.collection('users').doc(userId).collection('saved_carts').doc(cart.id).set(cart.toFirestore());
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('saved_carts')
+          .doc(cart.id)
+          .set(cart.toFirestore());
     } catch (e) {
       throw Exception('Failed to save cart for later: $e');
     }
@@ -577,7 +635,11 @@ class FirestoreOrderRepository implements OrderRepository {
   @override
   Future<List<CartItem>> getSavedItems(String userId) async {
     try {
-      final querySnapshot = await _firestore.collection('users').doc(userId).collection('saved_carts').get();
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('saved_carts')
+          .get();
       return querySnapshot.docs
           .map((doc) => Cart.fromFirestore(doc.data(), doc.id))
           .expand((cart) => cart.items)

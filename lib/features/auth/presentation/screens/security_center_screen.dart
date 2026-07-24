@@ -41,7 +41,9 @@ class SecurityCenterScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Security Score', style: AppTextStyles.body(size: 12, color: AppColors.textTertiary)),
+                      Text('Security Score',
+                          style: AppTextStyles.body(
+                              size: 12, color: AppColors.textTertiary)),
                       const SizedBox(height: 2),
                       Text(score.label, style: AppTextStyles.headlineSmall),
                       const SizedBox(height: 8),
@@ -50,7 +52,8 @@ class SecurityCenterScreen extends ConsumerWidget {
                               padding: const EdgeInsets.only(top: 2),
                               child: Text(
                                 '• $f',
-                                style: AppTextStyles.body(size: 11.5, color: AppColors.textSecondary),
+                                style: AppTextStyles.body(
+                                    size: 11.5, color: AppColors.textSecondary),
                               ),
                             ),
                           ),
@@ -96,7 +99,8 @@ class SecurityCenterScreen extends ConsumerWidget {
             ),
             error: (_, __) => Text(
               'Could not load sessions.',
-              style: AppTextStyles.body(size: 13, color: AppColors.textTertiary),
+              style:
+                  AppTextStyles.body(size: 13, color: AppColors.textTertiary),
             ),
             data: (sessions) => Column(
               children: [
@@ -108,7 +112,9 @@ class SecurityCenterScreen extends ConsumerWidget {
                 if (sessions.length > 1)
                   TextButton(
                     onPressed: () async {
-                      await ref.read(securityRepositoryProvider).terminateAllOtherSessions();
+                      await ref
+                          .read(securityRepositoryProvider)
+                          .terminateAllOtherSessions();
                       ref.invalidate(sessionsProvider);
                     },
                     child: const Text('Log out all other devices'),
@@ -177,9 +183,13 @@ class _StatusRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppTextStyles.body(size: 13.5, weight: FontWeight.w600)),
+                Text(label,
+                    style: AppTextStyles.body(
+                        size: 13.5, weight: FontWeight.w600)),
                 if (detail != null)
-                  Text(detail!, style: AppTextStyles.body(size: 12, color: AppColors.textTertiary)),
+                  Text(detail!,
+                      style: AppTextStyles.body(
+                          size: 12, color: AppColors.textTertiary)),
               ],
             ),
           ),
@@ -225,18 +235,24 @@ class _SessionTile extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Text(session.deviceName, style: AppTextStyles.body(size: 13.5, weight: FontWeight.w600)),
+                    Text(session.deviceName,
+                        style: AppTextStyles.body(
+                            size: 13.5, weight: FontWeight.w600)),
                     if (session.isCurrent) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.success.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
                           'This device',
-                          style: AppTextStyles.body(size: 10, weight: FontWeight.w700, color: AppColors.success),
+                          style: AppTextStyles.body(
+                              size: 10,
+                              weight: FontWeight.w700,
+                              color: AppColors.success),
                         ),
                       ),
                     ],
@@ -244,16 +260,20 @@ class _SessionTile extends ConsumerWidget {
                 ),
                 Text(
                   '${session.platform} · Active ${_timeAgo(session.lastActiveAt)}',
-                  style: AppTextStyles.body(size: 11.5, color: AppColors.textTertiary),
+                  style: AppTextStyles.body(
+                      size: 11.5, color: AppColors.textTertiary),
                 ),
               ],
             ),
           ),
           if (!session.isCurrent)
             IconButton(
-              icon: const Icon(Icons.logout_rounded, size: 18, color: AppColors.error),
+              icon: const Icon(Icons.logout_rounded,
+                  size: 18, color: AppColors.error),
               onPressed: () async {
-                await ref.read(securityRepositoryProvider).terminateSession(session.id);
+                await ref
+                    .read(securityRepositoryProvider)
+                    .terminateSession(session.id);
                 ref.invalidate(sessionsProvider);
               },
             ),

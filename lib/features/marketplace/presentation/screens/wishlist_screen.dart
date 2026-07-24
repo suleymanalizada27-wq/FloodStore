@@ -100,16 +100,17 @@ class WishlistScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.favorite_border, size: 64, color: AppColors.textTertiary),
+          const Icon(Icons.favorite_border,
+              size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
           Text('İstek listeniz boş',
               style: AppTextStyles.textTheme.headlineSmall
-                  ?.copyWith(color: AppColors.textSecondary) ??
+                      ?.copyWith(color: AppColors.textSecondary) ??
                   AppTextStyles.textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text('Henüz ürün eklememişsiniz',
               style: AppTextStyles.textTheme.bodyMedium
-                  ?.copyWith(color: AppColors.textTertiary) ??
+                      ?.copyWith(color: AppColors.textTertiary) ??
                   AppTextStyles.textTheme.bodyMedium),
           const SizedBox(height: 24),
           PremiumButton(
@@ -130,14 +131,15 @@ class WishlistScreen extends ConsumerWidget {
         backgroundColor: AppColors.card,
         title: Text('İstek Listesini Temizle',
             style: AppTextStyles.textTheme.titleLarge),
-        content: Text('Tüm ürünler istek listenizden kaldırılacak. Emin misiniz?',
+        content: Text(
+            'Tüm ürünler istek listenizden kaldırılacak. Emin misiniz?',
             style: AppTextStyles.textTheme.bodyMedium),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('İptal',
                 style: AppTextStyles.textTheme.labelLarge
-                    ?.copyWith(color: AppColors.textSecondary) ??
+                        ?.copyWith(color: AppColors.textSecondary) ??
                     AppTextStyles.textTheme.labelLarge),
           ),
           PremiumButton(
@@ -163,7 +165,8 @@ class WishlistScreen extends ConsumerWidget {
       if (item == null) return;
 
       // Get the product to get the current price and title (we'll use the product's title and price for consistency)
-      final product = await ref.read(productRepositoryProvider).getProductById(productId);
+      final product =
+          await ref.read(productRepositoryProvider).getProductById(productId);
       if (product == null) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -203,7 +206,8 @@ class WishlistScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _moveAllToCart(BuildContext context, WidgetRef ref, String userId) async {
+  Future<void> _moveAllToCart(
+      BuildContext context, WidgetRef ref, String userId) async {
     try {
       final wishlist = ref.read(wishlistForUserProvider(userId)).valueOrNull;
       if (wishlist == null || wishlist.isEmpty) return;
@@ -261,7 +265,8 @@ class _WishlistItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onMoveToCart, // Tap to move to cart (alternative: long press for options)
+      onTap:
+          onMoveToCart, // Tap to move to cart (alternative: long press for options)
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

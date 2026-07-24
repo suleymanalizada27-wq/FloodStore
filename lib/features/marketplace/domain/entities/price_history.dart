@@ -34,10 +34,9 @@ class PriceHistoryEntry extends Equatable {
         promotionId,
       ];
 
-  double get discountPercent =>
-      originalPrice != null && originalPrice! > 0
-          ? ((originalPrice! - price) / originalPrice! * 100).roundToDouble()
-          : 0.0;
+  double get discountPercent => originalPrice != null && originalPrice! > 0
+      ? ((originalPrice! - price) / originalPrice! * 100).roundToDouble()
+      : 0.0;
 
   bool get isOnSale => originalPrice != null && price < originalPrice!;
 
@@ -64,7 +63,8 @@ class PriceHistoryEntry extends Equatable {
         (r) => r.name == data['reason'],
         orElse: () => PriceChangeReason.regular,
       ),
-      recordedAt: DateTime.parse(data['recordedAt'] ?? DateTime.now().toIso8601String()),
+      recordedAt: DateTime.parse(
+          data['recordedAt'] ?? DateTime.now().toIso8601String()),
       promotionId: data['promotionId'],
     );
   }
@@ -124,7 +124,8 @@ class PriceStatistics extends Equatable {
       ];
 
   double get savingsPotential => currentPrice - lowestPrice;
-  double get savingsPercent => currentPrice > 0 ? (savingsPotential / currentPrice * 100) : 0;
+  double get savingsPercent =>
+      currentPrice > 0 ? (savingsPotential / currentPrice * 100) : 0;
 }
 
 enum PriceTrend { rising, falling, stable, volatile }

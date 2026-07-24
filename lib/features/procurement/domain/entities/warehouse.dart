@@ -104,8 +104,10 @@ class Warehouse extends Equatable {
       contactEmail: data['contactEmail'] ?? '',
       isActive: data['isActive'] ?? true,
       isDefault: data['isDefault'] ?? false,
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }

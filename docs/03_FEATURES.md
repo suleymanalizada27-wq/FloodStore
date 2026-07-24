@@ -29,7 +29,7 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 | Advanced filters | ❌ | not implemented |
 | Cart | ⚠️ | `cart_screen.dart`, `firestore_cart_repository.dart` exist; confirm all CRUD paths work |
 | Wishlist | ⚠️ | `wishlist_screen.dart`, `firestore_wishlist_repository.dart` exist |
-| Checkout | 🔴 **security risk, not just missing** | `checkout_screen.dart` (519 lines) has a real address/delivery/payment-method UI and creates a real order, but `_placeOrder()` writes `PaymentInfo(status: 'paid', providerPaymentId: 'mock_payment_...')` and calls `updateOrderStatus(..., OrderStatus.confirmed)` **directly from the client, with no real payment provider call at all**. Combined with no `firestore.rules`, this is a live fake-payment / free-order exploit path, not just an unfinished feature. See `08_PAYMENT_ARCHITECTURE.md`. |
+| Checkout | ⚠️ **security fixed, payment integration pending** | `checkout_screen.dart` (519 lines) has a real address/delivery/payment-method UI and creates a real order. **Security fix applied**: `_placeOrder()` no longer writes fake `PaymentInfo(status: 'paid')` or confirms orders client-side. Order status remains `pending` with `paymentStatus: pending` until real payment integration (Cloud Functions/Supabase Edge Functions) is implemented. See `08_PAYMENT_ARCHITECTURE.md`. |
 | Orders (history/detail) | ⚠️ | `order_confirmation_screen.dart`, `order_detail_screen.dart` exist; `firestore_order_repository.dart` exists — verify against real checkout flow once that's built |
 | Reviews & ratings | ⚠️ | `review.dart` entity exists, no dedicated reviews screen/repository wiring confirmed |
 | Coupons / promotions | ⚠️ | `coupon.dart`, `firestore_coupon_repository.dart` exist, no UI application flow confirmed |
@@ -83,7 +83,7 @@ Not started. See `modules/LOGISTICS.md`, `modules/ADMIN.md`, `modules/ANALYTICS.
 
 | Item | Status |
 |---|---|
-| Firestore security rules | ❌ **no `firestore.rules` file in repo at all** — see `06_FIREBASE_RULES.md` |
+| Firestore security rules | ✅ Deployed | `firestore.rules` file created in repo root and deployed via `firebase deploy --only firestore:rules` - see `06_FIREBASE_RULES.md` |
 | Automated tests | ❌ only default `test/widget_test.dart` placeholder |
 | Cloud Functions | ❌ none — blocks server-side payments, KYC, notifications triggers |
 | CI/CD | ⚠️ `.github/workflows/opencode.yml` present (agent runner config, not a build/test/deploy pipeline) |

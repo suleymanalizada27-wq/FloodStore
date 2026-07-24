@@ -44,7 +44,8 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
     if (_images.length >= widget.maxImages) return;
 
     final remainingSlots = widget.maxImages - _images.length;
-    final List<XFile> pickedFiles = await _picker.pickMultiImage(limit: remainingSlots);
+    final List<XFile> pickedFiles =
+        await _picker.pickMultiImage(limit: remainingSlots);
 
     if (pickedFiles.isEmpty) return;
 
@@ -74,7 +75,9 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Upload failed: $e'), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text('Upload failed: $e'),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -109,7 +112,9 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
       setState(() => _isUploading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Upload failed: $e'), backgroundColor: AppColors.error),
+          SnackBar(
+              content: Text('Upload failed: $e'),
+              backgroundColor: AppColors.error),
         );
       }
     }
@@ -131,7 +136,11 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
         children: [
           Row(
             children: [
-              Text('Ürün Görselleri', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+              Text('Ürün Görselleri',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w600)),
               const Spacer(),
               if (_images.length < widget.maxImages) ...[
                 FilledButton.icon(
@@ -150,15 +159,17 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
           ),
           if (_isUploading) ...[
             const SizedBox(height: AppSpacing.md),
-            LinearProgressIndicator(value: _uploadProgress, backgroundColor: AppColors.border),
+            LinearProgressIndicator(
+                value: _uploadProgress, backgroundColor: AppColors.border),
             const SizedBox(height: AppSpacing.xs),
-            Text('Yükleniyor... %${(_uploadProgress * 100).toInt()}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary)),
+            Text('Yükleniyor... %${(_uploadProgress * 100).toInt()}',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.textTertiary)),
           ],
           const SizedBox(height: AppSpacing.md),
-          if (_images.isEmpty)
-            _buildEmptyState()
-          else
-            _buildImageGrid(),
+          if (_images.isEmpty) _buildEmptyState() else _buildImageGrid(),
         ],
       ),
     );
@@ -178,11 +189,20 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_photo_alternate_outlined, size: 40, color: AppColors.textTertiary),
+            const Icon(Icons.add_photo_alternate_outlined,
+                size: 40, color: AppColors.textTertiary),
             const SizedBox(height: 8),
-            Text('Görsel Ekle', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.textSecondary)),
+            Text('Görsel Ekle',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 4),
-            Text('İlk görseli yüklemek için tıklayın', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary)),
+            Text('İlk görseli yüklemek için tıklayın',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.textTertiary)),
           ],
         ),
       ),
@@ -225,7 +245,8 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
               if (progress == null) return child;
               return Container(
                 color: AppColors.card.withValues(alpha: 0.2),
-                child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                child: const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2)),
               );
             },
             errorBuilder: (context, error, stackTrace) => Container(
@@ -260,7 +281,9 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text('ANA', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text('ANA',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ),
       ],
@@ -280,9 +303,14 @@ class _ProductImagePickerState extends ConsumerState<ProductImagePicker> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_photo_alternate_outlined, size: 32, color: AppColors.textTertiary),
+            const Icon(Icons.add_photo_alternate_outlined,
+                size: 32, color: AppColors.textTertiary),
             const SizedBox(height: 4),
-            Text('Ekle', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary)),
+            Text('Ekle',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.textTertiary)),
           ],
         ),
       ),
@@ -325,9 +353,11 @@ class ProductImageGallery extends StatelessWidget {
                 height: double.infinity,
                 loadingBuilder: (context, child, progress) {
                   if (progress == null) return child;
-                  return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                  return const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2));
                 },
-                errorBuilder: (context, error, stackTrace) => _buildPlaceholder(context),
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholder(context),
               ),
             );
           },
@@ -346,7 +376,8 @@ class ProductImageGallery extends StatelessWidget {
                   width: index == 0 ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: index == 0 ? 1.0 : 0.5),
+                    color:
+                        Colors.white.withValues(alpha: index == 0 ? 1.0 : 0.5),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
@@ -361,7 +392,8 @@ class ProductImageGallery extends StatelessWidget {
     return Container(
       color: AppColors.card.withValues(alpha: 0.2),
       child: const Center(
-        child: Icon(Icons.image_outlined, size: 64, color: AppColors.textTertiary),
+        child:
+            Icon(Icons.image_outlined, size: 64, color: AppColors.textTertiary),
       ),
     );
   }

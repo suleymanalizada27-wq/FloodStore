@@ -26,7 +26,8 @@ class OrganizationSwitcher extends ConsumerWidget {
         if (active == null) return const SizedBox.shrink();
         return InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => _openSwitcher(context, ref, membershipsAsync.valueOrNull ?? []),
+          onTap: () =>
+              _openSwitcher(context, ref, membershipsAsync.valueOrNull ?? []),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
@@ -47,13 +48,17 @@ class OrganizationSwitcher extends ConsumerWidget {
                   ),
                   child: Text(
                     active.name.isEmpty ? '?' : active.name[0].toUpperCase(),
-                    style: AppTextStyles.body(size: 11, weight: FontWeight.w700),
+                    style:
+                        AppTextStyles.body(size: 11, weight: FontWeight.w700),
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(active.name, style: AppTextStyles.body(size: 13, weight: FontWeight.w600)),
+                Text(active.name,
+                    style:
+                        AppTextStyles.body(size: 13, weight: FontWeight.w600)),
                 const SizedBox(width: 4),
-                const Icon(Icons.unfold_more_rounded, size: 16, color: AppColors.textTertiary),
+                const Icon(Icons.unfold_more_rounded,
+                    size: 16, color: AppColors.textTertiary),
               ],
             ),
           ),
@@ -83,8 +88,11 @@ class OrganizationSwitcher extends ConsumerWidget {
                 backgroundColor: AppColors.cardElevated,
                 child: Text(m.organization.name[0].toUpperCase()),
               ),
-              title: Text(m.organization.name, style: AppTextStyles.body(size: 14)),
-              subtitle: Text(m.role.name, style: AppTextStyles.body(size: 12, color: AppColors.textTertiary)),
+              title: Text(m.organization.name,
+                  style: AppTextStyles.body(size: 14)),
+              subtitle: Text(m.role.name,
+                  style: AppTextStyles.body(
+                      size: 12, color: AppColors.textTertiary)),
               onTap: () {
                 ref
                     .read(organizationControllerProvider.notifier)

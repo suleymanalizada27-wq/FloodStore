@@ -23,11 +23,11 @@ class Wishlist extends Equatable {
       userId: data['userId'] ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      items: List<WishlistItem>.from(
-        (data['items'] as List<dynamic>?)
-                ?.map((item) => WishlistItem.fromFirestore(item as Map<String, dynamic>))
-                .toList() ??
-            []),
+      items: List<WishlistItem>.from((data['items'] as List<dynamic>?)
+              ?.map((item) =>
+                  WishlistItem.fromFirestore(item as Map<String, dynamic>))
+              .toList() ??
+          []),
     );
   }
 
@@ -114,7 +114,8 @@ class WishlistItem extends Equatable {
       variantId: data['variantId'],
       addedAt: (data['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       productTitle: data['productTitle'] ?? '',
-      variantAttributes: Map<String, String>.from(data['variantAttributes'] ?? {}),
+      variantAttributes:
+          Map<String, String>.from(data['variantAttributes'] ?? {}),
     );
   }
 

@@ -30,7 +30,8 @@ abstract class VisualSearchRepository {
   Future<void> indexProductImages({int batchSize = 100});
 
   /// Get similar products for a product
-  Future<List<VisualMatch>> findSimilarProducts(String productId, {int limit = 10});
+  Future<List<VisualMatch>> findSimilarProducts(String productId,
+      {int limit = 10});
 
   /// Extract attributes from image (color, pattern, style, category)
   Future<ImageAttributes> extractAttributes(String imageUrl);

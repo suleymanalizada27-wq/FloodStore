@@ -27,7 +27,9 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Stream<AppUser?> authStateChanges() {
-    return _auth.authStateChanges().map((user) => user != null ? _mapUser(user) : null);
+    return _auth
+        .authStateChanges()
+        .map((user) => user != null ? _mapUser(user) : null);
   }
 
   @override
@@ -84,8 +86,7 @@ class FirebaseAuthRepository implements AuthRepository {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
-          await _auth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
       await _writeTestUser(userCredential.user!);
       return _mapUser(userCredential.user!);
     } catch (e) {
@@ -122,8 +123,7 @@ class FirebaseAuthRepository implements AuthRepository {
         accessToken: credential.authorizationCode,
       );
 
-      final userCredential =
-          await _auth.signInWithCredential(oAuthCredential);
+      final userCredential = await _auth.signInWithCredential(oAuthCredential);
       await _writeTestUser(userCredential.user!);
       return _mapUser(userCredential.user!);
     } catch (e) {
@@ -391,7 +391,8 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<List<MfaMethod>> getEnrolledMfaMethods() async {
-    throw UnimplementedError('Getting enrolled MFA methods is not implemented yet.');
+    throw UnimplementedError(
+        'Getting enrolled MFA methods is not implemented yet.');
   }
 
   @override
@@ -404,7 +405,8 @@ class FirebaseAuthRepository implements AuthRepository {
     required MfaChallenge challenge,
     required String code,
   }) async {
-    throw UnimplementedError('MFA challenge resolution is not implemented yet.');
+    throw UnimplementedError(
+        'MFA challenge resolution is not implemented yet.');
   }
 
   @override
@@ -446,6 +448,7 @@ class FirebaseAuthRepository implements AuthRepository {
         code: e.code,
       );
     }
-    return const AuthFailure('An unknown error occurred', code: 'ERROR_UNKNOWN');
+    return const AuthFailure('An unknown error occurred',
+        code: 'ERROR_UNKNOWN');
   }
 }

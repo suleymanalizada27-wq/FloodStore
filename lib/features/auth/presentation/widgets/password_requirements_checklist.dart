@@ -30,7 +30,8 @@ class PasswordRequirementsChecklist extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               'Entropy: ~${entropy.round()} bits',
-              style: AppTextStyles.body(size: 11, color: AppColors.textTertiary),
+              style:
+                  AppTextStyles.body(size: 11, color: AppColors.textTertiary),
             ),
           ],
         ],
@@ -45,7 +46,8 @@ class _RequirementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = requirement.isMet ? AppColors.success : AppColors.textTertiary;
+    final color =
+        requirement.isMet ? AppColors.success : AppColors.textTertiary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -53,14 +55,17 @@ class _RequirementRow extends StatelessWidget {
           AnimatedSwitcher(
             duration: AppMotion.fast,
             child: Icon(
-              requirement.isMet ? Icons.check_circle_rounded : Icons.circle_outlined,
+              requirement.isMet
+                  ? Icons.check_circle_rounded
+                  : Icons.circle_outlined,
               key: ValueKey(requirement.isMet),
               size: 14,
               color: color,
             ),
           ),
           const SizedBox(width: 8),
-          Text(requirement.label, style: AppTextStyles.body(size: 12, color: color)),
+          Text(requirement.label,
+              style: AppTextStyles.body(size: 12, color: color)),
         ],
       ),
     );

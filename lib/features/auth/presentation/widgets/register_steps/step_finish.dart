@@ -26,7 +26,8 @@ class StepFinish extends StatelessWidget {
             tween: Tween(begin: 0, end: 1),
             duration: AppMotion.slow,
             curve: AppMotion.spring,
-            builder: (context, value, child) => Transform.scale(scale: value, child: child),
+            builder: (context, value, child) =>
+                Transform.scale(scale: value, child: child),
             child: Container(
               height: 72,
               width: 72,
@@ -35,7 +36,8 @@ class StepFinish extends StatelessWidget {
                 color: AppColors.success.withValues(alpha: 0.14),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_rounded, color: AppColors.success, size: 36),
+              child: const Icon(Icons.check_rounded,
+                  color: AppColors.success, size: 36),
             ),
           ),
         ),
@@ -55,7 +57,9 @@ class StepFinish extends StatelessWidget {
         ),
         const SizedBox(height: 26),
         PremiumButton(
-          label: accountMode.requiresCompanyName ? 'Set Up Organization' : 'Verify Email',
+          label: accountMode.requiresCompanyName
+              ? 'Set Up Organization'
+              : 'Verify Email',
           onPressed: onContinue,
         ),
       ],

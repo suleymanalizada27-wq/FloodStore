@@ -10,7 +10,8 @@ abstract class InventoryRepository {
   Future<InventoryItem?> getInventoryItem(String id);
 
   /// Gets inventory items by product ID
-  Future<List<InventoryItem>> getInventoryItemsByProduct(String productId, {
+  Future<List<InventoryItem>> getInventoryItemsByProduct(
+    String productId, {
     int limit = 20,
     String? lastDocumentId,
     String? warehouseId,
@@ -18,7 +19,8 @@ abstract class InventoryRepository {
   });
 
   /// Gets inventory items by warehouse ID
-  Future<List<InventoryItem>> getInventoryItemsByWarehouse(String warehouseId, {
+  Future<List<InventoryItem>> getInventoryItemsByWarehouse(
+    String warehouseId, {
     int limit = 20,
     String? lastDocumentId,
     String? productId,

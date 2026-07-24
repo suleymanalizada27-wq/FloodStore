@@ -37,7 +37,9 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
 
   void _sendCode() {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(phoneAuthControllerProvider.notifier).sendCode(_phoneController.text);
+    ref
+        .read(phoneAuthControllerProvider.notifier)
+        .sendCode(_phoneController.text);
   }
 
   @override
@@ -68,12 +70,15 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
                 onSubmit: _sendCode,
               )
             : _CodeStep(
-                loading: state.isSubmitting || state.step == PhoneAuthStep.verifying,
+                loading:
+                    state.isSubmitting || state.step == PhoneAuthStep.verifying,
                 errorText: _codeError,
                 canResend: state.canResend,
                 onCompleted: (code) {
                   setState(() => _codeError = null);
-                  ref.read(phoneAuthControllerProvider.notifier).verifyCode(code);
+                  ref
+                      .read(phoneAuthControllerProvider.notifier)
+                      .verifyCode(code);
                 },
                 onResend: () {
                   setState(() => _codeError = null);
@@ -89,7 +94,8 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Voice call delivery isn't available yet — please use the SMS code."),
+                          content: Text(
+                              "Voice call delivery isn't available yet — please use the SMS code."),
                         ),
                       );
                     }
@@ -142,7 +148,8 @@ class _NumberStep extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-          PremiumButton(label: 'Send Code', loading: loading, onPressed: onSubmit),
+          PremiumButton(
+              label: 'Send Code', loading: loading, onPressed: onSubmit),
           const SizedBox(height: 18),
           Center(
             child: TextButton.icon(
@@ -200,7 +207,9 @@ class _CodeStep extends StatelessWidget {
           child: TextButton(
             onPressed: canResend ? onResend : null,
             child: Text(
-              canResend ? "Didn't get a code? Resend" : 'Resend available shortly',
+              canResend
+                  ? "Didn't get a code? Resend"
+                  : 'Resend available shortly',
               style: AppTextStyles.body(
                 size: 13,
                 weight: FontWeight.w600,
@@ -214,7 +223,8 @@ class _CodeStep extends StatelessWidget {
             onPressed: onRequestCall,
             child: Text(
               'Call me instead',
-              style: AppTextStyles.body(size: 12.5, color: AppColors.textTertiary),
+              style:
+                  AppTextStyles.body(size: 12.5, color: AppColors.textTertiary),
             ),
           ),
         ),

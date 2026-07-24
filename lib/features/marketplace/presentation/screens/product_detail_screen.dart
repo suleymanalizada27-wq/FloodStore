@@ -13,7 +13,8 @@ import '../../application/providers/marketplace_providers.dart';
 class ProductDetailScreen extends ConsumerWidget {
   final String productId;
 
-  const ProductDetailScreen({Key? key, required this.productId}) : super(key: key);
+  const ProductDetailScreen({Key? key, required this.productId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +25,9 @@ class ProductDetailScreen extends ConsumerWidget {
       data: (product) {
         if (product == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Ürün'), backgroundColor: AppColors.background),
+            appBar: AppBar(
+                title: const Text('Ürün'),
+                backgroundColor: AppColors.background),
             body: const Center(child: Text('Ürün bulunamadı')),
           );
         }
@@ -54,25 +57,34 @@ class ProductDetailScreen extends ConsumerWidget {
                             ),
                           )
                         : const Center(
-                            child: Icon(Icons.image, size: 80, color: AppColors.textTertiary),
+                            child: Icon(Icons.image,
+                                size: 80, color: AppColors.textTertiary),
                           ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(product.base.title, style: AppTextStyles.titleLarge),
                   const SizedBox(height: AppSpacing.sm),
-                  Text(product.base.description, style: AppTextStyles.body(size: 14)),
+                  Text(product.base.description,
+                      style: AppTextStyles.body(size: 14)),
                   const SizedBox(height: AppSpacing.sm),
-                  Text('Marka: ${product.base.brand}', style: AppTextStyles.body(size: 14)),
+                  Text('Marka: ${product.base.brand}',
+                      style: AppTextStyles.body(size: 14)),
                   const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
-                      Text('\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
-                          style: AppTextStyles.titleLarge?.copyWith(color: AppColors.primary)),
-                      if (product.pricing.compareAtPrice != null && product.pricing.compareAtPrice! > 0) ...[
+                      Text(
+                          '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
+                          style: AppTextStyles.titleLarge
+                              ?.copyWith(color: AppColors.primary)),
+                      if (product.pricing.compareAtPrice != null &&
+                          product.pricing.compareAtPrice! > 0) ...[
                         const SizedBox(width: 8),
-                        Text('\$${(product.pricing.compareAtPrice! / 100).toStringAsFixed(2)}',
-                            style: AppTextStyles.body(size: 14, color: AppColors.textTertiary)
-                                .copyWith(decoration: TextDecoration.lineThrough)),
+                        Text(
+                            '\$${(product.pricing.compareAtPrice! / 100).toStringAsFixed(2)}',
+                            style: AppTextStyles.body(
+                                    size: 14, color: AppColors.textTertiary)
+                                .copyWith(
+                                    decoration: TextDecoration.lineThrough)),
                       ],
                     ],
                   ),
@@ -87,7 +99,8 @@ class ProductDetailScreen extends ConsumerWidget {
                             final userId = ref.read(currentUserIdProvider);
                             if (userId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Lütfen giriş yapın')),
+                                const SnackBar(
+                                    content: Text('Lütfen giriş yapın')),
                               );
                               return;
                             }
@@ -105,10 +118,12 @@ class ProductDetailScreen extends ConsumerWidget {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('${product.base.title} sepete eklendi'),
+                                    content: Text(
+                                        '${product.base.title} sepete eklendi'),
                                     action: SnackBarAction(
                                       label: 'Sepeti Gör',
-                                      onPressed: () => context.push(AppRoutes.cart),
+                                      onPressed: () =>
+                                          context.push(AppRoutes.cart),
                                     ),
                                   ),
                                 );
@@ -116,7 +131,8 @@ class ProductDetailScreen extends ConsumerWidget {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Sepete eklenemedi: $e')),
+                                  SnackBar(
+                                      content: Text('Sepete eklenemedi: $e')),
                                 );
                               }
                             }
@@ -132,7 +148,8 @@ class ProductDetailScreen extends ConsumerWidget {
                             final userId = ref.read(currentUserIdProvider);
                             if (userId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Lütfen giriş yapın')),
+                                const SnackBar(
+                                    content: Text('Lütfen giriş yapın')),
                               );
                               return;
                             }
@@ -147,10 +164,12 @@ class ProductDetailScreen extends ConsumerWidget {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('${product.base.title} istek listesine eklendi'),
+                                    content: Text(
+                                        '${product.base.title} istek listesine eklendi'),
                                     action: SnackBarAction(
                                       label: 'Listeyi Gör',
-                                      onPressed: () => context.push(AppRoutes.wishlist),
+                                      onPressed: () =>
+                                          context.push(AppRoutes.wishlist),
                                     ),
                                   ),
                                 );
@@ -158,7 +177,9 @@ class ProductDetailScreen extends ConsumerWidget {
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('İstek listesine eklenemedi: $e')),
+                                  SnackBar(
+                                      content: Text(
+                                          'İstek listesine eklenemedi: $e')),
                                 );
                               }
                             }
@@ -173,8 +194,10 @@ class ProductDetailScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (error, stack) => Scaffold(body: Center(child: Text('Ürün yüklenemedi: $error'))),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) =>
+          Scaffold(body: Center(child: Text('Ürün yüklenemedi: $error'))),
     );
   }
 }

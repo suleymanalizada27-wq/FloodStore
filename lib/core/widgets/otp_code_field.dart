@@ -75,8 +75,8 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
                   final digit = index < _controller.text.length
                       ? _controller.text[index]
                       : '';
-                  final isCurrent = index == _controller.text.length &&
-                      _focusNode.hasFocus;
+                  final isCurrent =
+                      index == _controller.text.length && _focusNode.hasFocus;
 
                   return AnimatedContainer(
                     duration: AppMotion.fast,
@@ -98,7 +98,8 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
                       boxShadow: isCurrent
                           ? [
                               BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.18),
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.18),
                                 blurRadius: 14,
                                 spreadRadius: 1,
                               ),

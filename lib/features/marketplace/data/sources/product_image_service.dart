@@ -21,17 +21,15 @@ class ProductImageService {
   }) async {
     try {
       final fileName = '${_uuid.v4()}.jpg';
-      final ref = _storage
-          .ref()
-          .child('products')
-          .child(productId)
-          .child(fileName);
+      final ref =
+          _storage.ref().child('products').child(productId).child(fileName);
 
       Uint8List bytes = await imageFile.readAsBytes();
       if (kIsWeb) {
         await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       } else {
-        await ref.putFile(imageFile, SettableMetadata(contentType: 'image/jpeg'));
+        await ref.putFile(
+            imageFile, SettableMetadata(contentType: 'image/jpeg'));
       }
 
       final downloadUrl = await ref.getDownloadURL();
@@ -71,11 +69,7 @@ class ProductImageService {
   }) async {
     try {
       final name = fileName.isEmpty ? '${_uuid.v4()}.jpg' : fileName;
-      final ref = _storage
-          .ref()
-          .child('products')
-          .child(productId)
-          .child(name);
+      final ref = _storage.ref().child('products').child(productId).child(name);
 
       await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       final downloadUrl = await ref.getDownloadURL();

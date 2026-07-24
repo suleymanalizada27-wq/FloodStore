@@ -12,11 +12,15 @@ class FirestoreNotificationRepository implements NotificationRepository {
   fs.CollectionReference _notificationsRef(String userId) =>
       _firestore.collection('users').doc(userId).collection('notifications');
 
-  fs.DocumentReference _preferencesRef(String userId) =>
-      _firestore.collection('users').doc(userId).collection('settings').doc('notifications');
+  fs.DocumentReference _preferencesRef(String userId) => _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('settings')
+      .doc('notifications');
 
   @override
-  Future<List<Notification>> getNotifications(String userId, {
+  Future<List<Notification>> getNotifications(
+    String userId, {
     int limit = 20,
     String? lastDocumentId,
     bool unreadOnly = false,
@@ -35,13 +39,15 @@ class FirestoreNotificationRepository implements NotificationRepository {
         query = query.where('type', isEqualTo: type.name);
       }
       if (lastDocumentId != null) {
-        final lastDoc = await _notificationsRef(userId).doc(lastDocumentId).get();
+        final lastDoc =
+            await _notificationsRef(userId).doc(lastDocumentId).get();
         if (lastDoc.exists) query = query.startAfterDocument(lastDoc);
       }
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => Notification.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => Notification.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get notifications: $e');
@@ -112,7 +118,8 @@ class FirestoreNotificationRepository implements NotificationRepository {
   @override
   Future<String> create(Notification notification) async {
     try {
-      final docRef = await _notificationsRef(notification.userId).add(notification.toFirestore());
+      final docRef = await _notificationsRef(notification.userId)
+          .add(notification.toFirestore());
       return docRef.id;
     } catch (e) {
       throw Exception('Failed to create notification: $e');
@@ -140,16 +147,19 @@ class FirestoreNotificationRepository implements NotificationRepository {
       if (!doc.exists) {
         return NotificationPreferences(userId: userId);
       }
-      return NotificationPreferences.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return NotificationPreferences.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get preferences: $e');
     }
   }
 
   @override
-  Future<void> updatePreferences(String userId, NotificationPreferences preferences) async {
+  Future<void> updatePreferences(
+      String userId, NotificationPreferences preferences) async {
     try {
-      await _preferencesRef(userId).set(preferences.toFirestore(), SetOptions(merge: true));
+      await _preferencesRef(userId)
+          .set(preferences.toFirestore(), SetOptions(merge: true));
     } catch (e) {
       throw Exception('Failed to update preferences: $e');
     }
@@ -208,8 +218,8 @@ class FirestoreNotificationRepository implements NotificationRepository {
     // Store with future createdAt, use Cloud Function to trigger
     try {
       await _notificationsRef(notification.userId).doc(notification.id).set(
-        notification.copyWith(createdAt: scheduledAt).toFirestore(),
-      );
+            notification.copyWith(createdAt: scheduledAt).toFirestore(),
+          );
     } catch (e) {
       throw Exception('Failed to schedule notification: $e');
     }
@@ -219,7 +229,10 @@ class FirestoreNotificationRepository implements NotificationRepository {
   Future<void> cancelScheduled(String notificationId) async {
     // Would need to find by ID across all users - use a scheduled collection
     try {
-      await _firestore.collection('scheduled_notifications').doc(notificationId).delete();
+      await _firestore
+          .collection('scheduled_notifications')
+          .doc(notificationId)
+          .delete();
     } catch (e) {
       throw Exception('Failed to cancel scheduled: $e');
     }

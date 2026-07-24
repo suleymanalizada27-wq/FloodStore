@@ -14,7 +14,8 @@ class BusinessAccount extends Equatable {
   final String? description;
   final String? logoUrl;
   final String? taxCertificateUrl; // Vergi levazı / Tax certificate
-  final String? tradeRegistryUrl; // Ticaret sicil gazetesi / Trade registry gazette
+  final String?
+      tradeRegistryUrl; // Ticaret sicil gazetesi / Trade registry gazette
   final String? authorizedPersonName; // Yetkili kişi adı
   final String? authorizedPersonTc; // Yetkili kişi TC/Passport
   final String? authorizedPersonPhone; // Yetkili kişi telefonu
@@ -28,7 +29,8 @@ class BusinessAccount extends Equatable {
   // Construction-specific qualifications
   final List<String>? licenses; // Contractor license numbers
   final List<String>? certifications; // e.g., OSHA, ISO certifications
-  final List<String>? insurancePolicies; // e.g., general liability, workers' comp
+  final List<String>?
+      insurancePolicies; // e.g., general liability, workers' comp
   final double? bondingCapacity; // in currency (e.g., USD) for bonding capacity
   final List<String>? serviceAreas; // e.g., ['New York', 'California']
   final List<String>? equipmentFleet; // list of equipment IDs or types owned
@@ -149,8 +151,10 @@ class BusinessAccount extends Equatable {
       tradeRegistryUrl: tradeRegistryUrl ?? this.tradeRegistryUrl,
       authorizedPersonName: authorizedPersonName ?? this.authorizedPersonName,
       authorizedPersonTc: authorizedPersonTc ?? this.authorizedPersonTc,
-      authorizedPersonPhone: authorizedPersonPhone ?? this.authorizedPersonPhone,
-      authorizedPersonEmail: authorizedPersonEmail ?? this.authorizedPersonEmail,
+      authorizedPersonPhone:
+          authorizedPersonPhone ?? this.authorizedPersonPhone,
+      authorizedPersonEmail:
+          authorizedPersonEmail ?? this.authorizedPersonEmail,
       status: status ?? this.status,
       rejectionReason: rejectionReason ?? this.rejectionReason,
       createdAt: createdAt ?? this.createdAt,
@@ -202,7 +206,8 @@ class BusinessAccount extends Equatable {
     };
   }
 
-  static BusinessAccount fromFirestore(Map<String, dynamic> data, String documentId) {
+  static BusinessAccount fromFirestore(
+      Map<String, dynamic> data, String documentId) {
     return BusinessAccount(
       id: documentId,
       userId: data['userId'] ?? '',
@@ -226,20 +231,33 @@ class BusinessAccount extends Equatable {
         orElse: () => BusinessAccountStatus.pending,
       ),
       rejectionReason: data['rejectionReason'],
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
-      approvedAt: data['approvedAt'] != null ? DateTime.parse(data['approvedAt']) : null,
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      approvedAt: data['approvedAt'] != null
+          ? DateTime.parse(data['approvedAt'])
+          : null,
       approvedBy: data['approvedBy'],
       // Construction-specific qualifications
-      licenses: data['licenses'] != null ? List<String>.from(data['licenses']) : null,
-      certifications: data['certifications'] != null ? List<String>.from(data['certifications']) : null,
-      insurancePolicies:
-          data['insurancePolicies'] != null ? List<String>.from(data['insurancePolicies']) : null,
+      licenses:
+          data['licenses'] != null ? List<String>.from(data['licenses']) : null,
+      certifications: data['certifications'] != null
+          ? List<String>.from(data['certifications'])
+          : null,
+      insurancePolicies: data['insurancePolicies'] != null
+          ? List<String>.from(data['insurancePolicies'])
+          : null,
       bondingCapacity: (data['bondingCapacity'] as num?)?.toDouble(),
-      serviceAreas: data['serviceAreas'] != null ? List<String>.from(data['serviceAreas']) : null,
-      equipmentFleet: data['equipmentFleet'] != null ? List<String>.from(data['equipmentFleet']) : null,
-      projectPortfolio:
-          data['projectPortfolio'] != null ? List<String>.from(data['projectPortfolio']) : null,
+      serviceAreas: data['serviceAreas'] != null
+          ? List<String>.from(data['serviceAreas'])
+          : null,
+      equipmentFleet: data['equipmentFleet'] != null
+          ? List<String>.from(data['equipmentFleet'])
+          : null,
+      projectPortfolio: data['projectPortfolio'] != null
+          ? List<String>.from(data['projectPortfolio'])
+          : null,
     );
   }
 }

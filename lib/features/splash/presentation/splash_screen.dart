@@ -10,7 +10,7 @@ import '../../../core/constants/app_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.onNavigate});
-  
+
   /// Called when splash duration completes. In production this navigates to auth.
   /// In tests, this can be overridden to avoid timer issues.
   final VoidCallback? onNavigate;
@@ -75,10 +75,11 @@ class _SplashScreenState extends State<SplashScreen>
                     opacity: _wordmarkFade,
                     child: Column(
                       children: [
-                        Text('FLOODSTORE', style: AppTextStyles.overline(
-                          color: AppColors.textSecondary,
-                          size: 13,
-                        )),
+                        Text('FLOODSTORE',
+                            style: AppTextStyles.overline(
+                              color: AppColors.textSecondary,
+                              size: 13,
+                            )),
                       ],
                     ),
                   ),

@@ -36,8 +36,10 @@ class StepVerification extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SummaryRow(label: 'Name', value: '${state.firstName} ${state.lastName}'),
-              _SummaryRow(label: 'Account type', value: state.accountMode.label),
+              _SummaryRow(
+                  label: 'Name', value: '${state.firstName} ${state.lastName}'),
+              _SummaryRow(
+                  label: 'Account type', value: state.accountMode.label),
               if (state.accountMode.requiresCompanyName)
                 _SummaryRow(label: 'Company', value: state.companyName),
               _SummaryRow(label: 'Username', value: state.username),
@@ -68,7 +70,8 @@ class StepVerification extends StatelessWidget {
             Expanded(
               child: Text(
                 'I agree to the Terms of Service and Privacy Policy.',
-                style: AppTextStyles.body(size: 12.5, color: AppColors.textSecondary),
+                style: AppTextStyles.body(
+                    size: 12.5, color: AppColors.textSecondary),
               ),
             ),
           ],
@@ -91,7 +94,9 @@ class _SummaryRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 96,
-            child: Text(label, style: AppTextStyles.body(size: 12, color: AppColors.textTertiary)),
+            child: Text(label,
+                style: AppTextStyles.body(
+                    size: 12, color: AppColors.textTertiary)),
           ),
           Expanded(
             child: Text(

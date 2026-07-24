@@ -26,7 +26,8 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
@@ -99,20 +100,24 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 passwordValue: _passwordValue,
                 obscure: _obscurePassword,
                 state: state,
-                onToggleObscure: () => setState(() => _obscurePassword = !_obscurePassword),
+                onToggleObscure: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
                 onPasswordChanged: (v) => setState(() => _passwordValue = v),
                 onGenerate: () {
-                  final generated = PasswordStrengthService.generateStrongPassword();
+                  final generated =
+                      PasswordStrengthService.generateStrongPassword();
                   _newPasswordController.text = generated;
                   _confirmPasswordController.text = generated;
                   setState(() => _passwordValue = generated);
                 },
                 onSubmit: () {
-                  if (_newPasswordController.text != _confirmPasswordController.text) return;
+                  if (_newPasswordController.text !=
+                      _confirmPasswordController.text) return;
                   notifier.submitNewPassword(_newPasswordController.text);
                 },
               ),
-            PasswordResetStep.success => const _SuccessStep(key: ValueKey('success')),
+            PasswordResetStep.success =>
+              const _SuccessStep(key: ValueKey('success')),
           },
         ),
       ),
@@ -128,10 +133,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       };
 
   String _subtitleFor(PasswordResetStep step) => switch (step) {
-        PasswordResetStep.enterEmail => "We'll email you a secure link to get back in.",
+        PasswordResetStep.enterEmail =>
+          "We'll email you a secure link to get back in.",
         PasswordResetStep.emailSent => 'It may take a minute to arrive.',
-        PasswordResetStep.enterCode => 'Paste the code from the link in your email.',
-        PasswordResetStep.newPassword => 'Make it something you have not used before.',
+        PasswordResetStep.enterCode =>
+          'Paste the code from the link in your email.',
+        PasswordResetStep.newPassword =>
+          'Make it something you have not used before.',
         PasswordResetStep.success => 'Your password has been updated.',
       };
 }
@@ -169,12 +177,16 @@ class _EnterEmailStep extends StatelessWidget {
             validator: (value) {
               final v = value?.trim() ?? '';
               if (v.isEmpty) return 'Enter your email';
-              if (!v.contains('@') || !v.contains('.')) return 'Enter a valid email';
+              if (!v.contains('@') || !v.contains('.'))
+                return 'Enter a valid email';
               return null;
             },
           ),
           const SizedBox(height: 24),
-          PremiumButton(label: 'Send Reset Link', loading: state.isSubmitting, onPressed: onSubmit),
+          PremiumButton(
+              label: 'Send Reset Link',
+              loading: state.isSubmitting,
+              onPressed: onSubmit),
           const SizedBox(height: 20),
           Center(
             child: TextButton.icon(
@@ -217,7 +229,8 @@ class _EmailSentStep extends StatelessWidget {
             color: AppColors.success.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.mark_email_read_outlined, color: AppColors.success, size: 26),
+          child: const Icon(Icons.mark_email_read_outlined,
+              color: AppColors.success, size: 26),
         ),
         const SizedBox(height: 18),
         Text(
@@ -240,7 +253,9 @@ class _EmailSentStep extends StatelessWidget {
               style: AppTextStyles.body(
                 size: 13,
                 weight: FontWeight.w600,
-                color: state.canResend ? AppColors.secondary : AppColors.textTertiary,
+                color: state.canResend
+                    ? AppColors.secondary
+                    : AppColors.textTertiary,
               ),
             ),
           ),
@@ -289,7 +304,10 @@ class _EnterCodeStep extends StatelessWidget {
           style: AppTextStyles.body(size: 11.5, color: AppColors.textTertiary),
         ),
         const SizedBox(height: 22),
-        PremiumButton(label: 'Verify Code', loading: state.isSubmitting, onPressed: onSubmit),
+        PremiumButton(
+            label: 'Verify Code',
+            loading: state.isSubmitting,
+            onPressed: onSubmit),
       ],
     );
   }
@@ -321,8 +339,8 @@ class _NewPasswordStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final passwordsMatch =
-        confirmController.text.isEmpty || confirmController.text == passwordController.text;
+    final passwordsMatch = confirmController.text.isEmpty ||
+        confirmController.text == passwordController.text;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -337,7 +355,9 @@ class _NewPasswordStep extends StatelessWidget {
           onChanged: onPasswordChanged,
           suffixIcon: IconButton(
             icon: Icon(
-              obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+              obscure
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
               size: 20,
               color: AppColors.textTertiary,
             ),
@@ -395,7 +415,8 @@ class _SuccessStep extends ConsumerWidget {
           tween: Tween(begin: 0, end: 1),
           duration: AppMotion.slow,
           curve: AppMotion.spring,
-          builder: (context, value, child) => Transform.scale(scale: value, child: child),
+          builder: (context, value, child) =>
+              Transform.scale(scale: value, child: child),
           child: Container(
             height: 64,
             width: 64,
@@ -404,7 +425,8 @@ class _SuccessStep extends ConsumerWidget {
               color: AppColors.success.withValues(alpha: 0.14),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.check_rounded, color: AppColors.success, size: 32),
+            child: const Icon(Icons.check_rounded,
+                color: AppColors.success, size: 32),
           ),
         ),
         const SizedBox(height: 18),

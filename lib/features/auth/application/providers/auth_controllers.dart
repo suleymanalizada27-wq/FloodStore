@@ -208,7 +208,8 @@ final phoneAuthControllerProvider =
 /// Drives [EmailVerificationScreen]: resend-with-cooldown plus an explicit
 /// "I've verified" check that reloads the current user so
 /// `emailVerified` is fresh without forcing a sign-out/sign-in.
-class EmailVerificationController extends StateNotifier<EmailVerificationState> {
+class EmailVerificationController
+    extends StateNotifier<EmailVerificationState> {
   EmailVerificationController(this.ref) : super(const EmailVerificationState());
 
   final Ref ref;
@@ -232,7 +233,8 @@ class EmailVerificationController extends StateNotifier<EmailVerificationState> 
     } catch (e) {
       state = state.copyWith(
         isSending: false,
-        errorMessage: 'Could not send the verification email. Please try again.',
+        errorMessage:
+            'Could not send the verification email. Please try again.',
       );
     }
   }

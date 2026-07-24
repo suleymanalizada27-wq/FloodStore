@@ -1,0 +1,175 @@
+[1mdiff --git a/lib/features/marketplace/domain/entities/product.dart b/lib/features/marketplace/domain/entities/product.dart[m
+[1mindex 38bb398..f04b7b3 100644[m
+[1m--- a/lib/features/marketplace/domain/entities/product.dart[m
+[1m+++ b/lib/features/marketplace/domain/entities/product.dart[m
+[36m@@ -18,6 +18,26 @@[m [mclass Product extends Equatable {[m
+   final DateTime createdAt;[m
+   final DateTime updatedAt;[m
+   final ProductStatus status;[m
+[32m+[m[32m  // Product type classification[m
+[32m+[m[32m  final String? productType; // e.g., 'general', 'construction_material', 'equipment'[m
+[32m+[m[32m  // Construction-specific fields[m
+[32m+[m[32m  final String? materialType; // e.g., 'concrete', 'steel', 'lumber'[m
+[32m+[m[32m  final String? grade; // e.g., 'C30/37', 'A36', 'No. 2'[m
+[32m+[m[32m  final List<String>? specifications; // e.g., ['ASTM C150', 'ISO 9001'][m
+[32m+[m[32m  final List<String>? sustainabilityCertifications; // e.g., ['LEED', 'FSC'][m
+[32m+[m[32m  final String? unitOfMeasure; // e.g., 'kg', 'ton', 'm3', 'ft3', 'piece', 'm', 'ft', 'l', 'gal'[m
+[32m+[m[32m  final double? quantityPerUnit; // Quantity of unitOfMeasure per product unit[m
+[32m+[m[32m  // Equipment-specific fields[m
+[32m+[m[32m  final String? equipmentType; // e.g., 'excavator', 'crane', 'bulldozer'[m
+[32m+[m[32m  final String? capacity; // e.g., '1.5 cu yd', '20 ton'[m
+[32m+[m[32m  final String? fuelType; // e.g., 'diesel', 'electric', 'gasoline'[m
+[32m+[m[32m  final int? hoursOfOperation; // total hours used[m
+[32m+[m[32m  final String? condition; // e.g., 'new', 'used', 'refurbished'[m
+[32m+[m[32m  final bool? isForRent;[m
+[32m+[m[32m  final bool? isForSale;[m
+[32m+[m[32m  final double? rentalRatePerDay; // in cents[m
+[32m+[m[32m  final double? rentalRatePerHour; // in cents[m
+[32m+[m[32m  final double? rentalRatePerMonth; // in cents[m
+ [m
+   const Product({[m
+     required this.id,[m
+[36m@@ -35,6 +55,23 @@[m [mclass Product extends Equatable {[m
+     required this.createdAt,[m
+     required this.updatedAt,[m
+     required this.status,[m
+[32m+[m[32m    this.productType,[m
+[32m+[m[32m    this.materialType,[m
+[32m+[m[32m    this.grade,[m
+[32m+[m[32m    this.specifications,[m
+[32m+[m[32m    this.sustainabilityCertifications,[m
+[32m+[m[32m    this.unitOfMeasure,[m
+[32m+[m[32m    this.quantityPerUnit,[m
+[32m+[m[32m    this.equipmentType,[m
+[32m+[m[32m    this.capacity,[m
+[32m+[m[32m    this.fuelType,[m
+[32m+[m[32m    this.hoursOfOperation,[m
+[32m+[m[32m    this.condition,[m
+[32m+[m[32m    this.isForRent,[m
+[32m+[m[32m    this.isForSale,[m
+[32m+[m[32m    this.rentalRatePerDay,[m
+[32m+[m[32m    this.rentalRatePerHour,[m
+[32m+[m[32m    this.rentalRatePerMonth,[m
+   });[m
+ [m
+   @override[m
+[36m@@ -54,6 +91,23 @@[m [mclass Product extends Equatable {[m
+         createdAt,[m
+         updatedAt,[m
+         status,[m
+[32m+[m[32m        productType,[m
+[32m+[m[32m        materialType,[m
+[32m+[m[32m        grade,[m
+[32m+[m[32m        specifications,[m
+[32m+[m[32m        sustainabilityCertifications,[m
+[32m+[m[32m        unitOfMeasure,[m
+[32m+[m[32m        quantityPerUnit,[m
+[32m+[m[32m        equipmentType,[m
+[32m+[m[32m        capacity,[m
+[32m+[m[32m        fuelType,[m
+[32m+[m[32m        hoursOfOperation,[m
+[32m+[m[32m        condition,[m
+[32m+[m[32m        isForRent,[m
+[32m+[m[32m        isForSale,[m
+[32m+[m[32m        rentalRatePerDay,[m
+[32m+[m[32m        rentalRatePerHour,[m
+[32m+[m[32m        rentalRatePerMonth,[m
+       ];[m
+ [m
+   Product copyWith({[m
+[36m@@ -72,6 +126,23 @@[m [mclass Product extends Equatable {[m
+     DateTime? createdAt,[m
+     DateTime? updatedAt,[m
+     ProductStatus? status,[m
+[32m+[m[32m    String? productType,[m
+[32m+[m[32m    String? materialType,[m
+[32m+[m[32m    String? grade,[m
+[32m+[m[32m    List<String>? specifications,[m
+[32m+[m[32m    List<String>? sustainabilityCertifications,[m
+[32m+[m[32m    String? unitOfMeasure,[m
+[32m+[m[32m    double? quantityPerUnit,[m
+[32m+[m[32m    String? equipmentType,[m
+[32m+[m[32m    String? capacity,[m
+[32m+[m[32m    String? fuelType,[m
+[32m+[m[32m    int? hoursOfOperation,[m
+[32m+[m[32m    String? condition,[m
+[32m+[m[32m    bool? isForRent,[m
+[32m+[m[32m    bool? isForSale,[m
+[32m+[m[32m    double? rentalRatePerDay,[m
+[32m+[m[32m    double? rentalRatePerHour,[m
+[32m+[m[32m    double? rentalRatePerMonth,[m
+   }) {[m
+     return Product([m
+       id: id ?? this.id,[m
+[36m@@ -89,6 +160,24 @@[m [mclass Product extends Equatable {[m
+       createdAt: createdAt ?? this.createdAt,[m
+       updatedAt: updatedAt ?? this.updatedAt,[m
+       status: status ?? this.status,[m
+[32m+[m[32m      productType: productType ?? this.productType,[m
+[32m+[m[32m      materialType: materialType ?? this.materialType,[m
+[32m+[m[32m      grade: grade ?? this.grade,[m
+[32m+[m[32m      specifications: specifications ?? this.specifications,[m
+[32m+[m[32m      sustainabilityCertifications:[m
+[32m+[m[32m          sustainabilityCertifications ?? this.sustainabilityCertifications,[m
+[32m+[m[32m      unitOfMeasure: unitOfMeasure ?? this.unitOfMeasure,[m
+[32m+[m[32m      quantityPerUnit: quantityPerUnit ?? this.quantityPerUnit,[m
+[32m+[m[32m      equipmentType: equipmentType ?? this.equipmentType,[m
+[32m+[m[32m      capacity: capacity ?? this.capacity,[m
+[32m+[m[32m      fuelType: fuelType ?? this.fuelType,[m
+[32m+[m[32m      hoursOfOperation: hoursOfOperation ?? this.hoursOfOperation,[m
+[32m+[m[32m      condition: condition ?? this.condition,[m
+[32m+[m[32m      isForRent: isForRent ?? this.isForRent,[m
+[32m+[m[32m      isForSale: isForSale ?? this.isForSale,[m
+[32m+[m[32m      rentalRatePerDay: rentalRatePerDay ?? this.rentalRatePerDay,[m
+[32m+[m[32m      rentalRatePerHour: rentalRatePerHour ?? this.rentalRatePerHour,[m
+[32m+[m[32m      rentalRatePerMonth: rentalRatePerMonth ?? this.rentalRatePerMonth,[m
+     );[m
+   }[m
+ [m
+[36m@@ -108,8 +197,29 @@[m [mclass Product extends Equatable {[m
+       'createdAt': createdAt.toIso8601String(),[m
+       'updatedAt': updatedAt.toIso8601String(),[m
+       'status': status.name,[m
+[32m+[m[32m      'productType': productType,[m
+[32m+[m[32m      // Construction-specific fields[m
+[32m+[m[32m      'materialType': materialType,[m
+[32m+[m[32m      'grade': grade,[m
+[32m+[m[32m      'specifications': specifications,[m
+[32m+[m[32m      'sustainabilityCertifications': sustainabilityCertifications,[m
+[32m+[m[32m      'unitOfMeasure': unitOfMeasure,[m
+[32m+[m[32m      'quantityPerUnit': quantityPerUnit,[m
+[32m+[m[32m      // Equipment-specific fields[m
+[32m+[m[32m      'equipmentType': equipmentType,[m
+[32m+[m[32m      'capacity': capacity,[m
+[32m+[m[32m      'fuelType': fuelType,[m
+[32m+[m[32m      'hoursOfOperation': hoursOfOperation,[m
+[32m+[m[32m      'condition': condition,[m
+[32m+[m[32m      'isForRent': isForRent,[m
+[32m+[m[32m      'isForSale': isForSale,[m
+[32m+[m[32m      'rentalRatePerDay': rentalRatePerDay,[m
+[32m+[m[32m      'rentalRatePerHour': rentalRatePerHour,[m
+[32m+[m[32m      'rentalRatePerMonth': rentalRatePerMonth,[m
+     };[m
+   }[m
+[32m+[m[32m<parameter=new_string>[m
+[32m+[m[32m}[m
+ [m
+   static Product fromFirestore(Map<String, dynamic> data, String documentId) {[m
+     return Product([m
+[36m@@ -131,6 +241,16 @@[m [mclass Product extends Equatable {[m
+         (s) => s.name == data['status'],[m
+         orElse: () => ProductStatus.draft,[m
+       ),[m
+[32m+[m[32m      materialType: data['materialType'],[m
+[32m+[m[32m      grade: data['grade'],[m
+[32m+[m[32m      specifications: data['specifications'] != null[m
+[32m+[m[32m          ? List<String>.from(data['specifications'])[m
+[32m+[m[32m          : null,[m
+[32m+[m[32m      sustainabilityCertifications: data['sustainabilityCertifications'] != null[m
+[32m+[m[32m          ? List<String>.from(data['sustainabilityCertifications'])[m
+[32m+[m[32m          : null,[m
+[32m+[m[32m      unitOfMeasure: data['unitOfMeasure'],[m
+[32m+[m[32m      quantityPerUnit: (data['quantityPerUnit'] as num?)?.toDouble(),[m
+     );[m
+   }[m
+ }[m

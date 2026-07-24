@@ -72,7 +72,8 @@ class _AccountLockBannerState extends State<AccountLockBanner> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.lock_clock_rounded, size: 18, color: AppColors.warning),
+          const Icon(Icons.lock_clock_rounded,
+              size: 18, color: AppColors.warning),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -91,7 +92,8 @@ class _AccountLockBannerState extends State<AccountLockBanner> {
                   _remaining > Duration.zero
                       ? 'For your security, this account is temporarily locked. Try again in ${_format(_remaining)}.'
                       : 'You can try signing in again now.',
-                  style: AppTextStyles.body(size: 12.5, color: AppColors.textSecondary),
+                  style: AppTextStyles.body(
+                      size: 12.5, color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -131,14 +133,16 @@ class RateLimitBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.info),
+          const Icon(Icons.info_outline_rounded,
+              size: 16, color: AppColors.info),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               attemptsRemaining == 0
                   ? 'One more failed attempt will temporarily lock this account.'
                   : '$attemptsRemaining attempts remaining before a temporary lock.',
-              style: AppTextStyles.body(size: 12, color: AppColors.textSecondary),
+              style:
+                  AppTextStyles.body(size: 12, color: AppColors.textSecondary),
             ),
           ),
         ],

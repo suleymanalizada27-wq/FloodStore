@@ -67,7 +67,10 @@ class SessionService {
     final identifier = await getRememberedIdentifier();
     if (identifier == null) return null;
     final prefs = await _prefs;
-    return (identifier: identifier, displayName: prefs.getString(_keyRememberedDisplayName));
+    return (
+      identifier: identifier,
+      displayName: prefs.getString(_keyRememberedDisplayName)
+    );
   }
 
   // -- Keep me signed in / idle timeout --------------------------------

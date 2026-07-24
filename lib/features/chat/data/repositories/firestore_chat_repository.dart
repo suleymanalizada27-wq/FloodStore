@@ -12,8 +12,10 @@ class FirestoreChatRepository implements ChatRepository {
   fs.CollectionReference _sessionsRef(String userId) =>
       _firestore.collection('users').doc(userId).collection('chat_sessions');
 
-  fs.CollectionReference _messagesRef(String sessionId) =>
-      _firestore.collection('chat_sessions').doc(sessionId).collection('messages');
+  fs.CollectionReference _messagesRef(String sessionId) => _firestore
+      .collection('chat_sessions')
+      .doc(sessionId)
+      .collection('messages');
 
   @override
   Future<String> createSession(String userId) async {
@@ -36,7 +38,8 @@ class FirestoreChatRepository implements ChatRepository {
   @override
   Future<ChatSession?> getSession(String sessionId) async {
     try {
-      final doc = await _firestore.collection('chat_sessions').doc(sessionId).get();
+      final doc =
+          await _firestore.collection('chat_sessions').doc(sessionId).get();
       if (!doc.exists) return null;
       return ChatSession.fromFirestore(doc.data()!, doc.id);
     } catch (e) {
@@ -45,14 +48,18 @@ class FirestoreChatRepository implements ChatRepository {
   }
 
   @override
-  Future<List<ChatSession>> getUserSessions(String userId, {int limit = 20}) async {
+  Future<List<ChatSession>> getUserSessions(String userId,
+      {int limit = 20}) async {
     try {
       final query = await _sessionsRef(userId)
           .where('status', isEqualTo: 'active')
           .orderBy('updatedAt', descending: true)
           .limit(limit)
           .get();
-      return query.docs.map((doc) => ChatSession.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return query.docs
+          .map((doc) => ChatSession.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get user sessions: $e');
     }
@@ -61,9 +68,13 @@ class FirestoreChatRepository implements ChatRepository {
   @override
   Future<ChatMessage> sendMessage(ChatMessage message) async {
     try {
-      final docRef = await _messagesRef(message.sessionId).add(message.toFirestore());
+      final docRef =
+          await _messagesRef(message.sessionId).add(message.toFirestore());
       // Update session
-      await _firestore.collection('chat_sessions').doc(message.sessionId).update({
+      await _firestore
+          .collection('chat_sessions')
+          .doc(message.sessionId)
+          .update({
         'messageCount': fs.FieldValue.increment(1),
         'updatedAt': fs.FieldValue.serverTimestamp(),
         'lastMessage': message.toFirestore(),
@@ -75,9 +86,12 @@ class FirestoreChatRepository implements ChatRepository {
   }
 
   @override
-  Future<List<ChatMessage>> getMessages(String sessionId, {int limit = 50, String? lastDocumentId}) async {
+  Future<List<ChatMessage>> getMessages(String sessionId,
+      {int limit = 50, String? lastDocumentId}) async {
     try {
-      var query = _messagesRef(sessionId).orderBy('createdAt', descending: true).limit(limit);
+      var query = _messagesRef(sessionId)
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
       if (lastDocumentId != null) {
         final lastDoc = await _messagesRef(sessionId).doc(lastDocumentId).get();
         if (lastDoc.exists) {
@@ -85,7 +99,10 @@ class FirestoreChatRepository implements ChatRepository {
         }
       }
       final snapshot = await query.get();
-      return snapshot.docs.map((doc) => ChatMessage.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return snapshot.docs
+          .map((doc) => ChatMessage.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get messages: $e');
     }
@@ -98,20 +115,30 @@ class FirestoreChatRepository implements ChatRepository {
         .limit(50)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => ChatMessage.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+            .map((doc) => ChatMessage.fromFirestore(
+                doc.data()! as Map<String, dynamic>, doc.id))
             .toList());
   }
 
   @override
   Future<void> updateMessage(ChatMessage message) async {
     try {
-      await _messagesRef(message.sessionId).doc(message.id).update(message.toFirestore());
+      await _messagesRef(message.sessionId)
+          .doc(message.id)
+          .update(message.toFirestore());
       // Update lastMessage in session if this is the latest
-      final sessionDoc = await _firestore.collection('chat_sessions').doc(message.sessionId).get();
+      final sessionDoc = await _firestore
+          .collection('chat_sessions')
+          .doc(message.sessionId)
+          .get();
       if (sessionDoc.exists) {
-        final lastMsg = (sessionDoc.data()!)['lastMessage'] as Map<String, dynamic>?;
+        final lastMsg =
+            (sessionDoc.data()!)['lastMessage'] as Map<String, dynamic>?;
         if (lastMsg != null && lastMsg['id'] == message.id) {
-          await _firestore.collection('chat_sessions').doc(message.sessionId).update({
+          await _firestore
+              .collection('chat_sessions')
+              .doc(message.sessionId)
+              .update({
             'lastMessage': message.toFirestore(),
             'updatedAt': fs.FieldValue.serverTimestamp(),
           });
@@ -181,7 +208,8 @@ class FirestoreChatRepository implements ChatRepository {
   }
 
   @override
-  Future<List<ProductSuggestion>> getProductSuggestions(String message, {
+  Future<List<ProductSuggestion>> getProductSuggestions(
+    String message, {
     String? categoryId,
     double? maxPrice,
     String? userId,
@@ -192,9 +220,14 @@ class FirestoreChatRepository implements ChatRepository {
   }
 
   @override
-  Future<void> saveSuggestionFeedback(String sessionId, String productId, bool clicked) async {
+  Future<void> saveSuggestionFeedback(
+      String sessionId, String productId, bool clicked) async {
     try {
-      await _firestore.collection('chat_sessions').doc(sessionId).collection('feedback').add({
+      await _firestore
+          .collection('chat_sessions')
+          .doc(sessionId)
+          .collection('feedback')
+          .add({
         'productId': productId,
         'clicked': clicked,
         'createdAt': fs.FieldValue.serverTimestamp(),

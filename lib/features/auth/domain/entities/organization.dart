@@ -31,7 +31,8 @@ class Organization extends Equatable {
   final DateTime createdAt;
 
   @override
-  List<Object?> get props => [id, name, domain, workspaceUrl, logoUrl, ownerId, createdAt];
+  List<Object?> get props =>
+      [id, name, domain, workspaceUrl, logoUrl, ownerId, createdAt];
 }
 
 /// A user's membership in one [Organization] — this is what makes the
@@ -76,5 +77,6 @@ class InvitationCode extends Equatable {
   bool get isValid => !isExpired && !isExhausted;
 
   @override
-  List<Object?> get props => [code, organizationId, role, expiresAt, maxUses, usedCount];
+  List<Object?> get props =>
+      [code, organizationId, role, expiresAt, maxUses, usedCount];
 }

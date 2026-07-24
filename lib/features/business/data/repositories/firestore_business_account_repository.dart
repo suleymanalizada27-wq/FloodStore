@@ -8,7 +8,8 @@ class FirestoreBusinessAccountRepository implements BusinessAccountRepository {
   FirestoreBusinessAccountRepository({fs.FirebaseFirestore? firestore})
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;
 
-  fs.CollectionReference get _accountsRef => _firestore.collection('business_accounts');
+  fs.CollectionReference get _accountsRef =>
+      _firestore.collection('business_accounts');
 
   @override
   Future<String> createBusinessAccount(BusinessAccount account) async {
@@ -25,7 +26,8 @@ class FirestoreBusinessAccountRepository implements BusinessAccountRepository {
     try {
       final doc = await _accountsRef.doc(id).get();
       if (!doc.exists) return null;
-      return BusinessAccount.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return BusinessAccount.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get business account: $e');
     }
@@ -34,13 +36,12 @@ class FirestoreBusinessAccountRepository implements BusinessAccountRepository {
   @override
   Future<BusinessAccount?> getBusinessAccountByUserId(String userId) async {
     try {
-      final query = await _accountsRef
-          .where('userId', isEqualTo: userId)
-          .limit(1)
-          .get();
+      final query =
+          await _accountsRef.where('userId', isEqualTo: userId).limit(1).get();
       if (query.docs.isEmpty) return null;
       final doc = query.docs.first;
-      return BusinessAccount.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return BusinessAccount.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get business account by user ID: $e');
     }
@@ -104,7 +105,8 @@ class FirestoreBusinessAccountRepository implements BusinessAccountRepository {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => BusinessAccount.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => BusinessAccount.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get business accounts: $e');

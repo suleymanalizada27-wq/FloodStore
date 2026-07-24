@@ -70,11 +70,13 @@ class InventoryItem extends Equatable {
 
   double get availableQuantity => quantity - reservedQuantity;
 
-  bool get isAvailable => status == InventoryStatus.available && availableQuantity > 0;
+  bool get isAvailable =>
+      status == InventoryStatus.available && availableQuantity > 0;
 
   bool get isReserved => reservedQuantity > 0;
 
-  bool get isExpired => expiryDate != null && expiryDate!.isBefore(DateTime.now());
+  bool get isExpired =>
+      expiryDate != null && expiryDate!.isBefore(DateTime.now());
 
   InventoryItem copyWith({
     String? id,
@@ -143,7 +145,8 @@ class InventoryItem extends Equatable {
     };
   }
 
-  static InventoryItem fromFirestore(Map<String, dynamic> data, String documentId) {
+  static InventoryItem fromFirestore(
+      Map<String, dynamic> data, String documentId) {
     return InventoryItem(
       id: documentId,
       productId: data['productId'] ?? '',
@@ -173,8 +176,10 @@ class InventoryItem extends Equatable {
       locationDetails: data['locationDetails'],
       unitCost: (data['unitCost'] as num?)?.toDouble(),
       supplierId: data['supplierId'],
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }

@@ -16,9 +16,14 @@ class FirestoreCouponRepository implements CouponRepository {
   @override
   Future<Coupon?> getCouponByCode(String code) async {
     try {
-      final query = await _couponsRef().where('code', isEqualTo: code.toUpperCase()).limit(1).get();
+      final query = await _couponsRef()
+          .where('code', isEqualTo: code.toUpperCase())
+          .limit(1)
+          .get();
       if (query.docs.isEmpty) return null;
-      return Coupon.fromFirestore(query.docs.first.data()! as Map<String, dynamic>, query.docs.first.id);
+      return Coupon.fromFirestore(
+          query.docs.first.data()! as Map<String, dynamic>,
+          query.docs.first.id);
     } catch (e) {
       throw Exception('Failed to get coupon by code: $e');
     }
@@ -55,10 +60,12 @@ class FirestoreCouponRepository implements CouponRepository {
       return CouponValidationResult.invalid('Kupon kullanım limitine ulaşmış');
     }
     if (!coupon.canApplyToUser(userId, userTier ?? 'bronze')) {
-      return CouponValidationResult.invalid('Bu kupon hesabınız için geçerli değil');
+      return CouponValidationResult.invalid(
+          'Bu kupon hesabınız için geçerli değil');
     }
     if (!coupon.canApplyToCart(productIds, categoryIds, subtotal)) {
-      return CouponValidationResult.invalid('Kupon sepetinizdeki ürünler için geçerli değil');
+      return CouponValidationResult.invalid(
+          'Kupon sepetinizdeki ürünler için geçerli değil');
     }
 
     // Check per-user usage limit
@@ -80,7 +87,8 @@ class FirestoreCouponRepository implements CouponRepository {
   }
 
   @override
-  Future<List<Coupon>> getUserCoupons(String userId, {bool onlyValid = true}) async {
+  Future<List<Coupon>> getUserCoupons(String userId,
+      {bool onlyValid = true}) async {
     try {
       var query = _userCouponsRef(userId).limit(50);
       final snapshot = await query.get();
@@ -118,7 +126,7 @@ class FirestoreCouponRepository implements CouponRepository {
   Future<void> useCoupon(String couponId, String userId) async {
     try {
       final batch = _firestore.batch();
-      
+
       // Increment coupon usage
       batch.update(_couponsRef().doc(couponId), {
         'usedCount': fs.FieldValue.increment(1),
@@ -165,15 +173,20 @@ class FirestoreCouponRepository implements CouponRepository {
   }
 
   @override
-  Future<List<Coupon>> getAllCoupons({int limit = 50, String? lastDocumentId}) async {
+  Future<List<Coupon>> getAllCoupons(
+      {int limit = 50, String? lastDocumentId}) async {
     try {
-      var query = _couponsRef().orderBy('createdAt', descending: true).limit(limit);
+      var query =
+          _couponsRef().orderBy('createdAt', descending: true).limit(limit);
       if (lastDocumentId != null) {
         final lastDoc = await _couponsRef().doc(lastDocumentId).get();
         if (lastDoc.exists) query = query.startAfterDocument(lastDoc);
       }
       final snapshot = await query.get();
-      return snapshot.docs.map((doc) => Coupon.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return snapshot.docs
+          .map((doc) =>
+              Coupon.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get all coupons: $e');
     }
@@ -187,7 +200,10 @@ class FirestoreCouponRepository implements CouponRepository {
           .orderBy('createdAt', descending: true)
           .limit(limit)
           .get();
-      return snapshot.docs.map((doc) => Bundle.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return snapshot.docs
+          .map((doc) =>
+              Bundle.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get bundles: $e');
     }

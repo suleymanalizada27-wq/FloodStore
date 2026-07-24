@@ -8,7 +8,8 @@ class Recommendation extends Equatable {
   final RecommendationType type;
   final double score; // 0-1 confidence score
   final String reason;
-  final Map<String, dynamic> context; // browsing history, purchase history, etc.
+  final Map<String, dynamic>
+      context; // browsing history, purchase history, etc.
   final DateTime createdAt;
   final DateTime? expiresAt;
   final bool isDismissed;
@@ -98,8 +99,10 @@ class Recommendation extends Equatable {
       score: (data['score'] as num?)?.toDouble() ?? 0.0,
       reason: data['reason'] ?? '',
       context: Map<String, dynamic>.from(data['context'] ?? {}),
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      expiresAt: data['expiresAt'] != null ? DateTime.parse(data['expiresAt']) : null,
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      expiresAt:
+          data['expiresAt'] != null ? DateTime.parse(data['expiresAt']) : null,
       isDismissed: data['isDismissed'] ?? false,
       isClicked: data['isClicked'] ?? false,
     );

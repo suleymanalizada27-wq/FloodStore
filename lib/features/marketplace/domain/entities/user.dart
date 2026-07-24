@@ -110,8 +110,7 @@ class MarketplaceUser extends Equatable {
   bool get isAdmin => role == UserRole.admin;
 
   /// Checks if the user has moderator privileges
-  bool get isModerator =>
-      role == UserRole.moderator || role == UserRole.admin;
+  bool get isModerator => role == UserRole.moderator || role == UserRole.admin;
 }
 
 enum UserRole { customer, seller, admin, moderator, storeManager }

@@ -71,7 +71,8 @@ class FirestoreWishlistRepository implements WishlistRepository {
         return;
       }
       items.add({
-        'id': '${productId}_${variantId ?? 'default'}_${DateTime.now().millisecondsSinceEpoch}',
+        'id':
+            '${productId}_${variantId ?? 'default'}_${DateTime.now().millisecondsSinceEpoch}',
         'productId': productId,
         'variantId': variantId,
         'addedAt': FieldValue.serverTimestamp(),

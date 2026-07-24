@@ -87,9 +87,11 @@ abstract final class PasswordStrengthService {
         PasswordRequirement('At least 8 characters', password.length >= 8),
         PasswordRequirement(
           'Upper and lowercase letters',
-          RegExp(r'[a-z]').hasMatch(password) && RegExp(r'[A-Z]').hasMatch(password),
+          RegExp(r'[a-z]').hasMatch(password) &&
+              RegExp(r'[A-Z]').hasMatch(password),
         ),
-        PasswordRequirement('At least one number', RegExp(r'[0-9]').hasMatch(password)),
+        PasswordRequirement(
+            'At least one number', RegExp(r'[0-9]').hasMatch(password)),
         PasswordRequirement(
           'At least one symbol',
           RegExp(r'[^a-zA-Z0-9]').hasMatch(password),
@@ -117,8 +119,16 @@ abstract final class PasswordStrengthService {
   /// egregious cases offline in the meantime.
   static bool isObviouslyCommon(String password) {
     const common = {
-      'password', 'password1', '12345678', '123456789', 'qwerty123',
-      'letmein', 'welcome1', 'admin123', 'iloveyou', 'monkey123',
+      'password',
+      'password1',
+      '12345678',
+      '123456789',
+      'qwerty123',
+      'letmein',
+      'welcome1',
+      'admin123',
+      'iloveyou',
+      'monkey123',
     };
     return common.contains(password.toLowerCase());
   }

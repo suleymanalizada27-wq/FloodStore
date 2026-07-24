@@ -156,7 +156,9 @@ abstract final class AppColors {
   static const Color shimmerHighlight = darkShimmerHighlight;
   static const LinearGradient brandGradient = darkBrandGradient;
   static const LinearGradient glassGradient = darkGlassGradient;
-  static const LinearGradient backgroundDepthGradient = darkBackgroundDepthGradient;
+  static const LinearGradient backgroundDepthGradient =
+      darkBackgroundDepthGradient;
 
-  static RadialGradient glow({double opacity = 0.35}) => darkGlow(opacity: opacity);
+  static RadialGradient glow({double opacity = 0.35}) =>
+      darkGlow(opacity: opacity);
 }

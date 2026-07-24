@@ -8,11 +8,18 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
   FirestoreLoyaltyRepository({fs.FirebaseFirestore? firestore})
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;
 
-  fs.DocumentReference _accountRef(String userId) =>
-      _firestore.collection('users').doc(userId).collection('loyalty').doc('account');
+  fs.DocumentReference _accountRef(String userId) => _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('loyalty')
+      .doc('account');
 
-  fs.CollectionReference _transactionsRef(String userId) =>
-      _firestore.collection('users').doc(userId).collection('loyalty').doc('account').collection('transactions');
+  fs.CollectionReference _transactionsRef(String userId) => _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('loyalty')
+      .doc('account')
+      .collection('transactions');
 
   fs.CollectionReference _tiersRef() => _firestore.collection('loyalty_tiers');
 
@@ -21,7 +28,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
     try {
       final doc = await _accountRef(userId).get();
       if (!doc.exists) return null;
-      return LoyaltyAccount.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return LoyaltyAccount.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get loyalty account: $e');
     }
@@ -32,7 +40,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
     try {
       final doc = await _accountRef(userId).get();
       if (doc.exists) {
-        return LoyaltyAccount.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+        return LoyaltyAccount.fromFirestore(
+            doc.data()! as Map<String, dynamic>, doc.id);
       }
       // Create new account with Bronze tier
       final tiers = LoyaltyTier.defaultTiers;
@@ -54,7 +63,9 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
   }
 
   @override
-  Future<LoyaltyAccount> addPoints(String userId, int points, {
+  Future<LoyaltyAccount> addPoints(
+    String userId,
+    int points, {
     required TransactionType type,
     required String description,
     String? referenceId,
@@ -67,7 +78,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
 
       // Get current tier to calculate points to next tier
       final tiers = LoyaltyTier.defaultTiers;
-      final currentTierIndex = tiers.indexWhere((t) => t.id == account.currentTierId);
+      final currentTierIndex =
+          tiers.indexWhere((t) => t.id == account.currentTierId);
       int pointsToNext = 0;
       if (currentTierIndex != -1 && currentTierIndex < tiers.length - 1) {
         pointsToNext = tiers[currentTierIndex + 1].requiredPoints - newBalance;
@@ -111,7 +123,9 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
   }
 
   @override
-  Future<LoyaltyAccount> redeemPoints(String userId, int points, {
+  Future<LoyaltyAccount> redeemPoints(
+    String userId,
+    int points, {
     required String description,
     String? referenceId,
     Map<String, dynamic> metadata = const {},
@@ -126,7 +140,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
       final newLifetimeRedeemed = account.lifetimePointsRedeemed + points;
 
       final tiers = LoyaltyTier.defaultTiers;
-      final currentTierIndex = tiers.indexWhere((t) => t.id == account.currentTierId);
+      final currentTierIndex =
+          tiers.indexWhere((t) => t.id == account.currentTierId);
       int pointsToNext = 0;
       if (currentTierIndex != -1 && currentTierIndex < tiers.length - 1) {
         pointsToNext = tiers[currentTierIndex + 1].requiredPoints - newBalance;
@@ -167,22 +182,29 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
   }
 
   @override
-  Future<List<PointTransaction>> getTransactions(String userId, {
+  Future<List<PointTransaction>> getTransactions(
+    String userId, {
     int limit = 50,
     String? lastDocumentId,
     TransactionType? type,
   }) async {
     try {
-      var query = _transactionsRef(userId).orderBy('createdAt', descending: true).limit(limit);
+      var query = _transactionsRef(userId)
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
       if (type != null) {
         query = query.where('type', isEqualTo: type.name);
       }
       if (lastDocumentId != null) {
-        final lastDoc = await _transactionsRef(userId).doc(lastDocumentId).get();
+        final lastDoc =
+            await _transactionsRef(userId).doc(lastDocumentId).get();
         if (lastDoc.exists) query = query.startAfterDocument(lastDoc);
       }
       final snapshot = await query.get();
-      return snapshot.docs.map((doc) => PointTransaction.fromFirestore(doc.data()! as Map<String, dynamic>)).toList();
+      return snapshot.docs
+          .map((doc) => PointTransaction.fromFirestore(
+              doc.data()! as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get transactions: $e');
     }
@@ -191,11 +213,17 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
   @override
   Future<List<LoyaltyTier>> getTiers() async {
     try {
-      final snapshot = await _tiersRef().where('isActive', isEqualTo: true).orderBy('requiredPoints').get();
+      final snapshot = await _tiersRef()
+          .where('isActive', isEqualTo: true)
+          .orderBy('requiredPoints')
+          .get();
       if (snapshot.docs.isEmpty) {
         return LoyaltyTier.defaultTiers;
       }
-      return snapshot.docs.map((doc) => LoyaltyTier.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return snapshot.docs
+          .map((doc) => LoyaltyTier.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       // Return default tiers if collection doesn't exist
       return LoyaltyTier.defaultTiers;
@@ -209,7 +237,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
       if (account == null) return null;
 
       final tiers = await getTiers();
-      final currentTierIndex = tiers.indexWhere((t) => t.id == account.currentTierId);
+      final currentTierIndex =
+          tiers.indexWhere((t) => t.id == account.currentTierId);
 
       if (currentTierIndex == -1 || currentTierIndex == tiers.length - 1) {
         return account; // Already at max tier
@@ -223,7 +252,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
           'currentTierId': nextTier.id,
           'tierAchievedAt': fs.FieldValue.serverTimestamp(),
           'pointsToNextTier': currentTierIndex + 1 < tiers.length - 1
-              ? tiers[currentTierIndex + 2].requiredPoints - account.currentPoints
+              ? tiers[currentTierIndex + 2].requiredPoints -
+                  account.currentPoints
               : 0,
         });
 
@@ -249,7 +279,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
           currentTierId: nextTier.id,
           tierAchievedAt: DateTime.now(),
           pointsToNextTier: currentTierIndex + 1 < tiers.length - 1
-              ? tiers[currentTierIndex + 2].requiredPoints - account.currentPoints
+              ? tiers[currentTierIndex + 2].requiredPoints -
+                  account.currentPoints
               : 0,
         );
       }
@@ -266,7 +297,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
       if (account.lastBirthdayBonusAt != null) {
         final lastBirthday = account.lastBirthdayBonusAt!;
         final now = DateTime.now();
-        if (lastBirthday.year == now.year) return; // Already got bonus this year
+        if (lastBirthday.year == now.year)
+          return; // Already got bonus this year
       }
 
       final tiers = await getTiers();
@@ -278,7 +310,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
       if (currentTier.birthdayBonusPoints > 0) {
         await addPoints(userId, currentTier.birthdayBonusPoints.toInt(),
             type: TransactionType.birthday,
-            description: '${currentTier.displayName} seviyesi doğum günü bonusu',
+            description:
+                '${currentTier.displayName} seviyesi doğum günü bonusu',
             metadata: {'tier': currentTier.id});
       }
 
@@ -307,7 +340,8 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
     if (currentIndex != -1 && currentIndex < tiers.length - 1) {
       nextTier = tiers[currentIndex + 1];
       final totalNeeded = nextTier.requiredPoints - currentTier.requiredPoints;
-      final currentProgress = account.currentPoints - currentTier.requiredPoints;
+      final currentProgress =
+          account.currentPoints - currentTier.requiredPoints;
       progress = (currentProgress / totalNeeded).clamp(0.0, 1.0);
       pointsNeeded = nextTier.requiredPoints - account.currentPoints;
     }

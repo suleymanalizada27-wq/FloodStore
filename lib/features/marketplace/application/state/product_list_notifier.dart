@@ -33,9 +33,11 @@ class ProductListState {
 class ProductListNotifier extends StateNotifier<ProductListState> {
   final ProductRepository _productRepository;
 
-  ProductListNotifier(this._productRepository) : super(const ProductListState());
+  ProductListNotifier(this._productRepository)
+      : super(const ProductListState());
 
-  Future<void> loadProductsByCategory(String categoryId, {int limit = 20}) async {
+  Future<void> loadProductsByCategory(String categoryId,
+      {int limit = 20}) async {
     if (state.isLoading) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -80,7 +82,8 @@ class ProductListNotifier extends StateNotifier<ProductListState> {
     if (state.isLoading) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final products = await _productRepository.searchProducts(query, limit: limit);
+      final products =
+          await _productRepository.searchProducts(query, limit: limit);
       state = state.copyWith(
         isLoading: false,
         products: products,

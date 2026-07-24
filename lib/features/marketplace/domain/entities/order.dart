@@ -214,13 +214,30 @@ class Order extends Equatable {
       currency: data['currency'] ?? 'USD',
       customerNotes: data['customerNotes'],
       internalNotes: data['internalNotes'],
-      shippingAddress: Address.fromFirestore(data['shippingAddress'] as Map<String, dynamic>),
-      billingAddress: Address.fromFirestore(data['billingAddress'] as Map<String, dynamic>),
-      items: (data['items'] as List?)?.map((item) => OrderItem.fromFirestore(item as Map<String, dynamic>)).toList() ?? [],
-      discounts: (data['discounts'] as List?)?.map((d) => Discount.fromFirestore(d as Map<String, dynamic>)).toList() ?? [],
-      payment: data['payment'] != null ? PaymentInfo.fromFirestore(data['payment'] as Map<String, dynamic>) : null,
-      tracking: data['tracking'] != null ? ShippingInfo.fromFirestore(data['tracking'] as Map<String, dynamic>) : null,
-      history: (data['history'] as List?)?.map((h) => OrderHistoryEntry.fromFirestore(h as Map<String, dynamic>)).toList() ?? [],
+      shippingAddress: Address.fromFirestore(
+          data['shippingAddress'] as Map<String, dynamic>),
+      billingAddress:
+          Address.fromFirestore(data['billingAddress'] as Map<String, dynamic>),
+      items: (data['items'] as List?)
+              ?.map((item) =>
+                  OrderItem.fromFirestore(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      discounts: (data['discounts'] as List?)
+              ?.map((d) => Discount.fromFirestore(d as Map<String, dynamic>))
+              .toList() ??
+          [],
+      payment: data['payment'] != null
+          ? PaymentInfo.fromFirestore(data['payment'] as Map<String, dynamic>)
+          : null,
+      tracking: data['tracking'] != null
+          ? ShippingInfo.fromFirestore(data['tracking'] as Map<String, dynamic>)
+          : null,
+      history: (data['history'] as List?)
+              ?.map((h) =>
+                  OrderHistoryEntry.fromFirestore(h as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }
@@ -266,7 +283,8 @@ class OrderItem extends Equatable {
   final double unitPrice; // price per unit in cents
   final double totalPrice; // quantity * unitPrice in cents
   final String productTitle;
-  final Map<String, String> variantAttributes; // snapshot of variant attributes at time of purchase
+  final Map<String, String>
+      variantAttributes; // snapshot of variant attributes at time of purchase
 
   const OrderItem({
     required this.id,
@@ -309,8 +327,7 @@ class OrderItem extends Equatable {
       unitPrice: unitPrice ?? this.unitPrice,
       totalPrice: totalPrice ?? this.totalPrice,
       productTitle: productTitle ?? this.productTitle,
-      variantAttributes:
-          variantAttributes ?? this.variantAttributes,
+      variantAttributes: variantAttributes ?? this.variantAttributes,
     );
   }
 
@@ -337,7 +354,8 @@ class OrderItem extends Equatable {
       unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
       totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0.0,
       productTitle: data['productTitle'] ?? '',
-      variantAttributes: Map<String, String>.from(data['variantAttributes'] ?? {}),
+      variantAttributes:
+          Map<String, String>.from(data['variantAttributes'] ?? {}),
     );
   }
 }
@@ -537,7 +555,11 @@ class ShippingInfo extends Equatable {
       trackingNumber: data['trackingNumber'] ?? '',
       estimatedDelivery: (data['estimatedDelivery'] as Timestamp?)?.toDate(),
       actualDelivery: (data['actualDelivery'] as Timestamp?)?.toDate(),
-      events: (data['events'] as List?)?.map((e) => TrackingEvent.fromFirestore(e as Map<String, dynamic>)).toList() ?? [],
+      events: (data['events'] as List?)
+              ?.map(
+                  (e) => TrackingEvent.fromFirestore(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }

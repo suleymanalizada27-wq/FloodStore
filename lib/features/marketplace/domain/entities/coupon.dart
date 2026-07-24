@@ -82,20 +82,29 @@ class Coupon extends Equatable {
         updatedAt,
       ];
 
-  bool get isValid => isActive && DateTime.now().isAfter(validFrom) && DateTime.now().isBefore(validUntil);
+  bool get isValid =>
+      isActive &&
+      DateTime.now().isAfter(validFrom) &&
+      DateTime.now().isBefore(validUntil);
 
   bool get hasUsageLimit => usageLimit > 0 && usedCount >= usageLimit;
 
   bool canApplyToUser(String userId, String userTier) {
-    if (eligibleUserIds.isNotEmpty && !eligibleUserIds.contains(userId)) return false;
-    if (eligibleTiers.isNotEmpty && !eligibleTiers.contains(userTier)) return false;
+    if (eligibleUserIds.isNotEmpty && !eligibleUserIds.contains(userId))
+      return false;
+    if (eligibleTiers.isNotEmpty && !eligibleTiers.contains(userTier))
+      return false;
     return true;
   }
 
-  bool canApplyToCart(List<String> productIds, List<String> categoryIds, double subtotal) {
+  bool canApplyToCart(
+      List<String> productIds, List<String> categoryIds, double subtotal) {
     if (subtotal < minOrderAmount) return false;
-    if (applicableProducts.isNotEmpty && !productIds.any((id) => applicableProducts.contains(id))) return false;
-    if (applicableCategories.isNotEmpty && !categoryIds.any((id) => applicableCategories.contains(id))) return false;
+    if (applicableProducts.isNotEmpty &&
+        !productIds.any((id) => applicableProducts.contains(id))) return false;
+    if (applicableCategories.isNotEmpty &&
+        !categoryIds.any((id) => applicableCategories.contains(id)))
+      return false;
     if (excludedProducts.any((id) => productIds.contains(id))) return false;
     return true;
   }
@@ -162,8 +171,10 @@ class Coupon extends Equatable {
       ),
       value: (data['value'] as num?)?.toDouble() ?? 0.0,
       minOrderAmount: (data['minOrderAmount'] as num?)?.toDouble() ?? 0.0,
-      maxDiscountAmount: (data['maxDiscountAmount'] as num?)?.toDouble() ?? double.infinity,
-      applicableCategories: List<String>.from(data['applicableCategories'] ?? []),
+      maxDiscountAmount:
+          (data['maxDiscountAmount'] as num?)?.toDouble() ?? double.infinity,
+      applicableCategories:
+          List<String>.from(data['applicableCategories'] ?? []),
       applicableProducts: List<String>.from(data['applicableProducts'] ?? []),
       excludedProducts: List<String>.from(data['excludedProducts'] ?? []),
       eligibleUserIds: List<String>.from(data['eligibleUserIds'] ?? []),
@@ -171,8 +182,10 @@ class Coupon extends Equatable {
       usageLimit: data['usageLimit'] ?? 0,
       usageLimitPerUser: data['usageLimitPerUser'] ?? 1,
       usedCount: data['usedCount'] ?? 0,
-      validFrom: DateTime.parse(data['validFrom'] ?? DateTime.now().toIso8601String()),
-      validUntil: DateTime.parse(data['validUntil'] ?? DateTime.now().add(const Duration(days: 365)).toIso8601String()),
+      validFrom:
+          DateTime.parse(data['validFrom'] ?? DateTime.now().toIso8601String()),
+      validUntil: DateTime.parse(data['validUntil'] ??
+          DateTime.now().add(const Duration(days: 365)).toIso8601String()),
       isActive: data['isActive'] ?? true,
       isStackable: data['isStackable'] ?? false,
       source: CouponSource.values.firstWhere(
@@ -180,8 +193,10 @@ class Coupon extends Equatable {
         orElse: () => CouponSource.manual,
       ),
       metadata: Map<String, dynamic>.from(data['metadata'] ?? {}),
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
@@ -260,9 +275,12 @@ class Bundle extends Equatable {
         updatedAt,
       ];
 
-  double get discountPercent => originalPrice > 0 ? ((originalPrice - bundlePrice) / originalPrice * 100) : 0;
+  double get discountPercent => originalPrice > 0
+      ? ((originalPrice - bundlePrice) / originalPrice * 100)
+      : 0;
   double get savings => originalPrice - bundlePrice;
-  bool get isValid => isActive &&
+  bool get isValid =>
+      isActive &&
       (validFrom == null || DateTime.now().isAfter(validFrom!)) &&
       (validUntil == null || DateTime.now().isBefore(validUntil!));
 
@@ -298,13 +316,18 @@ class Bundle extends Equatable {
       originalPrice: (data['originalPrice'] as num?)?.toDouble() ?? 0.0,
       imageUrl: data['imageUrl'],
       isActive: data['isActive'] ?? true,
-      validFrom: data['validFrom'] != null ? DateTime.parse(data['validFrom']) : null,
-      validUntil: data['validUntil'] != null ? DateTime.parse(data['validUntil']) : null,
+      validFrom:
+          data['validFrom'] != null ? DateTime.parse(data['validFrom']) : null,
+      validUntil: data['validUntil'] != null
+          ? DateTime.parse(data['validUntil'])
+          : null,
       maxQuantityPerUser: data['maxQuantityPerUser'] ?? 1,
       soldCount: data['soldCount'] ?? 0,
       tags: List<String>.from(data['tags'] ?? []),
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }

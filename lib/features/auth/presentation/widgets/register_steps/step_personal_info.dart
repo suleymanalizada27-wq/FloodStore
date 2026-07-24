@@ -44,7 +44,8 @@ class StepPersonalInfo extends StatelessWidget {
                   controller: firstNameController,
                   hint: 'Jane',
                   prefixIcon: Icons.person_outline_rounded,
-                  validator: (v) => (v ?? '').trim().isEmpty ? 'Required' : null,
+                  validator: (v) =>
+                      (v ?? '').trim().isEmpty ? 'Required' : null,
                 ),
               ),
               const SizedBox(width: 14),
@@ -53,7 +54,8 @@ class StepPersonalInfo extends StatelessWidget {
                   label: 'Last Name',
                   controller: lastNameController,
                   hint: 'Doe',
-                  validator: (v) => (v ?? '').trim().isEmpty ? 'Required' : null,
+                  validator: (v) =>
+                      (v ?? '').trim().isEmpty ? 'Required' : null,
                 ),
               ),
             ],
@@ -65,7 +67,8 @@ class StepPersonalInfo extends StatelessWidget {
               controller: companyNameController,
               hint: 'Acme Corp',
               prefixIcon: Icons.apartment_rounded,
-              validator: (v) => state.accountMode.requiresCompanyName && (v ?? '').trim().isEmpty
+              validator: (v) => state.accountMode.requiresCompanyName &&
+                      (v ?? '').trim().isEmpty
                   ? 'Enter your company name'
                   : null,
             ),

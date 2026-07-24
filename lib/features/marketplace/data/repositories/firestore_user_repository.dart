@@ -22,7 +22,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> updateUserProfile(String userId, Map<String, dynamic> profileData) async {
+  Future<void> updateUserProfile(
+      String userId, Map<String, dynamic> profileData) async {
     try {
       await _usersRef().doc(userId).update({
         ...profileData,
@@ -46,7 +47,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> updateUserPreferences(String userId, Map<String, dynamic> preferences) async {
+  Future<void> updateUserPreferences(
+      String userId, Map<String, dynamic> preferences) async {
     try {
       await _usersRef().doc(userId).update({
         'preferences': preferences,
@@ -98,7 +100,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<List<Order>> getUserOrderHistory(String userId, {
+  Future<List<Order>> getUserOrderHistory(
+    String userId, {
     int limit = 20,
     String? lastDocumentId,
   }) async {
@@ -110,7 +113,8 @@ class FirestoreUserRepository implements UserRepository {
           .limit(limit);
 
       if (lastDocumentId != null) {
-        final lastDoc = await _firestore.collection('orders').doc(lastDocumentId).get();
+        final lastDoc =
+            await _firestore.collection('orders').doc(lastDocumentId).get();
         if (lastDoc.exists) {
           query = query.startAfterDocument(lastDoc);
         }
@@ -118,7 +122,8 @@ class FirestoreUserRepository implements UserRepository {
 
       final querySnapshot = await query.get();
       return querySnapshot.docs
-          .map((doc) => Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) =>
+              Order.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get user order history: $e');
@@ -126,7 +131,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getUserWishlist(String userId, {
+  Future<List<Map<String, dynamic>>> getUserWishlist(
+    String userId, {
     int limit = 20,
   }) async {
     try {
@@ -148,11 +154,7 @@ class FirestoreUserRepository implements UserRepository {
   @override
   Future<void> addToWishlist(String userId, String productId) async {
     try {
-      await _usersRef()
-          .doc(userId)
-          .collection('wishlist')
-          .doc(productId)
-          .set({
+      await _usersRef().doc(userId).collection('wishlist').doc(productId).set({
         'productId': productId,
         'addedAt': fs.FieldValue.serverTimestamp(),
       });
@@ -175,7 +177,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<List<String>> getRecentlyViewed(String userId, {
+  Future<List<String>> getRecentlyViewed(
+    String userId, {
     int limit = 10,
   }) async {
     try {
@@ -226,10 +229,8 @@ class FirestoreUserRepository implements UserRepository {
   @override
   Future<void> clearRecentlyViewed(String userId) async {
     try {
-      final querySnapshot = await _usersRef()
-          .doc(userId)
-          .collection('recently_viewed')
-          .get();
+      final querySnapshot =
+          await _usersRef().doc(userId).collection('recently_viewed').get();
 
       final batch = _firestore.batch();
       for (final doc in querySnapshot.docs) {
@@ -259,12 +260,10 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<String> addUserAddress(String userId, Map<String, dynamic> addressData) async {
+  Future<String> addUserAddress(
+      String userId, Map<String, dynamic> addressData) async {
     try {
-      final docRef = await _usersRef()
-          .doc(userId)
-          .collection('addresses')
-          .add({
+      final docRef = await _usersRef().doc(userId).collection('addresses').add({
         ...addressData,
         'createdAt': fs.FieldValue.serverTimestamp(),
         'isDefault': false,
@@ -276,7 +275,8 @@ class FirestoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> updateUserAddress(String userId, String addressId, Map<String, dynamic> addressData) async {
+  Future<void> updateUserAddress(
+      String userId, String addressId, Map<String, dynamic> addressData) async {
     try {
       await _usersRef()
           .doc(userId)

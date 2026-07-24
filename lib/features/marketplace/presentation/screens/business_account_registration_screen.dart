@@ -6,12 +6,11 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../../../core/widgets/premium_text_field.dart';
 import '../../../auth/application/providers/auth_providers.dart';
-import '../../application/providers/marketplace_providers.dart';
-import '../../domain/entities/business_account.dart';
+import '../../../business/application/providers/business_providers.dart';
+import '../../../business/domain/entities/business_account.dart';
 
 /// 5-step Business Account registration wizard:
 /// 1. Account Type & Basic Info
@@ -81,6 +80,7 @@ class _BusinessAccountRegistrationScreenState
     _authorizedPersonTcController.dispose();
     _authorizedPersonPhoneController.dispose();
     _authorizedPersonEmailController.dispose();
+    _countryController.dispose();
     _cityController.dispose();
     _districtController.dispose();
     _neighborhoodController.dispose();
@@ -148,7 +148,8 @@ class _BusinessAccountRegistrationScreenState
       businessEmail: _businessEmailController.text.trim(),
       businessPhone: _businessPhoneController.text.trim(),
       address: address,
-      website: _websiteController.text.isNotEmpty ? _websiteController.text : null,
+      website:
+          _websiteController.text.isNotEmpty ? _websiteController.text : null,
       description: _descriptionController.text.isNotEmpty
           ? _descriptionController.text
           : null,
@@ -233,8 +234,7 @@ class _BusinessAccountRegistrationScreenState
                               ),
                             ),
                           ),
-                          if (index < _totalSteps - 1)
-                            const SizedBox(width: 8),
+                          if (index < _totalSteps - 1) const SizedBox(width: 8),
                         ],
                       ),
                     );
@@ -282,7 +282,8 @@ class _BusinessAccountRegistrationScreenState
                 Expanded(
                   flex: 2,
                   child: PremiumButton(
-                    label: _currentStep == 4 ? 'Submit Application' : 'Continue',
+                    label:
+                        _currentStep == 4 ? 'Submit Application' : 'Continue',
                     expand: true,
                     onPressed: _nextStep,
                     icon: _currentStep == 4
@@ -368,7 +369,8 @@ class _BusinessAccountRegistrationScreenState
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
               if ((v ?? '').trim().isEmpty) return 'Email is required';
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v!)) {
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(v!)) {
                 return 'Enter a valid email';
               }
               return null;
@@ -437,7 +439,8 @@ class _BusinessAccountRegistrationScreenState
             label: 'Trade Registry Number (Ticaret Sicil No)',
             hint: '123456-0',
             validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'Trade registry number is required';
+              if ((v ?? '').trim().isEmpty)
+                return 'Trade registry number is required';
               return null;
             },
           ),
@@ -522,7 +525,8 @@ class _BusinessAccountRegistrationScreenState
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
               if ((v ?? '').trim().isEmpty) return 'Email is required';
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v!)) {
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(v!)) {
                 return 'Enter a valid email';
               }
               return null;
@@ -551,7 +555,7 @@ class _BusinessAccountRegistrationScreenState
           ),
           const SizedBox(height: AppSpacing.xl),
 
-// Country
+          // Country
           PremiumTextField(
             controller: _countryController,
             label: 'Country',
@@ -562,48 +566,32 @@ class _BusinessAccountRegistrationScreenState
           // City
           PremiumTextField(
             controller: _cityController,
-            label: 'City (İl)',
+            label: 'City',
             hint: 'İstanbul',
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'City is required';
-              return null;
-            },
           ),
           const SizedBox(height: AppSpacing.md),
 
           // District
           PremiumTextField(
             controller: _districtController,
-            label: 'District (İlçe)',
+            label: 'District',
             hint: 'Kadıköy',
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'District is required';
-              return null;
-            },
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Neighborhood
           PremiumTextField(
             controller: _neighborhoodController,
-            label: 'Neighborhood (Mahalle)',
-            hint: 'Caferağa',
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'Neighborhood is required';
-              return null;
-            },
+            label: 'Neighborhood',
+            hint: 'Moda',
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Street
           PremiumTextField(
             controller: _streetController,
-            label: 'Street (Cadde/Sokak)',
-            hint: 'Caferaga Mah. Moda Cd.',
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'Street is required';
-              return null;
-            },
+            label: 'Street',
+            hint: 'Moda Sahil Yolu',
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -611,19 +599,15 @@ class _BusinessAccountRegistrationScreenState
           PremiumTextField(
             controller: _buildingNumberController,
             label: 'Building Number',
-            hint: '12',
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'Building number is required';
-              return null;
-            },
+            hint: '45',
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Apartment Number (optional)
           PremiumTextField(
             controller: _apartmentNumberController,
-            label: 'Apartment/Suite (Optional)',
-            hint: 'Daire 3',
+            label: 'Apartment Number (Optional)',
+            hint: '12',
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -632,11 +616,6 @@ class _BusinessAccountRegistrationScreenState
             controller: _postalCodeController,
             label: 'Postal Code',
             hint: '34710',
-            keyboardType: TextInputType.number,
-            validator: (v) {
-              if ((v ?? '').trim().isEmpty) return 'Postal code is required';
-              return null;
-            },
           ),
         ],
       ),
@@ -644,13 +623,13 @@ class _BusinessAccountRegistrationScreenState
   }
 
   Widget _buildStep5() {
-    return SingleChildScrollView(
+    return SingleChildScrollVew(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Documents & Review',
+            'Documents Upload & Review',
             style: AppTextStyles.headlineSmall,
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -661,125 +640,90 @@ class _BusinessAccountRegistrationScreenState
           ),
           const SizedBox(height: AppSpacing.xl),
 
-          // Logo Upload
-          _buildDocumentUpload(
-            label: 'Business Logo',
-            subtitle: 'Recommended: 500x500px, PNG/JPG',
-            currentUrl: _logoUrl,
-            onUpload: () => _pickImage('logo'),
+          // Logo
+          PremiumTextField(
+            controller: TextEditingController(text: _logoUrl ?? ''),
+            label: 'Business Logo URL',
+            hint: 'https://example.com/logo.png',
+            readOnly: true,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.upload_file),
+              onPressed: () => _pickImage('Logo'),
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Tax Certificate
-          _buildDocumentUpload(
-            label: 'Tax Certificate (Vergi Levazı)',
-            subtitle: 'Required - PDF or Image',
-            currentUrl: _taxCertificateUrl,
-            onUpload: () => _pickImage('tax_certificate'),
-            isRequired: true,
+          PremiumTextField(
+            controller: TextEditingController(text: _taxCertificateUrl ?? ''),
+            label: 'Tax Certificate URL',
+            hint: 'https://example.com/tax-certificate.pdf',
+            readOnly: true,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.upload_file),
+              onPressed: () => _pickImage('Tax Certificate'),
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Trade Registry Gazette
-          _buildDocumentUpload(
-            label: 'Trade Registry Gazette (Ticaret Sicil Gazetesi)',
-            subtitle: 'Required - PDF or Image',
-            currentUrl: _tradeRegistryUrl,
-            onUpload: () => _pickImage('trade_registry'),
-            isRequired: true,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Review Section
-          GlassCard(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Application Summary',
-                  style: AppTextStyles.headlineSmall,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildSummaryRow('Business Name', _businessNameController.text),
-                _buildSummaryRow('Business Type', _selectedBusinessType.displayName),
-                _buildSummaryRow('Tax ID', _taxIdController.text),
-                _buildSummaryRow('Business Email', _businessEmailController.text),
-                _buildSummaryRow('Business Phone', _businessPhoneController.text),
-                _buildSummaryRow('Authorized Person', _authorizedPersonNameController.text),
-                _buildSummaryRow('Address',
-                    '${_streetController.text} ${_buildingNumberController.text}, ${_neighborhoodController.text}, ${_districtController.text}, ${_cityController.text}'),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'By submitting this application, you confirm that all information provided is accurate and complete. False information may result in rejection of your application.',
-                  style: AppTextStyles.textTheme.bodySmall
-                      ?.copyWith(color: AppColors.textTertiary),
-                ),
-              ],
+          // Trade Registry
+          PremiumTextField(
+            controller: TextEditingController(text: _tradeRegistryUrl ?? ''),
+            label: 'Trade Registry URL',
+            hint: 'https://example.com/trade-registry.pdf',
+            readOnly: true,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.upload_file),
+              onPressed: () => _pickImage('Trade Registry'),
             ),
           ),
-        ],
-      ),
-    );
-  }
+          const SizedBox(height: AppSpacing.md),
 
-  Widget _buildDocumentUpload({
-    required String label,
-    required String subtitle,
-    required String? currentUrl,
-    required VoidCallback onUpload,
-    bool isRequired = false,
-  }) {
-    return GlassCard(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: AppTextStyles.textTheme.labelLarge,
-                    ),
-                    Text(
-                      subtitle,
-                      style: AppTextStyles.textTheme.bodySmall
-                          ?.copyWith(color: AppColors.textTertiary),
-                    ),
-                    if (isRequired)
-                      Text(
-                        'Required',
-                        style: AppTextStyles.textTheme.bodySmall
-                            ?.copyWith(color: AppColors.error),
-                      ),
-                  ],
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: onUpload,
-                icon: Icon(currentUrl != null ? Icons.edit_rounded : Icons.add_rounded),
-                label: Text(currentUrl != null ? 'Change' : 'Upload'),
-              ),
-            ],
+          // Summary
+          Text(
+            'Application Summary',
+            style: AppTextStyles.titleMedium,
           ),
-          if (currentUrl != null) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              children: [
-                const Icon(Icons.check_circle, color: AppColors.success, size: 16),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  'Uploaded',
-                  style: AppTextStyles.textTheme.bodySmall
-                      ?.copyWith(color: AppColors.success),
-                ),
-              ],
-            ),
-          ],
+          const SizedBox(height: AppSpacing.md),
+          _buildSummaryRow('Business Type',
+              _selectedBusinessType.displayName),
+          _buildSummaryRow('Business Name', _businessNameController.text),
+          _buildSummaryRow('Business Email',
+              _businessEmailController.text),
+          _buildSummaryRow('Business Phone',
+              _businessPhoneController.text),
+          _buildSummaryRow('Website', _websiteController.text),
+          _buildSummaryRow('Description',
+              _descriptionController.text),
+          _buildSummaryRow('Tax ID', _taxIdController.text),
+          _buildSummaryRow('Trade Registry',
+              _tradeRegistryController.text),
+          _buildSummaryRow('Authorized Person',
+              '${_authorizedPersonNameController.text}'),
+          _buildSummaryRow('Authorized Person TC',
+              _authorizedPersonTcController.text),
+          _buildSummaryRow('Authorized Person Phone',
+              _authorizedPersonPhoneController.text),
+          _buildSummaryRow('Authorized Person Email',
+              _authorizedPersonEmailController.text),
+          _buildSummaryRow('Country', _countryController.text),
+          _buildSummaryRow('City', _cityController.text),
+          _buildSummaryRow('District', _districtController.text),
+          _buildSummaryRow('Neighborhood',
+              _neighborhoodController.text),
+          _buildSummaryRow('Street', _streetController.text),
+          _buildSummaryRow('Building Number',
+              _buildingNumberController.text),
+          _buildSummaryRow('Apartment Number',
+              _apartmentNumberController.text),
+          _buildSummaryRow('Postal Code',
+              _postalCodeController.text),
+          _buildSummaryRow('Logo URL',
+              _logoUrl ?? 'Not provided'),
+          _buildSummaryRow('Tax Certificate URL',
+              _taxCertificateUrl ?? 'Not provided'),
+          _buildSummaryRow('Trade Registry URL',
+              _tradeRegistryUrl ?? 'Not provided'),
         ],
       ),
     );

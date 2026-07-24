@@ -9,10 +9,14 @@ class FirestoreVisualSearchRepository implements VisualSearchRepository {
   FirestoreVisualSearchRepository({fs.FirebaseFirestore? firestore})
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;
 
-  fs.CollectionReference _historyRef(String userId) =>
-      _firestore.collection('users').doc(userId).collection('visual_search_history');
-  fs.CollectionReference _preferencesRef(String userId) =>
-      _firestore.collection('users').doc(userId).collection('visual_search_preferences');
+  fs.CollectionReference _historyRef(String userId) => _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('visual_search_history');
+  fs.CollectionReference _preferencesRef(String userId) => _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('visual_search_preferences');
 
   @override
   Future<VisualSearchResult> searchByImage({
@@ -62,18 +66,24 @@ class FirestoreVisualSearchRepository implements VisualSearchRepository {
   }) async {
     // Upload to storage first, then search
     // For now, just call searchByImage
-    return searchByImage(imageUrl: filePath, userId: userId, maxResults: maxResults, minSimilarity: minSimilarity);
+    return searchByImage(
+        imageUrl: filePath,
+        userId: userId,
+        maxResults: maxResults,
+        minSimilarity: minSimilarity);
   }
 
   @override
-  Future<List<VisualSearchResult>> getHistory(String userId, {int limit = 20}) async {
+  Future<List<VisualSearchResult>> getHistory(String userId,
+      {int limit = 20}) async {
     try {
       final snapshot = await _historyRef(userId)
           .orderBy('searchedAt', descending: true)
           .limit(limit)
           .get();
       return snapshot.docs
-          .map((doc) => VisualSearchResult.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => VisualSearchResult.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get visual search history: $e');
@@ -113,7 +123,8 @@ class FirestoreVisualSearchRepository implements VisualSearchRepository {
   }
 
   @override
-  Future<List<VisualMatch>> findSimilarProducts(String productId, {int limit = 10}) async {
+  Future<List<VisualMatch>> findSimilarProducts(String productId,
+      {int limit = 10}) async {
     // Query vector database for similar products
     return [];
   }
@@ -129,7 +140,8 @@ class FirestoreVisualSearchRepository implements VisualSearchRepository {
   }
 
   @override
-  Future<void> savePreference(String userId, VisualSearchPreference preference) async {
+  Future<void> savePreference(
+      String userId, VisualSearchPreference preference) async {
     try {
       await _preferencesRef(userId).doc('preferences').set({
         'preferredCategories': preference.preferredCategories,

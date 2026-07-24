@@ -96,7 +96,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: _buildSection(
                 title: 'Featured Products',
                 showSeeAll: true,
-                onSeeAll: () => context.go('/marketplace/products?filter=featured'),
+                onSeeAll: () =>
+                    context.go('/marketplace/products?filter=featured'),
                 child: _buildFeaturedProducts(),
               ),
             ),
@@ -116,7 +117,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: _buildSection(
                 title: 'Trending Now',
                 showSeeAll: true,
-                onSeeAll: () => context.go('/marketplace/products?filter=trending'),
+                onSeeAll: () =>
+                    context.go('/marketplace/products?filter=trending'),
                 child: _buildTrendingProducts(),
               ),
             ),
@@ -152,9 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         color: AppColors.card,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _isSearchFocused
-              ? AppColors.primary
-              : AppColors.border,
+          color: _isSearchFocused ? AppColors.primary : AppColors.border,
         ),
       ),
       child: TextField(
@@ -217,11 +217,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onPressed: onSeeAll,
                   child: Text(
                     'See All',
-style: AppTextStyles.body(
-                        size: 14,
-                        color: AppColors.primary,
-                        weight: FontWeight.w600,
-                      ),
+                    style: AppTextStyles.body(
+                      size: 14,
+                      color: AppColors.primary,
+                      weight: FontWeight.w600,
+                    ),
                   ),
                 ),
             ],
@@ -457,7 +457,8 @@ style: AppTextStyles.body(
               return ProductCard(
                 product: placeholderProduct,
                 width: 160,
-                onTap: () => context.go('/marketplace/products/${recommendation.productId}'),
+                onTap: () => context
+                    .go('/marketplace/products/${recommendation.productId}'),
               );
             },
           ),
@@ -584,9 +585,9 @@ class ProductCard extends ConsumerWidget {
                       Text(
                         '\$${(product.pricing.basePrice / 100).toStringAsFixed(2)}',
                         style: AppTextStyles.textTheme.bodyLarge?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ) ??
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ) ??
                             const TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,
@@ -611,12 +612,15 @@ class ProductCard extends ConsumerWidget {
                           if (userId == null) {
                             // Handle case where user ID is not available
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Please log in to add items to cart')),
+                              const SnackBar(
+                                  content: Text(
+                                      'Please log in to add items to cart')),
                             );
                             return;
                           }
 
-                          final cartRepository = ref.read(cartRepositoryProvider);
+                          final cartRepository =
+                              ref.read(cartRepositoryProvider);
                           await cartRepository.addItem(
                             userId,
                             product.id,
@@ -627,12 +631,12 @@ class ProductCard extends ConsumerWidget {
                             {}, // variantAttributes - empty map since we don't have variants here
                           );
 
-                            // Show success message
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Added to cart')),
-                              );
-                            }
+                          // Show success message
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Added to cart')),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,

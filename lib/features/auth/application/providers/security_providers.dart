@@ -13,7 +13,8 @@ final sessionsProvider = FutureProvider.autoDispose<List<DeviceSession>>((ref) {
   return ref.watch(securityRepositoryProvider).listSessions();
 });
 
-final loginHistoryProvider = FutureProvider.autoDispose<List<LoginHistoryEntry>>((ref) {
+final loginHistoryProvider =
+    FutureProvider.autoDispose<List<LoginHistoryEntry>>((ref) {
   return ref.watch(securityRepositoryProvider).listLoginHistory();
 });
 
@@ -28,7 +29,8 @@ final securityScoreProvider = Provider.autoDispose<SecurityScore>((ref) {
   var score = 100;
   final factors = <String>[];
 
-  if (user == null) return const SecurityScore(score: 0, factors: ['Not signed in']);
+  if (user == null)
+    return const SecurityScore(score: 0, factors: ['Not signed in']);
 
   if (!user.emailVerified && user.email != null) {
     score -= 25;
@@ -43,11 +45,13 @@ final securityScoreProvider = Provider.autoDispose<SecurityScore>((ref) {
   score -= 15;
   factors.add('Two-factor authentication not enabled (-15)');
 
-  final untrustedCount = sessions.where((s) => !s.isTrusted && !s.isCurrent).length;
+  final untrustedCount =
+      sessions.where((s) => !s.isTrusted && !s.isCurrent).length;
   if (untrustedCount > 0) {
     final deduction = (untrustedCount * 5).clamp(0, 20);
     score -= deduction;
-    factors.add('$untrustedCount unrecognized device(s) signed in (-$deduction)');
+    factors
+        .add('$untrustedCount unrecognized device(s) signed in (-$deduction)');
   }
 
   score = score.clamp(0, 100);

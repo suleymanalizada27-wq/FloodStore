@@ -55,12 +55,19 @@ class CartScreen extends ConsumerWidget {
                       item: item,
                       onQuantityChanged: (newQuantity) {
                         if (newQuantity <= 0) {
-                          ref.read(cartRepositoryProvider).removeItem(userId, item.productId, item.variantId);
+                          ref.read(cartRepositoryProvider).removeItem(
+                              userId, item.productId, item.variantId);
                         } else {
-                          ref.read(cartRepositoryProvider).updateItemQuantity(userId, item.productId, item.variantId, newQuantity);
+                          ref.read(cartRepositoryProvider).updateItemQuantity(
+                              userId,
+                              item.productId,
+                              item.variantId,
+                              newQuantity);
                         }
                       },
-                      onRemove: () => ref.read(cartRepositoryProvider).removeItem(userId, item.productId, item.variantId),
+                      onRemove: () => ref
+                          .read(cartRepositoryProvider)
+                          .removeItem(userId, item.productId, item.variantId),
                     );
                   },
                 ),
@@ -79,9 +86,12 @@ class CartScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
-              Text('Sepet yüklenemedi', style: AppTextStyles.textTheme.titleMedium),
+              Text('Sepet yüklenemedi',
+                  style: AppTextStyles.textTheme.titleMedium),
               const SizedBox(height: 8),
-              Text(error.toString(), style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+              Text(error.toString(),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -94,11 +104,16 @@ class CartScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.shopping_cart_outlined, size: 64, color: AppColors.textTertiary),
+          const Icon(Icons.shopping_cart_outlined,
+              size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
-          Text('Sepetiniz boş', style: AppTextStyles.textTheme.headlineSmall?.copyWith(color: AppColors.textSecondary)),
+          Text('Sepetiniz boş',
+              style: AppTextStyles.textTheme.headlineSmall
+                  ?.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 8),
-          Text('Henüz ürün eklenmemiş', style: AppTextStyles.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
+          Text('Henüz ürün eklenmemiş',
+              style: AppTextStyles.textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.textTertiary)),
           const SizedBox(height: 24),
           PremiumButton(
             label: 'Alışverişe Başla',
@@ -110,17 +125,22 @@ class CartScreen extends ConsumerWidget {
     );
   }
 
-  void _showClearCartDialog(BuildContext context, WidgetRef ref, String userId) {
+  void _showClearCartDialog(
+      BuildContext context, WidgetRef ref, String userId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('Sepeti Temizle', style: AppTextStyles.textTheme.titleLarge),
-        content: Text('Tüm ürünler sepetenizden kaldırılacak. Emin misiniz?', style: AppTextStyles.textTheme.bodyMedium),
+        title:
+            Text('Sepeti Temizle', style: AppTextStyles.textTheme.titleLarge),
+        content: Text('Tüm ürünler sepetenizden kaldırılacak. Emin misiniz?',
+            style: AppTextStyles.textTheme.bodyMedium),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('İptal', style: AppTextStyles.textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)),
+            child: Text('İptal',
+                style: AppTextStyles.textTheme.labelLarge
+                    ?.copyWith(color: AppColors.textSecondary)),
           ),
           PremiumButton(
             label: 'Temizle',
@@ -173,15 +193,19 @@ class _CartItemTile extends StatelessWidget {
               children: [
                 Text(
                   item.productTitle,
-                  style: AppTextStyles.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.textTheme.bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (item.variantAttributes.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    item.variantAttributes.entries.map((e) => '${e.key}: ${e.value}').join(', '),
-                    style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                    item.variantAttributes.entries
+                        .map((e) => '${e.key}: ${e.value}')
+                        .join(', '),
+                    style: AppTextStyles.textTheme.bodySmall
+                        ?.copyWith(color: AppColors.textSecondary),
                   ),
                 ],
                 const SizedBox(height: 8),
@@ -206,7 +230,8 @@ class _CartItemTile extends StatelessWidget {
                     enabled: item.quantity > 1,
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppColors.card,
                       borderRadius: BorderRadius.circular(8),
@@ -214,7 +239,8 @@ class _CartItemTile extends StatelessWidget {
                     ),
                     child: Text(
                       '${item.quantity}',
-                      style: AppTextStyles.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                      style: AppTextStyles.textTheme.bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                   _QuantityButton(
@@ -265,10 +291,13 @@ class _QuantityButton extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: enabled ? AppColors.card : AppColors.card.withValues(alpha: 0.5),
+          color:
+              enabled ? AppColors.card : AppColors.card.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: enabled ? AppColors.border : AppColors.border.withValues(alpha: 0.5),
+            color: enabled
+                ? AppColors.border
+                : AppColors.border.withValues(alpha: 0.5),
           ),
         ),
         child: Icon(
@@ -312,9 +341,14 @@ class _CartSummary extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _SummaryRow(label: 'Ara Toplam', value: '\$${(subtotal / 100).toStringAsFixed(2)}'),
-          _SummaryRow(label: 'Kargo', value: '\$${shipping.toStringAsFixed(2)}'),
-          _SummaryRow(label: 'KDV (%18)', value: '\$${(taxAmount / 100).toStringAsFixed(2)}'),
+          _SummaryRow(
+              label: 'Ara Toplam',
+              value: '\$${(subtotal / 100).toStringAsFixed(2)}'),
+          _SummaryRow(
+              label: 'Kargo', value: '\$${shipping.toStringAsFixed(2)}'),
+          _SummaryRow(
+              label: 'KDV (%18)',
+              value: '\$${(taxAmount / 100).toStringAsFixed(2)}'),
           const Divider(height: 24, thickness: 1, color: AppColors.border),
           _SummaryRow(
             label: 'TOPLAM',
@@ -355,7 +389,8 @@ class _SummaryRow extends StatelessWidget {
           Text(
             label,
             style: isTotal
-                ? AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+                ? AppTextStyles.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)
                 : AppTextStyles.textTheme.bodyMedium,
           ),
           Text(
@@ -365,7 +400,8 @@ class _SummaryRow extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
                   )
-                : AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                : AppTextStyles.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

@@ -2,7 +2,13 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/account_mode.dart';
 
-enum RegisterWizardStep { personalInfo, accountInfo, security, verification, finish }
+enum RegisterWizardStep {
+  personalInfo,
+  accountInfo,
+  security,
+  verification,
+  finish
+}
 
 extension RegisterWizardStepX on RegisterWizardStep {
   String get title => switch (this) {
@@ -83,8 +89,10 @@ class RegisterWizardState extends Equatable {
 
   factory RegisterWizardState.fromDraftJson(Map<String, dynamic> json) {
     return RegisterWizardState(
-      step: RegisterWizardStep.values.byName(json['step'] as String? ?? 'personalInfo'),
-      accountMode: AccountMode.values.byName(json['accountMode'] as String? ?? 'individual'),
+      step: RegisterWizardStep.values
+          .byName(json['step'] as String? ?? 'personalInfo'),
+      accountMode: AccountMode.values
+          .byName(json['accountMode'] as String? ?? 'individual'),
       firstName: json['firstName'] as String? ?? '',
       lastName: json['lastName'] as String? ?? '',
       companyName: json['companyName'] as String? ?? '',

@@ -86,7 +86,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       if (location == AppRoutes.splash) return null;
 
       // 1. Not signed in at all -> auth flow.
-      final authRedirect = AuthGuards.requireAuth(user: user, location: location);
+      final authRedirect =
+          AuthGuards.requireAuth(user: user, location: location);
       if (authRedirect != null) return authRedirect;
 
       // 2. Signed in but idling on a sign-in/register screen -> home.
@@ -151,23 +152,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.securityCenter,
-        pageBuilder: (context, state) => _heroPage(const SecurityCenterScreen()),
+        pageBuilder: (context, state) =>
+            _heroPage(const SecurityCenterScreen()),
       ),
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
       ),
-       GoRoute(
-         path: AppRoutes.marketplaceProducts,
-         pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
-       ),
-       GoRoute(
-         path: AppRoutes.productDetail,
-         builder: (context, state) {
-           final productId = state.pathParameters['productId']!;
-           return ProductDetailScreen(productId: productId);
-         },
-       ),
+      GoRoute(
+        path: AppRoutes.marketplaceProducts,
+        pageBuilder: (context, state) => _heroPage(const ProductsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.productDetail,
+        builder: (context, state) {
+          final productId = state.pathParameters['productId']!;
+          return ProductDetailScreen(productId: productId);
+        },
+      ),
       GoRoute(
         path: AppRoutes.cart,
         pageBuilder: (context, state) => _heroPage(const CartScreen()),
@@ -182,7 +184,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.orderConfirmation,
-        pageBuilder: (context, state) => _heroPage(const OrderConfirmationScreen()),
+        pageBuilder: (context, state) =>
+            _heroPage(const OrderConfirmationScreen()),
       ),
       GoRoute(
         path: AppRoutes.orderDetail,
@@ -190,7 +193,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.businessAccountRegister,
-        pageBuilder: (context, state) => _heroPage(const BusinessAccountRegistrationScreen()),
+        pageBuilder: (context, state) =>
+            _heroPage(const BusinessAccountRegistrationScreen()),
       ),
     ],
   );

@@ -16,7 +16,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final orderId = GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
+    final orderId =
+        GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
     final orderAsync = ref.watch(orderForIdProvider(orderId));
 
     return Scaffold(
@@ -69,7 +70,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Sipariş numaranız: #${order.id.substring(0, 8).toUpperCase()}',
-                  style: AppTextStyles.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.textTheme.bodyLarge
+                      ?.copyWith(color: AppColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -79,9 +81,19 @@ class OrderConfirmationScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     children: [
-                      _OrderSummaryRow(label: 'Sipariş Tarihi', value: _formatDate(order.placedAt ?? order.createdAt)),
-                      _OrderSummaryRow(label: 'Ödeme Durum', value: _formatStatus(order.status), valueColor: _getStatusColor(order.status)),
-                      _OrderSummaryRow(label: 'Toplam Tutar', value: '\$${(order.totalAmount / 100).toStringAsFixed(2)}', isTotal: true),
+                      _OrderSummaryRow(
+                          label: 'Sipariş Tarihi',
+                          value:
+                              _formatDate(order.placedAt ?? order.createdAt)),
+                      _OrderSummaryRow(
+                          label: 'Ödeme Durum',
+                          value: _formatStatus(order.status),
+                          valueColor: _getStatusColor(order.status)),
+                      _OrderSummaryRow(
+                          label: 'Toplam Tutar',
+                          value:
+                              '\$${(order.totalAmount / 100).toStringAsFixed(2)}',
+                          isTotal: true),
                     ],
                   ),
                 ),
@@ -96,7 +108,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
                     children: [
                       Text(
                         'Teslimat Adresi',
-                        style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        style: AppTextStyles.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       _AddressBlock(address: order.shippingAddress),
@@ -114,7 +127,8 @@ class OrderConfirmationScreen extends ConsumerWidget {
                     children: [
                       Text(
                         'Sipariş Edilen Ürünler',
-                        style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        style: AppTextStyles.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       ...order.items.map((item) => _OrderItemTile(item: item)),
@@ -131,14 +145,16 @@ class OrderConfirmationScreen extends ConsumerWidget {
                       label: 'Sipariş Detayını Gör',
                       icon: Icons.visibility,
                       expand: true,
-                      onPressed: () => context.push('${AppRoutes.orderDetail}?orderId=${order.id}'),
+                      onPressed: () => context
+                          .push('${AppRoutes.orderDetail}?orderId=${order.id}'),
                     ),
                     const SizedBox(height: AppSpacing.md),
                     PremiumButton(
                       label: 'Alışverişe Devam Et',
                       icon: Icons.shopping_bag_outlined,
                       expand: true,
-                      onPressed: () => context.go(AppRoutes.marketplaceProducts),
+                      onPressed: () =>
+                          context.go(AppRoutes.marketplaceProducts),
                     ),
                     const SizedBox(height: AppSpacing.md),
                     PremiumButton(
@@ -160,9 +176,12 @@ class OrderConfirmationScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
-              Text('Sipariş bulunamadı', style: AppTextStyles.textTheme.titleMedium),
+              Text('Sipariş bulunamadı',
+                  style: AppTextStyles.textTheme.titleMedium),
               const SizedBox(height: 8),
-              Text(error.toString(), style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+              Text(error.toString(),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -175,9 +194,12 @@ class OrderConfirmationScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.textTertiary),
+          const Icon(Icons.receipt_long_outlined,
+              size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
-          Text('Sipariş bulunamadı', style: AppTextStyles.textTheme.headlineSmall?.copyWith(color: AppColors.textSecondary)),
+          Text('Sipariş bulunamadı',
+              style: AppTextStyles.textTheme.headlineSmall
+                  ?.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 24),
           PremiumButton(
             label: 'Ana Sayfaya Dön',
@@ -260,7 +282,8 @@ class _OrderSummaryRow extends StatelessWidget {
           Text(
             label,
             style: isTotal
-                ? AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+                ? AppTextStyles.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)
                 : AppTextStyles.textTheme.bodyMedium,
           ),
           Text(
@@ -291,15 +314,19 @@ class _AddressBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(address.name, style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+        Text(address.name,
+            style: AppTextStyles.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600)),
         Text(address.line1, style: AppTextStyles.textTheme.bodyMedium),
         if (address.line2 != null && address.line2!.isNotEmpty)
           Text(address.line2!, style: AppTextStyles.textTheme.bodyMedium),
-        Text('${address.city}, ${address.state} ${address.postalCode}', style: AppTextStyles.textTheme.bodyMedium),
+        Text('${address.city}, ${address.state} ${address.postalCode}',
+            style: AppTextStyles.textTheme.bodyMedium),
         Text(address.country, style: AppTextStyles.textTheme.bodyMedium),
         if (address.phone.isNotEmpty) ...[
           const SizedBox(height: 4),
-          Text('Tel: ${address.phone}', style: AppTextStyles.textTheme.bodyMedium),
+          Text('Tel: ${address.phone}',
+              style: AppTextStyles.textTheme.bodyMedium),
         ],
       ],
     );
@@ -335,18 +362,23 @@ class _OrderItemTile extends StatelessWidget {
               children: [
                 Text(
                   item.productTitle,
-                  style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (item.variantAttributes.isNotEmpty)
                   Text(
-                    item.variantAttributes.entries.map((e) => '${e.key}: ${e.value}').join(', '),
-                    style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                    item.variantAttributes.entries
+                        .map((e) => '${e.key}: ${e.value}')
+                        .join(', '),
+                    style: AppTextStyles.textTheme.bodySmall
+                        ?.copyWith(color: AppColors.textSecondary),
                   ),
                 Text(
                   '${item.quantity} x \$${(item.unitPrice / 100).toStringAsFixed(2)}',
-                  style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),

@@ -39,13 +39,18 @@ extension _AuthStateKindVisuals on AuthStateKind {
 
   String get subtitle => switch (this) {
         AuthStateKind.offline => 'Check your connection and try again.',
-        AuthStateKind.serverError => "We're looking into it — please try again shortly.",
+        AuthStateKind.serverError =>
+          "We're looking into it — please try again shortly.",
         AuthStateKind.timeout => 'The request timed out. Please try again.',
-        AuthStateKind.tooManyAttempts => 'Please wait a moment before trying again.',
-        AuthStateKind.invalidCredentials => 'Double-check your email and password.',
+        AuthStateKind.tooManyAttempts =>
+          'Please wait a moment before trying again.',
+        AuthStateKind.invalidCredentials =>
+          'Double-check your email and password.',
         AuthStateKind.expiredSession => 'Please sign in again to continue.',
-        AuthStateKind.maintenance => 'FloodStore is undergoing scheduled maintenance.',
-        AuthStateKind.unknown => 'Please try again — if this keeps happening, let us know.',
+        AuthStateKind.maintenance =>
+          'FloodStore is undergoing scheduled maintenance.',
+        AuthStateKind.unknown =>
+          'Please try again — if this keeps happening, let us know.',
       };
 }
 
@@ -89,7 +94,8 @@ class AuthStateIllustration extends StatelessWidget {
           Text(
             kind.subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.body(size: 12.5, color: AppColors.textTertiary),
+            style:
+                AppTextStyles.body(size: 12.5, color: AppColors.textTertiary),
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 18),

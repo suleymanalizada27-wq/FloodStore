@@ -103,7 +103,9 @@ class _OrganizationOnboardingScreenState
               PremiumButton(
                 label: 'Create Organization',
                 loading: formState.isSubmitting,
-                onPressed: () => ref.read(organizationControllerProvider.notifier).createOrganization(
+                onPressed: () => ref
+                    .read(organizationControllerProvider.notifier)
+                    .createOrganization(
                       name: _nameController.text,
                       domain: _domainController.text,
                       workspaceUrl: _workspaceController.text.isEmpty
@@ -114,7 +116,8 @@ class _OrganizationOnboardingScreenState
             ] else if (_tab == _OrgTab.joinDomain) ...[
               Text(
                 'We match you to your company workspace using your email domain.',
-                style: AppTextStyles.body(size: 12.5, color: AppColors.textSecondary),
+                style: AppTextStyles.body(
+                    size: 12.5, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 16),
               PremiumTextField(
@@ -134,7 +137,8 @@ class _OrganizationOnboardingScreenState
             ] else ...[
               Text(
                 'Enter the invitation code your admin sent you.',
-                style: AppTextStyles.body(size: 12.5, color: AppColors.textSecondary),
+                style: AppTextStyles.body(
+                    size: 12.5, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 16),
               PremiumTextField(
@@ -199,7 +203,9 @@ class _TabBar extends StatelessWidget {
                   style: AppTextStyles.body(
                     size: 11.5,
                     weight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected ? AppColors.textPrimary : AppColors.textTertiary,
+                    color: selected
+                        ? AppColors.textPrimary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ),

@@ -145,23 +145,25 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           shippingMultiplier = 1.0;
       }
 
-      final shippingAmount = (shippingCost * shippingMultiplier).roundToDouble();
+      final shippingAmount =
+          (shippingCost * shippingMultiplier).roundToDouble();
       final totalAmount = cart.subtotalAmount + shippingAmount + taxAmount;
 
-      // Create order
-      final orderId = await ref.read(orderRepositoryProvider).createOrderFromCart(
-        userId,
-        cart,
-        notes: 'Checkout via mobile app',
-      );
+      // Create order - payment processing will be implemented later
+      final orderId =
+          await ref.read(orderRepositoryProvider).createOrderFromCart(
+                userId,
+                cart,
+                notes: 'Checkout via mobile app',
+              );
 
-      // Update order with shipping address and payment info
+      // Update order with shipping address - payment info will be added after real payment processing
       final order = Order(
         id: orderId,
         userId: userId,
-        status: OrderStatus.pending,
+        status: OrderStatus.pending, // Order placed but payment pending
         fulfillmentStatus: FulfillmentStatus.pending,
-        paymentStatus: PaymentStatus.pending, // Will be updated after payment
+        paymentStatus: PaymentStatus.pending, // Will be updated after real payment
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         placedAt: DateTime.now(),
@@ -188,28 +190,30 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 ))
             .toList(),
         discounts: [],
-        payment: PaymentInfo(
-          provider: _selectedPaymentMethod == 'card'
-              ? PaymentProvider.stripe
-              : PaymentProvider.paypal,
-          providerPaymentId: 'mock_payment_${DateTime.now().millisecondsSinceEpoch}',
-          status: 'paid',
-          amount: totalAmount,
-          currency: 'USD',
-          details: {'method': _selectedPaymentMethod},
-        ),
+        // Payment info will be added after real payment processing - keeping as null for now
+        payment: null,
         tracking: null,
         history: [],
       );
 
-      // Update the order with complete information
+      // Update the order with shipping address only - payment status remains pending
       await ref
           .read(orderRepositoryProvider)
-          .updateOrderStatus(orderId, OrderStatus.confirmed);
-      await ref.read(orderRepositoryProvider).addPaymentInfo(
-            orderId,
-            order.payment!,
+          .updateOrderStatus(orderId, OrderStatus.pending);
+      // Note: Payment info will be added later via Cloud Function when real payment integration is implemented
+
+      // Show message to user about payment processing (in production, this would integrate with real payment provider)
+      if (!kReleaseMode) {
+        // In debug mode, we can show a test message but NOT confirm the order as paid
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('TEST MODE: Order placed successfully. Payment processing will be implemented soon.'),
+              backgroundColor: Colors.orange,
+            ),
           );
+        }
+      }
 
       // Clear cart after successful order
       await ref.read(cartRepositoryProvider).clearCart(userId);
@@ -445,18 +449,21 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         ),
         content: SingleChildScrollView(
           child: ListBody(
-            children: _savedAddresses.map((address) => ListTile(
-              leading: const Icon(Icons.home, color: AppColors.primary),
-              title: Text(address.name),
-              subtitle: Text('${address.line1}, ${address.city}, ${address.postalCode}'),
-              onTap: () {
-                setState(() {
-                  _selectedAddress = address;
-                  _populateAddressForm(address);
-                });
-                Navigator.of(context).pop();
-              },
-            )).toList(),
+            children: _savedAddresses
+                .map((address) => ListTile(
+                      leading: const Icon(Icons.home, color: AppColors.primary),
+                      title: Text(address.name),
+                      subtitle: Text(
+                          '${address.line1}, ${address.city}, ${address.postalCode}'),
+                      onTap: () {
+                        setState(() {
+                          _selectedAddress = address;
+                          _populateAddressForm(address);
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    ))
+                .toList(),
           ),
         ),
         actions: [
@@ -469,7 +476,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _buildOrderSummary(Cart cart, double shippingAmount, double taxAmount, double totalAmount) {
+  Widget _buildOrderSummary(
+      Cart cart, double shippingAmount, double taxAmount, double totalAmount) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.border),
@@ -477,9 +485,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       child: Column(
         children: [
-          _buildOrderSummaryRow('Subtotal', '\$${(cart.subtotalAmount / 100).toStringAsFixed(2)}'),
-          _buildOrderSummaryRow('Shipping', '\$${(shippingAmount / 100).toStringAsFixed(2)}'),
-          _buildOrderSummaryRow('Tax (18%)', '\$${(taxAmount / 100).toStringAsFixed(2)}'),
+          _buildOrderSummaryRow('Subtotal',
+              '\$${(cart.subtotalAmount / 100).toStringAsFixed(2)}'),
+          _buildOrderSummaryRow(
+              'Shipping', '\$${(shippingAmount / 100).toStringAsFixed(2)}'),
+          _buildOrderSummaryRow(
+              'Tax (18%)', '\$${(taxAmount / 100).toStringAsFixed(2)}'),
           const Divider(height: 24, thickness: 1, color: AppColors.border),
           _buildOrderSummaryRow(
             'TOTAL',
@@ -491,7 +502,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _buildOrderSummaryRow(String label, String value, {bool isTotal = false}) {
+  Widget _buildOrderSummaryRow(String label, String value,
+      {bool isTotal = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(

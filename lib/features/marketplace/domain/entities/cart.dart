@@ -27,11 +27,11 @@ class Cart extends Equatable {
       userId: data['userId'] ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      items: List<CartItem>.from(
-        (data['items'] as List<dynamic>?)
-                ?.map((item) => CartItem.fromFirestore(item as Map<String, dynamic>))
-                .toList() ??
-            []),
+      items: List<CartItem>.from((data['items'] as List<dynamic>?)
+              ?.map((item) =>
+                  CartItem.fromFirestore(item as Map<String, dynamic>))
+              .toList() ??
+          []),
       couponCode: data['couponCode'],
       isSavedForLater: data['isSavedForLater'] ?? false,
     );
@@ -109,7 +109,8 @@ class CartItem extends Equatable {
   final String productId;
   final String? variantId;
   final int quantity;
-  final double unitPrice; // price per unit in cents (snapshot at time of add to cart)
+  final double
+      unitPrice; // price per unit in cents (snapshot at time of add to cart)
   final double totalPrice; // quantity * unitPrice in cents
   final String productTitle;
   final Map<String, String> variantAttributes; // snapshot of variant attributes
@@ -134,7 +135,8 @@ class CartItem extends Equatable {
       unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
       totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0.0,
       productTitle: data['productTitle'] ?? '',
-      variantAttributes: Map<String, String>.from(data['variantAttributes'] ?? {}),
+      variantAttributes:
+          Map<String, String>.from(data['variantAttributes'] ?? {}),
     );
   }
 

@@ -69,8 +69,10 @@ class FirestoreOrganizationRepository implements OrganizationRepository {
       if (!orgDoc.exists) continue;
       result.add(OrganizationMembership(
         organization: _mapOrg(orgDoc),
-        role: OrganizationRole.values.byName(m.data()['role'] as String? ?? 'member'),
-        joinedAt: (m.data()['joinedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+        role: OrganizationRole.values
+            .byName(m.data()['role'] as String? ?? 'member'),
+        joinedAt:
+            (m.data()['joinedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       ));
     }
     return result;
@@ -143,7 +145,8 @@ class FirestoreOrganizationRepository implements OrganizationRepository {
   Future<Organization> joinByDomain(String companyEmail) async {
     final at = companyEmail.indexOf('@');
     if (at == -1) {
-      throw const OrganizationFailure('Enter a valid company email.', code: 'invalid-email');
+      throw const OrganizationFailure('Enter a valid company email.',
+          code: 'invalid-email');
     }
     final domain = companyEmail.substring(at + 1).trim().toLowerCase();
 
@@ -172,9 +175,11 @@ class FirestoreOrganizationRepository implements OrganizationRepository {
   @override
   Future<Organization> joinWithInvitationCode(String code) async {
     final normalized = code.trim().toUpperCase();
-    final codeDoc = await _db.collection('invitationCodes').doc(normalized).get();
+    final codeDoc =
+        await _db.collection('invitationCodes').doc(normalized).get();
     if (!codeDoc.exists) {
-      throw const OrganizationFailure('Invalid invitation code.', code: 'invalid-code');
+      throw const OrganizationFailure('Invalid invitation code.',
+          code: 'invalid-code');
     }
     final d = codeDoc.data()!;
     final invite = InvitationCode(
@@ -192,9 +197,11 @@ class FirestoreOrganizationRepository implements OrganizationRepository {
       );
     }
 
-    final orgDoc = await _db.collection('organizations').doc(invite.organizationId).get();
+    final orgDoc =
+        await _db.collection('organizations').doc(invite.organizationId).get();
     if (!orgDoc.exists) {
-      throw const OrganizationFailure('This organization no longer exists.', code: 'org-missing');
+      throw const OrganizationFailure('This organization no longer exists.',
+          code: 'org-missing');
     }
 
     await orgDoc.reference.collection('members').doc(_uid).set({
@@ -216,7 +223,8 @@ class FirestoreOrganizationRepository implements OrganizationRepository {
   }) async {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I ambiguity
     final rand = Random.secure();
-    final code = List.generate(8, (_) => chars[rand.nextInt(chars.length)]).join();
+    final code =
+        List.generate(8, (_) => chars[rand.nextInt(chars.length)]).join();
     final expiresAt = DateTime.now().add(validFor);
 
     await _db.collection('invitationCodes').doc(code).set({

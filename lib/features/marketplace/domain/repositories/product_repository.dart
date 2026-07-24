@@ -12,21 +12,24 @@ abstract class ProductRepository {
   Future<ProductVariant?> getProductVariantById(String variantId);
 
   /// Gets products by category
-  Future<List<Product>> getProductsByCategory(String categoryId, {
+  Future<List<Product>> getProductsByCategory(
+    String categoryId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
   });
 
   /// Gets products by seller
-  Future<List<Product>> getProductsBySeller(String sellerId, {
+  Future<List<Product>> getProductsBySeller(
+    String sellerId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
   });
 
   /// Searches products by query
-  Future<List<Product>> searchProducts(String query, {
+  Future<List<Product>> searchProducts(
+    String query, {
     int limit = 20,
     String? lastDocumentId,
     List<String>? categoryIds,
@@ -49,7 +52,8 @@ abstract class ProductRepository {
   Future<List<Product>> getSaleProducts({int limit = 10});
 
   /// Gets related products based on a product
-  Future<List<Product>> getRelatedProducts(String productId, {
+  Future<List<Product>> getRelatedProducts(
+    String productId, {
     int limit = 10,
   });
 
@@ -92,7 +96,8 @@ abstract class ProductRepository {
   );
 
   /// Gets product reviews
-  Future<List<Review>> getProductReviews(String productId, {
+  Future<List<Review>> getProductReviews(
+    String productId, {
     int limit = 20,
     String? lastDocumentId,
     bool approvedOnly = true,
@@ -108,7 +113,8 @@ abstract class ProductRepository {
   Future<void> deleteProductReview(String reviewId);
 
   /// Helpful vote for a review
-  Future<void> voteReviewHelpful(String reviewId, String userId, bool isHelpful);
+  Future<void> voteReviewHelpful(
+      String reviewId, String userId, bool isHelpful);
 
   /// Gets categories
   Future<List<Category>> getCategories({

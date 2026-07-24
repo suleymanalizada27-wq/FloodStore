@@ -14,8 +14,7 @@ class LockStatus {
   final int attemptsRemaining;
   final DateTime? lockedUntil;
 
-  Duration? get remaining =>
-      lockedUntil?.difference(DateTime.now());
+  Duration? get remaining => lockedUntil?.difference(DateTime.now());
 
   static const notLocked = LockStatus(isLocked: false, attemptsRemaining: -1);
 }
@@ -43,7 +42,8 @@ class AuthRateLimiter {
   Future<SharedPreferences> get _prefs async =>
       _prefsOverride ?? await SharedPreferences.getInstance();
 
-  String _attemptsKey(String id) => 'floodstore.rl.attempts.${id.trim().toLowerCase()}';
+  String _attemptsKey(String id) =>
+      'floodstore.rl.attempts.${id.trim().toLowerCase()}';
   String _lockedUntilKey(String id) =>
       'floodstore.rl.locked_until.${id.trim().toLowerCase()}';
 
@@ -53,7 +53,8 @@ class AuthRateLimiter {
 
     final lockedUntilMillis = prefs.getInt(_lockedUntilKey(identifier));
     if (lockedUntilMillis != null) {
-      final lockedUntil = DateTime.fromMillisecondsSinceEpoch(lockedUntilMillis);
+      final lockedUntil =
+          DateTime.fromMillisecondsSinceEpoch(lockedUntilMillis);
       if (DateTime.now().isBefore(lockedUntil)) {
         return LockStatus(
           isLocked: true,
@@ -69,7 +70,8 @@ class AuthRateLimiter {
     final attempts = prefs.getInt(_attemptsKey(identifier)) ?? 0;
     return LockStatus(
       isLocked: false,
-      attemptsRemaining: (maxAttemptsBeforeLock - attempts).clamp(0, maxAttemptsBeforeLock),
+      attemptsRemaining:
+          (maxAttemptsBeforeLock - attempts).clamp(0, maxAttemptsBeforeLock),
     );
   }
 
@@ -94,8 +96,10 @@ class AuthRateLimiter {
     final lockDuration = backoff > _maxLockout ? _maxLockout : backoff;
     final lockedUntil = DateTime.now().add(lockDuration);
 
-    await prefs.setInt(_lockedUntilKey(identifier), lockedUntil.millisecondsSinceEpoch);
-    return LockStatus(isLocked: true, attemptsRemaining: 0, lockedUntil: lockedUntil);
+    await prefs.setInt(
+        _lockedUntilKey(identifier), lockedUntil.millisecondsSinceEpoch);
+    return LockStatus(
+        isLocked: true, attemptsRemaining: 0, lockedUntil: lockedUntil);
   }
 
   /// Clears all lockout state for [identifier]. Call on a successful sign-in.

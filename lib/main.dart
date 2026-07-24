@@ -17,7 +17,8 @@ import 'firebase_options.dart';
 const String _kThemeModeKey = 'floodstore_theme_mode';
 
 /// Provider for the user's theme mode preference
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+final themeModeProvider =
+    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
   return ThemeModeNotifier();
 });
 
@@ -28,7 +29,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
 
   Future<void> _loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
-    final themeIndex = prefs.getInt(_kThemeModeKey) ?? 0; // 0 = system, 1 = light, 2 = dark
+    final themeIndex =
+        prefs.getInt(_kThemeModeKey) ?? 0; // 0 = system, 1 = light, 2 = dark
     state = ThemeMode.values[themeIndex.clamp(0, ThemeMode.values.length - 1)];
   }
 

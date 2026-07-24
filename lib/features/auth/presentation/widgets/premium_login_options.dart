@@ -14,7 +14,8 @@ class PremiumLoginOptions extends ConsumerStatefulWidget {
   const PremiumLoginOptions({super.key});
 
   @override
-  ConsumerState<PremiumLoginOptions> createState() => _PremiumLoginOptionsState();
+  ConsumerState<PremiumLoginOptions> createState() =>
+      _PremiumLoginOptionsState();
 }
 
 class _PremiumLoginOptionsState extends ConsumerState<PremiumLoginOptions> {
@@ -50,12 +51,18 @@ class _PremiumLoginOptionsState extends ConsumerState<PremiumLoginOptions> {
     setState(() => _sending = true);
     try {
       await ref.read(authRepositoryProvider).sendMagicLink(email);
-      if (mounted) setState(() { _sending = false; _sent = true; });
+      if (mounted)
+        setState(() {
+          _sending = false;
+          _sent = true;
+        });
     } catch (_) {
       if (mounted) {
         setState(() => _sending = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send the magic link. Please try again.')),
+          const SnackBar(
+              content:
+                  Text('Could not send the magic link. Please try again.')),
         );
       }
     }
@@ -68,18 +75,26 @@ class _PremiumLoginOptionsState extends ConsumerState<PremiumLoginOptions> {
       children: [
         _OptionTile(
           icon: Icons.bolt_rounded,
-          label: _sent ? 'Magic link sent — check your inbox' : 'Sign in with Magic Link',
+          label: _sent
+              ? 'Magic link sent — check your inbox'
+              : 'Sign in with Magic Link',
           loading: _sending,
           onTap: _sent ? null : _sendMagicLink,
         ),
         const SizedBox(height: 10),
         const Row(
           children: [
-            Expanded(child: _ComingSoonChip(icon: Icons.fingerprint_rounded, label: 'Biometric')),
+            Expanded(
+                child: _ComingSoonChip(
+                    icon: Icons.fingerprint_rounded, label: 'Biometric')),
             SizedBox(width: 8),
-            Expanded(child: _ComingSoonChip(icon: Icons.key_rounded, label: 'Passkey')),
+            Expanded(
+                child:
+                    _ComingSoonChip(icon: Icons.key_rounded, label: 'Passkey')),
             SizedBox(width: 8),
-            Expanded(child: _ComingSoonChip(icon: Icons.qr_code_rounded, label: 'QR Code')),
+            Expanded(
+                child: _ComingSoonChip(
+                    icon: Icons.qr_code_rounded, label: 'QR Code')),
           ],
         ),
       ],
@@ -156,7 +171,9 @@ class _ComingSoonChip extends StatelessWidget {
           children: [
             Icon(icon, size: 16, color: AppColors.textTertiary),
             const SizedBox(height: 4),
-            Text(label, style: AppTextStyles.body(size: 9.5, color: AppColors.textTertiary)),
+            Text(label,
+                style: AppTextStyles.body(
+                    size: 9.5, color: AppColors.textTertiary)),
           ],
         ),
       ),

@@ -15,7 +15,8 @@ abstract class ChatRepository {
   Future<ChatMessage> sendMessage(ChatMessage message);
 
   /// Get messages for session
-  Future<List<ChatMessage>> getMessages(String sessionId, {
+  Future<List<ChatMessage>> getMessages(
+    String sessionId, {
     int limit = 50,
     String? lastDocumentId,
   });
@@ -43,12 +44,14 @@ abstract class ChatRepository {
   Future<void> rateResponse(String messageId, bool helpful);
 
   /// Get product suggestions for message
-  Future<List<ProductSuggestion>> getProductSuggestions(String message, {
+  Future<List<ProductSuggestion>> getProductSuggestions(
+    String message, {
     String? categoryId,
     double? maxPrice,
     String? userId,
   });
 
   /// Save user feedback on suggestion
-  Future<void> saveSuggestionFeedback(String sessionId, String productId, bool clicked);
+  Future<void> saveSuggestionFeedback(
+      String sessionId, String productId, bool clicked);
 }

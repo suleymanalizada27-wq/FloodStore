@@ -44,7 +44,8 @@ class StepAccountInfo extends StatelessWidget {
             controller: usernameController,
             hint: 'janedoe',
             prefixIcon: Icons.alternate_email_rounded,
-            validator: (v) => (v ?? '').trim().length < 3 ? 'At least 3 characters' : null,
+            validator: (v) =>
+                (v ?? '').trim().length < 3 ? 'At least 3 characters' : null,
           ),
           const SizedBox(height: 18),
           PremiumTextField(
@@ -55,7 +56,9 @@ class StepAccountInfo extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
               final value = (v ?? '').trim();
-              if (value.isEmpty || !value.contains('@') || !value.contains('.')) {
+              if (value.isEmpty ||
+                  !value.contains('@') ||
+                  !value.contains('.')) {
                 return 'Enter a valid email';
               }
               return null;
@@ -87,7 +90,8 @@ class StepAccountInfo extends StatelessWidget {
               validator: (v) {
                 if (!isBusiness) return null;
                 final value = (v ?? '').trim();
-                if (value.isEmpty || !value.contains('@')) return 'Enter your company email';
+                if (value.isEmpty || !value.contains('@'))
+                  return 'Enter your company email';
                 return null;
               },
             ),

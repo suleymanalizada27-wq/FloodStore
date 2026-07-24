@@ -12,7 +12,8 @@ final organizationRepositoryProvider = Provider<OrganizationRepository>((ref) {
 /// The organizations the signed-in user belongs to. Empty for Individual /
 /// Guest accounts. [OrganizationSwitcher] watches this to decide whether it
 /// has anything to show.
-final myOrganizationsProvider = FutureProvider<List<OrganizationMembership>>((ref) {
+final myOrganizationsProvider =
+    FutureProvider<List<OrganizationMembership>>((ref) {
   return ref.watch(organizationRepositoryProvider).listMyOrganizations();
 });
 
@@ -57,7 +58,8 @@ class OrganizationController extends StateNotifier<OrganizationFormState> {
 
   final Ref ref;
 
-  OrganizationRepository get _repository => ref.read(organizationRepositoryProvider);
+  OrganizationRepository get _repository =>
+      ref.read(organizationRepositoryProvider);
 
   Future<void> _run(Future<Organization> Function() action) async {
     state = state.copyWith(isSubmitting: true, clearError: true);
@@ -102,7 +104,7 @@ class OrganizationController extends StateNotifier<OrganizationFormState> {
   }
 }
 
-final organizationControllerProvider =
-    StateNotifierProvider.autoDispose<OrganizationController, OrganizationFormState>(
+final organizationControllerProvider = StateNotifierProvider.autoDispose<
+    OrganizationController, OrganizationFormState>(
   OrganizationController.new,
 );

@@ -71,7 +71,8 @@ class FirestoreCartRepository implements CartRepository {
         (i) => i['productId'] == productId && i['variantId'] == variantId,
       );
       if (existingIndex >= 0) {
-        final currentQty = (items[existingIndex]['quantity'] as num?)?.toInt() ?? 0;
+        final currentQty =
+            (items[existingIndex]['quantity'] as num?)?.toInt() ?? 0;
         final newQty = currentQty + quantity;
         items[existingIndex] = {
           ...items[existingIndex],
@@ -122,8 +123,7 @@ class FirestoreCartRepository implements CartRepository {
         (i) => i['productId'] == productId && i['variantId'] == variantId,
       );
       if (index < 0) return;
-      final unitPrice =
-          (items[index]['unitPrice'] as num?)?.toDouble() ?? 0.0;
+      final unitPrice = (items[index]['unitPrice'] as num?)?.toDouble() ?? 0.0;
       items[index] = {
         ...items[index],
         'quantity': quantity,

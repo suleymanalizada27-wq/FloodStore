@@ -116,7 +116,8 @@ abstract class AuthRepository {
 
   Future<bool> isMagicLink(String link);
 
-  Future<AppUser> signInWithMagicLink({required String email, required String link});
+  Future<AppUser> signInWithMagicLink(
+      {required String email, required String link});
 
   /// Sends a re-verification link to [newEmail]; the address only takes
   /// effect once the user clicks it. Used by "Change Email" on

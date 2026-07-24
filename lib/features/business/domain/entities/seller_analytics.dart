@@ -61,7 +61,8 @@ class SellerAnalytics extends Equatable {
       'customers': customers.toFirestore(),
       'financial': financial.toFirestore(),
       'topProducts': topProducts.map((p) => p.toFirestore()).toList(),
-      'categoryPerformance': categoryPerformance.map((c) => c.toFirestore()).toList(),
+      'categoryPerformance':
+          categoryPerformance.map((c) => c.toFirestore()).toList(),
       'dailySales': dailySales.map((d) => d.toFirestore()).toList(),
       'generatedAt': generatedAt.toIso8601String(),
     };
@@ -159,7 +160,8 @@ class TrafficMetrics extends Equatable {
   final int pageViews;
   final double bounceRate;
   final double averageSessionDuration;
-  final Map<String, int> trafficSources; // direct, search, social, referral, email
+  final Map<String, int>
+      trafficSources; // direct, search, social, referral, email
   final Map<String, int> deviceBreakdown; // mobile, desktop, tablet
   final Map<String, int> topPages;
 
@@ -203,7 +205,8 @@ class TrafficMetrics extends Equatable {
       uniqueVisitors: data['uniqueVisitors'] ?? 0,
       pageViews: data['pageViews'] ?? 0,
       bounceRate: (data['bounceRate'] as num?)?.toDouble() ?? 0.0,
-      averageSessionDuration: (data['averageSessionDuration'] as num?)?.toDouble() ?? 0.0,
+      averageSessionDuration:
+          (data['averageSessionDuration'] as num?)?.toDouble() ?? 0.0,
       trafficSources: Map<String, int>.from(data['trafficSources'] ?? {}),
       deviceBreakdown: Map<String, int>.from(data['deviceBreakdown'] ?? {}),
       topPages: Map<String, int>.from(data['topPages'] ?? {}),
@@ -253,13 +256,16 @@ class ConversionMetrics extends Equatable {
 
   static ConversionMetrics fromFirestore(Map<String, dynamic> data) {
     return ConversionMetrics(
-      overallConversionRate: (data['overallConversionRate'] as num?)?.toDouble() ?? 0.0,
+      overallConversionRate:
+          (data['overallConversionRate'] as num?)?.toDouble() ?? 0.0,
       addToCartRate: (data['addToCartRate'] as num?)?.toDouble() ?? 0.0,
       checkoutRate: (data['checkoutRate'] as num?)?.toDouble() ?? 0.0,
-      cartAbandonmentRate: (data['cartAbandonmentRate'] as num?)?.toDouble() ?? 0.0,
+      cartAbandonmentRate:
+          (data['cartAbandonmentRate'] as num?)?.toDouble() ?? 0.0,
       funnelSteps: Map<String, double>.from(data['funnelSteps'] ?? {}),
       abandonedCarts: data['abandonedCarts'] ?? 0,
-      recoveredCartRevenue: (data['recoveredCartRevenue'] as num?)?.toDouble() ?? 0.0,
+      recoveredCartRevenue:
+          (data['recoveredCartRevenue'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }
@@ -317,7 +323,8 @@ class ProductMetrics extends Equatable {
       averageRating: (data['averageRating'] as num?)?.toDouble() ?? 0.0,
       totalReviews: data['totalReviews'] ?? 0,
       productsWithReviews: data['productsWithReviews'] ?? 0,
-      productsByCategory: Map<String, int>.from(data['productsByCategory'] ?? {}),
+      productsByCategory:
+          Map<String, int>.from(data['productsByCategory'] ?? {}),
     );
   }
 }
@@ -371,9 +378,12 @@ class CustomerMetrics extends Equatable {
       totalCustomers: data['totalCustomers'] ?? 0,
       newCustomers: data['newCustomers'] ?? 0,
       returningCustomers: data['returningCustomers'] ?? 0,
-      customerRetentionRate: (data['customerRetentionRate'] as num?)?.toDouble() ?? 0.0,
-      customerLifetimeValue: (data['customerLifetimeValue'] as num?)?.toDouble() ?? 0.0,
-      averageOrdersPerCustomer: (data['averageOrdersPerCustomer'] as num?)?.toDouble() ?? 0.0,
+      customerRetentionRate:
+          (data['customerRetentionRate'] as num?)?.toDouble() ?? 0.0,
+      customerLifetimeValue:
+          (data['customerLifetimeValue'] as num?)?.toDouble() ?? 0.0,
+      averageOrdersPerCustomer:
+          (data['averageOrdersPerCustomer'] as num?)?.toDouble() ?? 0.0,
       customersByTier: Map<String, int>.from(data['customersByTier'] ?? {}),
       churnedCustomers: data['churnedCustomers'] ?? 0,
     );
@@ -432,13 +442,15 @@ class FinancialMetrics extends Equatable {
     return FinancialMetrics(
       totalRevenue: (data['totalRevenue'] as num?)?.toDouble() ?? 0.0,
       platformFees: (data['platformFees'] as num?)?.toDouble() ?? 0.0,
-      paymentProcessingFees: (data['paymentProcessingFees'] as num?)?.toDouble() ?? 0.0,
+      paymentProcessingFees:
+          (data['paymentProcessingFees'] as num?)?.toDouble() ?? 0.0,
       shippingCosts: (data['shippingCosts'] as num?)?.toDouble() ?? 0.0,
       refunds: (data['refunds'] as num?)?.toDouble() ?? 0.0,
       chargebacks: (data['chargebacks'] as num?)?.toDouble() ?? 0.0,
       netPayout: (data['netPayout'] as num?)?.toDouble() ?? 0.0,
       pendingPayout: (data['pendingPayout'] as num?)?.toDouble() ?? 0.0,
-      revenueByCategory: Map<String, double>.from(data['revenueByCategory'] ?? {}),
+      revenueByCategory:
+          Map<String, double>.from(data['revenueByCategory'] ?? {}),
     );
   }
 }
@@ -465,7 +477,16 @@ class TopSellingProduct extends Equatable {
   });
 
   @override
-  List<Object?> get props => [productId, title, imageUrl, unitsSold, revenue, ordersCount, conversionRate, averageRating];
+  List<Object?> get props => [
+        productId,
+        title,
+        imageUrl,
+        unitsSold,
+        revenue,
+        ordersCount,
+        conversionRate,
+        averageRating
+      ];
 
   Map<String, dynamic> toFirestore() => {
         'productId': productId,
@@ -514,7 +535,16 @@ class CategoryPerformance extends Equatable {
   });
 
   @override
-  List<Object?> get props => [categoryId, categoryName, revenue, orders, unitsSold, conversionRate, averageOrderValue, activeProducts];
+  List<Object?> get props => [
+        categoryId,
+        categoryName,
+        revenue,
+        orders,
+        unitsSold,
+        conversionRate,
+        averageOrderValue,
+        activeProducts
+      ];
 
   Map<String, dynamic> toFirestore() => {
         'categoryId': categoryId,
@@ -559,7 +589,8 @@ class DailySales extends Equatable {
   });
 
   @override
-  List<Object?> get props => [date, revenue, orders, unitsSold, visitors, conversionRate];
+  List<Object?> get props =>
+      [date, revenue, orders, unitsSold, visitors, conversionRate];
 
   Map<String, dynamic> toFirestore() => {
         'date': date.toIso8601String(),
@@ -701,8 +732,11 @@ class SellerAdCampaign extends Equatable {
       id: id,
       sellerId: data['sellerId'] ?? '',
       name: data['name'] ?? '',
-      type: AdCampaignType.values.firstWhere((t) => t.name == data['type'], orElse: () => AdCampaignType.sponsoredProduct),
-      status: AdCampaignStatus.values.firstWhere((s) => s.name == data['status'], orElse: () => AdCampaignStatus.draft),
+      type: AdCampaignType.values.firstWhere((t) => t.name == data['type'],
+          orElse: () => AdCampaignType.sponsoredProduct),
+      status: AdCampaignStatus.values.firstWhere(
+          (s) => s.name == data['status'],
+          orElse: () => AdCampaignStatus.draft),
       dailyBudget: (data['dailyBudget'] as num?)?.toDouble() ?? 0.0,
       totalBudget: (data['totalBudget'] as num?)?.toDouble() ?? 0.0,
       spentAmount: (data['spentAmount'] as num?)?.toDouble() ?? 0.0,
@@ -757,7 +791,16 @@ class AdTargeting extends Equatable {
   });
 
   @override
-  List<Object?> get props => [keywords, negativeKeywords, locations, ageRanges, genders, interests, loyaltyTiers, bidAmount];
+  List<Object?> get props => [
+        keywords,
+        negativeKeywords,
+        locations,
+        ageRanges,
+        genders,
+        interests,
+        loyaltyTiers,
+        bidAmount
+      ];
 
   Map<String, dynamic> toFirestore() => {
         'keywords': keywords,
@@ -810,7 +853,8 @@ class AdMetrics extends Equatable {
   });
 
   @override
-  List<Object?> get props => [impressions, clicks, ctr, cpc, cpm, spent, orders, revenue, roas, acos];
+  List<Object?> get props =>
+      [impressions, clicks, ctr, cpc, cpm, spent, orders, revenue, roas, acos];
 
   Map<String, dynamic> toFirestore() => {
         'impressions': impressions,

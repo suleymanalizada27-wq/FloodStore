@@ -38,7 +38,8 @@ class RegisterWizardController extends StateNotifier<RegisterWizardState> {
     state = updater(state).copyWith(isDirty: true, draftRestored: false);
   }
 
-  void setAccountMode(AccountMode mode) => update((s) => s.copyWith(accountMode: mode));
+  void setAccountMode(AccountMode mode) =>
+      update((s) => s.copyWith(accountMode: mode));
 
   void goBack() {
     if (state.step.index == 0) return;
@@ -76,10 +77,13 @@ class RegisterWizardController extends StateNotifier<RegisterWizardState> {
         password: password,
         country: state.country ?? '',
         accountMode: state.accountMode,
-        companyName: state.accountMode.requiresCompanyName ? state.companyName.trim() : null,
+        companyName: state.accountMode.requiresCompanyName
+            ? state.companyName.trim()
+            : null,
       ));
       await discardDraft();
-      state = state.copyWith(isSubmitting: false, step: RegisterWizardStep.finish);
+      state =
+          state.copyWith(isSubmitting: false, step: RegisterWizardStep.finish);
     } on AuthFailure catch (e) {
       state = state.copyWith(isSubmitting: false, errorMessage: e.message);
     } catch (e) {
@@ -91,7 +95,7 @@ class RegisterWizardController extends StateNotifier<RegisterWizardState> {
   }
 }
 
-final registerWizardControllerProvider =
-    StateNotifierProvider.autoDispose<RegisterWizardController, RegisterWizardState>(
+final registerWizardControllerProvider = StateNotifierProvider.autoDispose<
+    RegisterWizardController, RegisterWizardState>(
   RegisterWizardController.new,
 );

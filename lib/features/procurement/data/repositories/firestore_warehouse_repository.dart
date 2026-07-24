@@ -8,7 +8,8 @@ class FirestoreWarehouseRepository implements WarehouseRepository {
   FirestoreWarehouseRepository({fs.FirebaseFirestore? firestore})
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;
 
-  fs.CollectionReference get _warehousesRef => _firestore.collection('warehouses');
+  fs.CollectionReference get _warehousesRef =>
+      _firestore.collection('warehouses');
 
   @override
   Future<String> createWarehouse(Warehouse warehouse) async {
@@ -25,7 +26,8 @@ class FirestoreWarehouseRepository implements WarehouseRepository {
     try {
       final doc = await _warehousesRef.doc(id).get();
       if (!doc.exists) return null;
-      return Warehouse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return Warehouse.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get warehouse: $e');
     }
@@ -55,7 +57,8 @@ class FirestoreWarehouseRepository implements WarehouseRepository {
 
       final snapshot = await query.get();
       return snapshot.docs
-          .map((doc) => Warehouse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => Warehouse.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get warehouses: $e');
@@ -94,7 +97,8 @@ class FirestoreWarehouseRepository implements WarehouseRepository {
 
       if (query.docs.isEmpty) return null;
       final doc = query.docs.first;
-      return Warehouse.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id);
+      return Warehouse.fromFirestore(
+          doc.data()! as Map<String, dynamic>, doc.id);
     } catch (e) {
       throw Exception('Failed to get default warehouse: $e');
     }

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:floodstore/features/business/domain/entities/seller_analytics.dart';
-import '../../domain/entities/recommendation.dart';
-import '../../domain/entities/order.dart';
-import '../../domain/entities/product.dart';
+import '../../../marketplace/domain/entities/recommendation.dart';
+import '../../../marketplace/domain/entities/order.dart';
+import '../../../marketplace/domain/entities/product.dart';
 import '../../domain/repositories/analytics_repository.dart';
 
 class FirestoreAnalyticsRepository implements AnalyticsRepository {
@@ -14,13 +14,15 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   fs.CollectionReference _ordersRef() => _firestore.collection('orders');
   fs.CollectionReference _productsRef() => _firestore.collection('products');
   fs.CollectionReference _usersRef() => _firestore.collection('users');
-  fs.CollectionReference _adCampaignsRef() => _firestore.collection('ad_campaigns');
+  fs.CollectionReference _adCampaignsRef() =>
+      _firestore.collection('ad_campaigns');
   fs.CollectionReference _userRecommendationsRef(String userId) =>
       _usersRef().doc(userId).collection('recommendations');
 
   // Seller Analytics
   @override
-  Future<SellerDashboardData> getSellerDashboard(String sellerId, {DateTimeRange? dateRange}) async {
+  Future<SellerDashboardData> getSellerDashboard(String sellerId,
+      {DateTimeRange? dateRange}) async {
     final range = dateRange ?? DateTimeRange.last30Days();
     final start = fs.Timestamp.fromDate(range.start);
     final end = fs.Timestamp.fromDate(range.end);
@@ -32,20 +34,33 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
           .where('createdAt', isLessThanOrEqualTo: end)
           .get();
 
-      final orders = ordersQuery.docs.map((doc) => Order.fromFirestore((doc.data() as Map<String, dynamic>?) ?? {}, doc.id)).toList();
-      
-      final productsQuery = await _productsRef()
-          .where('sellerId', isEqualTo: sellerId)
-          .get();
-      final products = productsQuery.docs.map((doc) => Product.fromFirestore((doc.data() as Map<String, dynamic>?) ?? {}, doc.id)).toList();
+      final orders = ordersQuery.docs
+          .map((doc) => Order.fromFirestore(
+              (doc.data() as Map<String, dynamic>?) ?? {}, doc.id))
+          .toList();
+
+      final productsQuery =
+          await _productsRef().where('sellerId', isEqualTo: sellerId).get();
+      final products = productsQuery.docs
+          .map((doc) => Product.fromFirestore(
+              (doc.data() as Map<String, dynamic>?) ?? {}, doc.id))
+          .toList();
 
       double totalRevenue = orders.fold(0, (sum, o) => sum + o.totalAmount);
       int totalOrders = orders.length;
-      int totalItems = orders.fold(0, (sum, o) => sum + o.items.fold(0, (s, i) => s + i.quantity));
+      int totalItems = orders.fold(
+          0, (sum, o) => sum + o.items.fold(0, (s, i) => s + i.quantity));
       double avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-      int pendingOrders = orders.where((o) => o.status == OrderStatus.pending || o.status == OrderStatus.confirmed).length;
-      int lowStockProducts = products.where((p) => p.inventory.totalQuantity > 0 && p.inventory.totalQuantity < 10).length;
+      int pendingOrders = orders
+          .where((o) =>
+              o.status == OrderStatus.pending ||
+              o.status == OrderStatus.confirmed)
+          .length;
+      int lowStockProducts = products
+          .where((p) =>
+              p.inventory.totalQuantity > 0 && p.inventory.totalQuantity < 10)
+          .length;
 
       final recentRange = DateTimeRange.last7Days();
       final recentStart = fs.Timestamp.fromDate(recentRange.start);
@@ -57,10 +72,14 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
       final dailySalesMap = <String, DailySales>{};
       for (final doc in dailySalesQuery.docs) {
         final data = doc.data() ?? {};
-        final date = (data['createdAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now();
-        final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        final date =
+            (data['createdAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now();
+        final dateKey =
+            '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
         final revenue = (data['totalAmount'] as num?)?.toDouble() ?? 0;
-        final items = (data['items'] as List?)?.fold<int>(0, (s, i) => s + ((i['quantity'] as num?)?.toInt() ?? 0)) ?? 0;
+        final items = (data['items'] as List?)?.fold<int>(
+                0, (s, i) => s + ((i['quantity'] as num?)?.toInt() ?? 0)) ??
+            0;
 
         if (dailySalesMap.containsKey(dateKey)) {
           final existing = dailySalesMap[dateKey]!;
@@ -84,15 +103,28 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
         }
       }
 
-      final recentSales = dailySalesMap.values.toList()..sort((a, b) => a.date.compareTo(b.date));
+      final recentSales = dailySalesMap.values.toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
 
       final productSales = <String, Map<String, dynamic>>{};
       for (final order in orders) {
         for (final item in order.items) {
-          productSales.putIfAbsent(item.productId, () => {'units': 0, 'revenue': 0.0, 'orders': 0, 'title': item.productTitle, 'image': ''});
-          productSales[item.productId]!['units'] = (productSales[item.productId]!['units'] as int) + item.quantity;
-          productSales[item.productId]!['revenue'] = (productSales[item.productId]!['revenue'] as double) + item.totalPrice;
-          productSales[item.productId]!['orders'] = (productSales[item.productId]!['orders'] as int) + 1;
+          productSales.putIfAbsent(
+              item.productId,
+              () => {
+                    'units': 0,
+                    'revenue': 0.0,
+                    'orders': 0,
+                    'title': item.productTitle,
+                    'image': ''
+                  });
+          productSales[item.productId]!['units'] =
+              (productSales[item.productId]!['units'] as int) + item.quantity;
+          productSales[item.productId]!['revenue'] =
+              (productSales[item.productId]!['revenue'] as double) +
+                  item.totalPrice;
+          productSales[item.productId]!['orders'] =
+              (productSales[item.productId]!['orders'] as int) + 1;
         }
       }
       final topProducts = productSales.entries
@@ -114,7 +146,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
         totalRevenue: totalRevenue,
         totalOrders: totalOrders,
         totalProducts: products.length,
-        activeProducts: products.where((p) => p.status == ProductStatus.active).length,
+        activeProducts:
+            products.where((p) => p.status == ProductStatus.active).length,
         pendingOrders: pendingOrders,
         lowStockProducts: lowStockProducts,
         conversionRate: 0,
@@ -131,17 +164,20 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<List<TopSellingProduct>> getTopSellingProducts(String sellerId, {int limit = 10, DateTimeRange? dateRange}) async {
+  Future<List<TopSellingProduct>> getTopSellingProducts(String sellerId,
+      {int limit = 10, DateTimeRange? dateRange}) async {
     return [];
   }
 
   @override
-  Future<List<CategoryPerformance>> getCategoryPerformance(String sellerId, {DateTimeRange? dateRange}) async {
+  Future<List<CategoryPerformance>> getCategoryPerformance(String sellerId,
+      {DateTimeRange? dateRange}) async {
     return [];
   }
 
   @override
-  Future<List<DailySales>> getDailySales(String sellerId, {required DateTimeRange dateRange}) async {
+  Future<List<DailySales>> getDailySales(String sellerId,
+      {required DateTimeRange dateRange}) async {
     return [];
   }
 
@@ -174,21 +210,26 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<List<SellerAdCampaign>> getAdCampaigns(String sellerId, {AdCampaignStatus? status}) async {
+  Future<List<SellerAdCampaign>> getAdCampaigns(String sellerId,
+      {AdCampaignStatus? status}) async {
     try {
       var query = _adCampaignsRef().where('sellerId', isEqualTo: sellerId);
       if (status != null) {
         query = query.where('status', isEqualTo: status.name);
       }
       final snapshot = await query.orderBy('createdAt', descending: true).get();
-      return snapshot.docs.map((doc) => SellerAdCampaign.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id)).toList();
+      return snapshot.docs
+          .map((doc) => SellerAdCampaign.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get ad campaigns: $e');
     }
   }
 
   @override
-  Future<AdMetrics> getAdMetrics(String campaignId, {DateTimeRange? dateRange}) async {
+  Future<AdMetrics> getAdMetrics(String campaignId,
+      {DateTimeRange? dateRange}) async {
     try {
       final doc = await _adCampaignsRef().doc(campaignId).get();
       if (!doc.exists) throw Exception('Campaign not found');
@@ -202,7 +243,9 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   @override
   Future<void> updateAdMetrics(String campaignId, AdMetrics metrics) async {
     try {
-      await _adCampaignsRef().doc(campaignId).update({'metrics': metrics.toFirestore()});
+      await _adCampaignsRef()
+          .doc(campaignId)
+          .update({'metrics': metrics.toFirestore()});
     } catch (e) {
       throw Exception('Failed to update ad metrics: $e');
     }
@@ -210,7 +253,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
 
   // Recommendations
   @override
-  Future<List<Recommendation>> getRecommendationsForUser(String userId, {
+  Future<List<Recommendation>> getRecommendationsForUser(
+    String userId, {
     RecommendationType? type,
     int limit = 20,
     String? lastDocumentId,
@@ -224,17 +268,21 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
         query = query.where('type', isEqualTo: type.name);
       }
       if (lastDocumentId != null) {
-        final lastDoc = await _userRecommendationsRef(userId).doc(lastDocumentId).get();
+        final lastDoc =
+            await _userRecommendationsRef(userId).doc(lastDocumentId).get();
         if (lastDoc.exists) query = query.startAfterDocument(lastDoc);
       }
       final snapshot = await query.get();
       return snapshot.docs
           .where((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            final expiresAt = data['expiresAt'] != null ? DateTime.parse(data['expiresAt']) : null;
+            final expiresAt = data['expiresAt'] != null
+                ? DateTime.parse(data['expiresAt'])
+                : null;
             return expiresAt == null || expiresAt.isAfter(DateTime.now());
           })
-          .map((doc) => Recommendation.fromFirestore(doc.data()! as Map<String, dynamic>, doc.id))
+          .map((doc) => Recommendation.fromFirestore(
+              doc.data()! as Map<String, dynamic>, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get recommendations: $e');
@@ -242,7 +290,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<void> recordRecommendationClick(String userId, String recommendationId) async {
+  Future<void> recordRecommendationClick(
+      String userId, String recommendationId) async {
     try {
       await _userRecommendationsRef(userId).doc(recommendationId).update({
         'isClicked': true,
@@ -254,7 +303,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<void> recordRecommendationImpression(String userId, List<String> recommendationIds) async {
+  Future<void> recordRecommendationImpression(
+      String userId, List<String> recommendationIds) async {
     try {
       final batch = _firestore.batch();
       for (final id in recommendationIds) {
@@ -269,7 +319,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<void> dismissRecommendation(String userId, String recommendationId) async {
+  Future<void> dismissRecommendation(
+      String userId, String recommendationId) async {
     try {
       await _userRecommendationsRef(userId).doc(recommendationId).update({
         'isDismissed': true,
@@ -287,7 +338,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
 
   // Platform Analytics
   @override
-  Future<PlatformAnalytics> getPlatformAnalytics({DateTimeRange? dateRange}) async {
+  Future<PlatformAnalytics> getPlatformAnalytics(
+      {DateTimeRange? dateRange}) async {
     return const PlatformAnalytics(
       totalRevenue: 0,
       totalOrders: 0,
@@ -307,12 +359,14 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
   }
 
   @override
-  Future<List<DailySales>> getPlatformDailySales({required DateTimeRange dateRange}) async {
+  Future<List<DailySales>> getPlatformDailySales(
+      {required DateTimeRange dateRange}) async {
     return [];
   }
 
   @override
-  Future<Map<String, double>> getRevenueByCategory({DateTimeRange? dateRange}) async {
+  Future<Map<String, double>> getRevenueByCategory(
+      {DateTimeRange? dateRange}) async {
     return {};
   }
 

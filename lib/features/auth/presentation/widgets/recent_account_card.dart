@@ -25,7 +25,9 @@ class RecentAccountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = (displayName != null && displayName!.isNotEmpty) ? displayName! : identifier;
+    final label = (displayName != null && displayName!.isNotEmpty)
+        ? displayName!
+        : identifier;
     final initial = label.isNotEmpty ? label[0].toUpperCase() : '?';
 
     return Container(
@@ -41,18 +43,22 @@ class RecentAccountCard extends StatelessWidget {
           CircleAvatar(
             radius: 18,
             backgroundColor: AppColors.cardElevated,
-            child: Text(initial, style: AppTextStyles.body(size: 14, weight: FontWeight.w700)),
+            child: Text(initial,
+                style: AppTextStyles.body(size: 14, weight: FontWeight.w700)),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back, $label', style: AppTextStyles.body(size: 13, weight: FontWeight.w700)),
+                Text('Welcome back, $label',
+                    style:
+                        AppTextStyles.body(size: 13, weight: FontWeight.w700)),
                 Text(
                   'Continue with $identifier',
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.body(size: 11.5, color: AppColors.textTertiary),
+                  style: AppTextStyles.body(
+                      size: 11.5, color: AppColors.textTertiary),
                 ),
               ],
             ),
@@ -63,7 +69,8 @@ class RecentAccountCard extends StatelessWidget {
           ),
           IconButton(
             iconSize: 16,
-            icon: const Icon(Icons.close_rounded, color: AppColors.textTertiary),
+            icon:
+                const Icon(Icons.close_rounded, color: AppColors.textTertiary),
             onPressed: onNotYou,
           ),
         ],

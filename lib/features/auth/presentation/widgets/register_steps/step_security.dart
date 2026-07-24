@@ -48,7 +48,9 @@ class StepSecurity extends StatelessWidget {
             onChanged: onPasswordChanged,
             suffixIcon: IconButton(
               icon: Icon(
-                obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
                 size: 20,
                 color: AppColors.textTertiary,
               ),
@@ -82,7 +84,9 @@ class StepSecurity extends StatelessWidget {
             onChanged: (_) {},
             suffixIcon: IconButton(
               icon: Icon(
-                obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                obscureConfirm
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
                 size: 20,
                 color: AppColors.textTertiary,
               ),

@@ -42,7 +42,8 @@ class FirestoreProductDataSource {
 
       final productDoc = querySnapshot.docs.first;
       final productData = productDoc.data() as Map<String, dynamic>;
-      final variantsData = (productData['variants'] as Map<String, dynamic>?)?[variantId];
+      final variantsData =
+          (productData['variants'] as Map<String, dynamic>?)?[variantId];
 
       if (variantsData == null) return null;
 
@@ -52,7 +53,8 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<List<Product>> getProductsByCategory(String categoryId, {
+  Future<List<Product>> getProductsByCategory(
+    String categoryId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
@@ -81,7 +83,8 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<List<Product>> getProductsBySeller(String sellerId, {
+  Future<List<Product>> getProductsBySeller(
+    String sellerId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
@@ -110,7 +113,8 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<List<Product>> searchProducts(String query, {
+  Future<List<Product>> searchProducts(
+    String query, {
     int limit = 20,
     String? lastDocumentId,
     List<String>? categoryIds,
@@ -126,8 +130,8 @@ class FirestoreProductDataSource {
       // Note: This is a basic implementation - for production search,
       // consider integrating with Algolia, Elasticsearch, or Firebase's
       // native search capabilities when available
-      Query queryRef = _productsCollection
-          .where('status', isEqualTo: ProductStatus.active.name);
+      Query queryRef = _productsCollection.where('status',
+          isEqualTo: ProductStatus.active.name);
 
       if (categoryIds != null && categoryIds.isNotEmpty) {
         queryRef = queryRef.where('categoryId', whereIn: categoryIds);
@@ -139,10 +143,12 @@ class FirestoreProductDataSource {
 
       // Price range filtering
       if (minPrice != null) {
-        queryRef = queryRef.where('pricing.basePrice', isGreaterThanOrEqualTo: minPrice);
+        queryRef = queryRef.where('pricing.basePrice',
+            isGreaterThanOrEqualTo: minPrice);
       }
       if (maxPrice != null) {
-        queryRef = queryRef.where('pricing.basePrice', isLessThanOrEqualTo: maxPrice);
+        queryRef =
+            queryRef.where('pricing.basePrice', isLessThanOrEqualTo: maxPrice);
       }
 
       // Sorting
@@ -169,10 +175,11 @@ class FirestoreProductDataSource {
       // Apply client-side filtering for search query (case-insensitive)
       if (query.isNotEmpty) {
         final lowerQuery = query.toLowerCase();
-        return products.where((product) =>
-            product.base.title.toLowerCase().contains(lowerQuery) ||
-            product.base.description.toLowerCase().contains(lowerQuery) ||
-            product.base.brand.toLowerCase().contains(lowerQuery))
+        return products
+            .where((product) =>
+                product.base.title.toLowerCase().contains(lowerQuery) ||
+                product.base.description.toLowerCase().contains(lowerQuery) ||
+                product.base.brand.toLowerCase().contains(lowerQuery))
             .toList();
       }
 
@@ -197,9 +204,12 @@ class FirestoreProductDataSource {
         sku: data['base']['sku'] ?? '',
         weight: (data['base']['weight'] as num?)?.toDouble() ?? 0.0,
         dimensions: ProductDimensions(
-          length: (data['base']['dimensions']['length'] as num?)?.toDouble() ?? 0.0,
-          width: (data['base']['dimensions']['width'] as num?)?.toDouble() ?? 0.0,
-          height: (data['base']['dimensions']['height'] as num?)?.toDouble() ?? 0.0,
+          length:
+              (data['base']['dimensions']['length'] as num?)?.toDouble() ?? 0.0,
+          width:
+              (data['base']['dimensions']['width'] as num?)?.toDouble() ?? 0.0,
+          height:
+              (data['base']['dimensions']['height'] as num?)?.toDouble() ?? 0.0,
         ),
         materials: List<String>.from(data['base']['materials'] ?? []),
         careInstructions: data['base']['careInstructions'] ?? '',
@@ -241,7 +251,8 @@ class FirestoreProductDataSource {
     );
   }
 
-  ProductVariant _variantFromSnapshot(Map<String, dynamic> data, String productId) {
+  ProductVariant _variantFromSnapshot(
+      Map<String, dynamic> data, String productId) {
     return ProductVariant(
       id: data['id'] ?? '',
       parentProductId: productId,
@@ -254,7 +265,8 @@ class FirestoreProductDataSource {
       inventory: VariantInventory(
         total: (data['inventory']['total'] as int?) ?? 0,
         reserved: (data['inventory']['reserved'] as int?) ?? 0,
-        warehouses: Map<String, int>.from(data['inventory']['warehouses'] ?? {}),
+        warehouses:
+            Map<String, int>.from(data['inventory']['warehouses'] ?? {}),
       ),
       media: VariantMedia(
         primary: data['media']['primary'] ?? '',
@@ -331,7 +343,8 @@ class FirestoreProductDataSource {
   // Product CRUD operations
   Future<String> createProduct(Product product) async {
     try {
-      final docRef = await _productsCollection.add(_productToFirestore(product));
+      final docRef =
+          await _productsCollection.add(_productToFirestore(product));
       return docRef.id;
     } catch (e) {
       throw Exception('Failed to create product: $e');
@@ -388,7 +401,9 @@ class FirestoreProductDataSource {
 
   Future<void> updateProduct(Product product) async {
     try {
-      await _productsCollection.doc(product.id).update(_productToFirestore(product));
+      await _productsCollection
+          .doc(product.id)
+          .update(_productToFirestore(product));
     } catch (e) {
       throw Exception('Failed to update product: $e');
     }
@@ -412,7 +427,8 @@ class FirestoreProductDataSource {
     return await getProductsByCategory('', limit: limit, activeOnly: true);
   }
 
-  Future<List<Product>> getNewArrivals({int limit = 10, DateTime? since}) async {
+  Future<List<Product>> getNewArrivals(
+      {int limit = 10, DateTime? since}) async {
     // This would require a more complex query with ordering by creation date
     // For simplicity, we'll just get recent products
     // A proper implementation would use orderBy and where on createdAt
@@ -426,7 +442,8 @@ class FirestoreProductDataSource {
     return await getProductsByCategory('', limit: limit, activeOnly: true);
   }
 
-  Future<List<Product>> getRelatedProducts(String productId, {int limit = 10}) async {
+  Future<List<Product>> getRelatedProducts(String productId,
+      {int limit = 10}) async {
     // This would require getting the product first, then finding similar ones
     // For simplicity, we'll just return some other products from the same category
     final product = await getProductById(productId);
@@ -434,7 +451,8 @@ class FirestoreProductDataSource {
 
     return await getProductsByCategory(
       product.categoryId,
-      limit: limit + 1, // Get one extra to account for possibly excluding the original
+      limit: limit +
+          1, // Get one extra to account for possibly excluding the original
       activeOnly: true,
     ).then((products) {
       // Filter out the original product
@@ -520,9 +538,10 @@ class FirestoreProductDataSource {
             .collection('variants')
             .doc(variantId)
             .update({
-              'inventory': warehouseQuantities.map((key, value) => MapEntry(key, value)),
-              'updatedAt': FieldValue.serverTimestamp(),
-            });
+          'inventory':
+              warehouseQuantities.map((key, value) => MapEntry(key, value)),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
       }
     } catch (e) {
       throw Exception('Failed to update variant inventory: $e');
@@ -552,8 +571,10 @@ class FirestoreProductDataSource {
 
       if (!variantDoc.exists) return false;
 
-      final currentStock = (variantDoc.data()?['inventory']['total'] as int?) ?? 0;
-      final reserved = (variantDoc.data()?['inventory']['reserved'] as int?) ?? 0;
+      final currentStock =
+          (variantDoc.data()?['inventory']['total'] as int?) ?? 0;
+      final reserved =
+          (variantDoc.data()?['inventory']['reserved'] as int?) ?? 0;
 
       if (currentStock - reserved < quantity) return false;
 
@@ -602,16 +623,15 @@ class FirestoreProductDataSource {
   }
 
   // Review operations
-  Future<List<Review>> getProductReviews(String productId, {
+  Future<List<Review>> getProductReviews(
+    String productId, {
     int limit = 20,
     String? lastDocumentId,
     bool approvedOnly = true,
   }) async {
     try {
-      Query query = _productsCollection
-          .doc(productId)
-          .collection('reviews')
-          .limit(limit);
+      Query query =
+          _productsCollection.doc(productId).collection('reviews').limit(limit);
 
       if (approvedOnly) {
         query = query.where('isApproved', isEqualTo: true);
@@ -678,7 +698,8 @@ class FirestoreProductDataSource {
     }
   }
 
-  Future<void> voteReviewHelpful(String reviewId, String userId, bool isHelpful) async {
+  Future<void> voteReviewHelpful(
+      String reviewId, String userId, bool isHelpful) async {
     try {
       // We would need to know the product ID to update the right review
       // For simplicity, we'll need to search for it
@@ -734,7 +755,8 @@ class FirestoreProductDataSource {
 
   Future<String> createCategory(Category category) async {
     try {
-      final docRef = await _categoriesCollection.add(_categoryToFirestore(category));
+      final docRef =
+          await _categoriesCollection.add(_categoryToFirestore(category));
       return docRef.id;
     } catch (e) {
       throw Exception('Failed to create category: $e');
@@ -743,7 +765,9 @@ class FirestoreProductDataSource {
 
   Future<void> updateCategory(Category category) async {
     try {
-      await _categoriesCollection.doc(category.id).update(_categoryToFirestore(category));
+      await _categoriesCollection
+          .doc(category.id)
+          .update(_categoryToFirestore(category));
     } catch (e) {
       throw Exception('Failed to update category: $e');
     }

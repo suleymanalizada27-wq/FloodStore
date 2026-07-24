@@ -31,7 +31,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> getProductsByCategory(String categoryId, {
+  Future<List<Product>> getProductsByCategory(
+    String categoryId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
@@ -49,7 +50,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> getProductsBySeller(String sellerId, {
+  Future<List<Product>> getProductsBySeller(
+    String sellerId, {
     int limit = 20,
     String? lastDocumentId,
     bool activeOnly = true,
@@ -67,7 +69,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> searchProducts(String query, {
+  Future<List<Product>> searchProducts(
+    String query, {
     int limit = 20,
     String? lastDocumentId,
     List<String>? categoryIds,
@@ -108,7 +111,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> getNewArrivals({int limit = 10, DateTime? since}) async {
+  Future<List<Product>> getNewArrivals(
+      {int limit = 10, DateTime? since}) async {
     try {
       return await _dataSource.getNewArrivals(limit: limit, since: since);
     } catch (e) {
@@ -126,7 +130,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> getRelatedProducts(String productId, {
+  Future<List<Product>> getRelatedProducts(
+    String productId, {
     int limit = 10,
   }) async {
     try {
@@ -209,7 +214,8 @@ class FirestoreProductRepository implements ProductRepository {
     String reservationId,
   ) async {
     try {
-      return await _dataSource.reserveInventory(variantId, quantity, reservationId);
+      return await _dataSource.reserveInventory(
+          variantId, quantity, reservationId);
     } catch (e) {
       throw Exception('Failed to reserve inventory: $e');
     }
@@ -229,7 +235,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Review>> getProductReviews(String productId, {
+  Future<List<Review>> getProductReviews(
+    String productId, {
     int limit = 20,
     String? lastDocumentId,
     bool approvedOnly = true,
@@ -274,7 +281,8 @@ class FirestoreProductRepository implements ProductRepository {
   }
 
   @override
-  Future<void> voteReviewHelpful(String reviewId, String userId, bool isHelpful) async {
+  Future<void> voteReviewHelpful(
+      String reviewId, String userId, bool isHelpful) async {
     try {
       await _dataSource.voteReviewHelpful(reviewId, userId, isHelpful);
     } catch (e) {

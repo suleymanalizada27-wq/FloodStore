@@ -8,7 +8,8 @@ import '../theme/app_text_styles.dart';
 /// the primary sign-in CTA or the OAuth provider buttons above it. Guest
 /// mode is an escape hatch, not a fourth equally-weighted choice.
 class GuestModeButton extends StatelessWidget {
-  const GuestModeButton({super.key, required this.onPressed, this.loading = false});
+  const GuestModeButton(
+      {super.key, required this.onPressed, this.loading = false});
 
   final VoidCallback onPressed;
   final bool loading;
@@ -27,7 +28,8 @@ class GuestModeButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation(AppColors.textSecondary),
                 ),
               )
-            : const Icon(Icons.explore_outlined, size: 16, color: AppColors.textSecondary),
+            : const Icon(Icons.explore_outlined,
+                size: 16, color: AppColors.textSecondary),
         label: Text(
           'Continue as Guest',
           style: AppTextStyles.body(

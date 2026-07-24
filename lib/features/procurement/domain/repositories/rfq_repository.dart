@@ -9,14 +9,16 @@ abstract class RFQRepository {
   Future<RFQ?> getRFQ(String id);
 
   /// Gets RFQs by buyer (the party requesting quotes)
-  Future<List<RFQ>> getRFQsByBuyer(String buyerId, {
+  Future<List<RFQ>> getRFQsByBuyer(
+    String buyerId, {
     int limit = 20,
     String? lastDocumentId,
     String? status,
   });
 
   /// Gets RFQs by status
-  Future<List<RFQ>> getRFQsByStatus(String status, {
+  Future<List<RFQ>> getRFQsByStatus(
+    String status, {
     int limit = 20,
     String? lastDocumentId,
   });
@@ -52,7 +54,8 @@ abstract class RFQRepository {
   Future<List<RFQResponse>> getRFQResponses(String rfqId);
 
   /// Gets RFQ responses by supplier
-  Future<List<RFQResponse>> getRFQResponsesBySupplier(String supplierId, {
+  Future<List<RFQResponse>> getRFQResponsesBySupplier(
+    String supplierId, {
     int limit = 20,
     String? lastDocumentId,
   });

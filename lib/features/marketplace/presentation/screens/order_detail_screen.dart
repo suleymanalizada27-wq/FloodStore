@@ -16,7 +16,8 @@ class OrderDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final orderId = GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
+    final orderId =
+        GoRouterState.of(context).uri.queryParameters['orderId'] ?? '';
     final orderAsync = ref.watch(orderForIdProvider(orderId));
 
     return Scaffold(
@@ -56,12 +57,16 @@ class OrderDetailScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   'Sipariş #${order.id.substring(0, 8).toUpperCase()}',
-                                  style: AppTextStyles.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                                  style: AppTextStyles.textTheme.titleLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  _formatDate(order.placedAt ?? order.createdAt),
-                                  style: AppTextStyles.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                                  _formatDate(
+                                      order.placedAt ?? order.createdAt),
+                                  style: AppTextStyles.textTheme.bodyMedium
+                                      ?.copyWith(
+                                          color: AppColors.textSecondary),
                                 ),
                               ],
                             ),
@@ -82,8 +87,10 @@ class OrderDetailScreen extends ConsumerWidget {
                           _StatusInfoItem(
                             icon: Icons.local_shipping,
                             label: 'Kargo',
-                            value: _formatFulfillmentStatus(order.fulfillmentStatus),
-                            color: _getFulfillmentStatusColor(order.fulfillmentStatus),
+                            value: _formatFulfillmentStatus(
+                                order.fulfillmentStatus),
+                            color: _getFulfillmentStatusColor(
+                                order.fulfillmentStatus),
                           ),
                         ],
                       ),
@@ -102,36 +109,47 @@ class OrderDetailScreen extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.local_shipping_outlined, color: AppColors.primary, size: 20),
+                            const Icon(Icons.local_shipping_outlined,
+                                color: AppColors.primary, size: 20),
                             const SizedBox(width: 8),
                             Text(
                               'Kargo Takibi',
-                              style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              style: AppTextStyles.textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
                         const SizedBox(height: AppSpacing.md),
                         ...[
-                        _TrackingRow(label: 'Takip Numarası', value: order.tracking!.trackingNumber),
-                        const SizedBox(height: AppSpacing.sm),
-                      ],
+                          _TrackingRow(
+                              label: 'Takip Numarası',
+                              value: order.tracking!.trackingNumber),
+                          const SizedBox(height: AppSpacing.sm),
+                        ],
                         if (order.tracking!.carrier.isNotEmpty) ...[
-                          _TrackingRow(label: 'Kargo Firması', value: order.tracking!.carrier),
+                          _TrackingRow(
+                              label: 'Kargo Firması',
+                              value: order.tracking!.carrier),
                           const SizedBox(height: AppSpacing.sm),
                         ],
                         if (order.tracking!.estimatedDelivery != null) ...[
-                          _TrackingRow(label: 'Tahmini Teslimat', value: _formatDate(order.tracking!.estimatedDelivery!)),
+                          _TrackingRow(
+                              label: 'Tahmini Teslimat',
+                              value: _formatDate(
+                                  order.tracking!.estimatedDelivery!)),
                         ],
                         if (order.tracking!.events.isNotEmpty) ...[
                           const SizedBox(height: AppSpacing.md),
-                          Text('Kargo Hareketleri', style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                          Text('Kargo Hareketleri',
+                              style: AppTextStyles.textTheme.bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600)),
                           const SizedBox(height: AppSpacing.sm),
-                          ...order.tracking!.events.map((event) => _TrackingEventTile(event: event)),
+                          ...order.tracking!.events
+                              .map((event) => _TrackingEventTile(event: event)),
                         ],
                       ],
                     ),
                   ),
-
                   const SizedBox(height: AppSpacing.lg),
                 ],
 
@@ -141,7 +159,9 @@ class OrderDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Teslimat Adresi', style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      Text('Teslimat Adresi',
+                          style: AppTextStyles.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: AppSpacing.sm),
                       _AddressBlock(address: order.shippingAddress),
                     ],
@@ -152,13 +172,16 @@ class OrderDetailScreen extends ConsumerWidget {
 
                 // Billing address if different
                 if (order.billingAddress.line1 != order.shippingAddress.line1 ||
-                    order.billingAddress.city != order.shippingAddress.city) ...[
+                    order.billingAddress.city !=
+                        order.shippingAddress.city) ...[
                   GlassCard(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Fatura Adresi', style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        Text('Fatura Adresi',
+                            style: AppTextStyles.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: AppSpacing.sm),
                         _AddressBlock(address: order.billingAddress),
                       ],
@@ -173,9 +196,12 @@ class OrderDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Sipariş Edilen Ürünler', style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      Text('Sipariş Edilen Ürünler',
+                          style: AppTextStyles.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: AppSpacing.md),
-                      ...order.items.map((item) => _OrderDetailItemTile(item: item)),
+                      ...order.items
+                          .map((item) => _OrderDetailItemTile(item: item)),
                     ],
                   ),
                 ),
@@ -188,17 +214,34 @@ class OrderDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Fiyat Detayı', style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      Text('Fiyat Detayı',
+                          style: AppTextStyles.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: AppSpacing.md),
-                      _PriceRow(label: 'Ara Toplam', value: '\$${(order.subtotalAmount / 100).toStringAsFixed(2)}'),
-                      _PriceRow(label: 'Kargo', value: '\$${(order.shippingAmount / 100).toStringAsFixed(2)}'),
-                      _PriceRow(label: 'KDV (%18)', value: '\$${(order.taxAmount / 100).toStringAsFixed(2)}'),
+                      _PriceRow(
+                          label: 'Ara Toplam',
+                          value:
+                              '\$${(order.subtotalAmount / 100).toStringAsFixed(2)}'),
+                      _PriceRow(
+                          label: 'Kargo',
+                          value:
+                              '\$${(order.shippingAmount / 100).toStringAsFixed(2)}'),
+                      _PriceRow(
+                          label: 'KDV (%18)',
+                          value:
+                              '\$${(order.taxAmount / 100).toStringAsFixed(2)}'),
                       if (order.discountAmount > 0)
-                        _PriceRow(label: 'İndirim', value: '-\$${(order.discountAmount / 100).toStringAsFixed(2)}', isDiscount: true),
-                      const Divider(height: 24, thickness: 1, color: AppColors.border),
+                        _PriceRow(
+                            label: 'İndirim',
+                            value:
+                                '-\$${(order.discountAmount / 100).toStringAsFixed(2)}',
+                            isDiscount: true),
+                      const Divider(
+                          height: 24, thickness: 1, color: AppColors.border),
                       _PriceRow(
                         label: 'TOPLAM',
-                        value: '\$${(order.totalAmount / 100).toStringAsFixed(2)}',
+                        value:
+                            '\$${(order.totalAmount / 100).toStringAsFixed(2)}',
                         isTotal: true,
                       ),
                     ],
@@ -213,7 +256,9 @@ class OrderDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Sipariş Geçmişi', style: AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      Text('Sipariş Geçmişi',
+                          style: AppTextStyles.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: AppSpacing.md),
                       ..._buildHistoryTimeline(order),
                     ],
@@ -223,7 +268,8 @@ class OrderDetailScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xl),
 
                 // Actions
-                if (order.status == OrderStatus.pending || order.status == OrderStatus.confirmed) ...[
+                if (order.status == OrderStatus.pending ||
+                    order.status == OrderStatus.confirmed) ...[
                   PremiumButton(
                     label: 'Siparişi İptal Et',
                     icon: Icons.cancel_outlined,
@@ -250,9 +296,12 @@ class OrderDetailScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
-              Text('Sipariş yüklenemedi', style: AppTextStyles.textTheme.titleMedium),
+              Text('Sipariş yüklenemedi',
+                  style: AppTextStyles.textTheme.titleMedium),
               const SizedBox(height: 8),
-              Text(error.toString(), style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+              Text(error.toString(),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -265,9 +314,12 @@ class OrderDetailScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.textTertiary),
+          const Icon(Icons.receipt_long_outlined,
+              size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
-          Text('Sipariş bulunamadı', style: AppTextStyles.textTheme.headlineSmall?.copyWith(color: AppColors.textSecondary)),
+          Text('Sipariş bulunamadı',
+              style: AppTextStyles.textTheme.headlineSmall
+                  ?.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: 24),
           PremiumButton(
             label: 'Ana Sayfaya Dön',
@@ -284,25 +336,31 @@ class OrderDetailScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Siparişi İptal Et', style: AppTextStyles.textTheme.titleLarge),
-        content: Text('Bu işlem geri alınamaz. Emin misiniz?', style: AppTextStyles.textTheme.bodyMedium),
+        title: Text('Siparişi İptal Et',
+            style: AppTextStyles.textTheme.titleLarge),
+        content: Text('Bu işlem geri alınamaz. Emin misiniz?',
+            style: AppTextStyles.textTheme.bodyMedium),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Hayır', style: AppTextStyles.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary)),
+            child: Text('Hayır',
+                style: AppTextStyles.textTheme.bodyMedium
+                    ?.copyWith(color: AppColors.textSecondary)),
           ),
           PremiumButton(
             label: 'Evet, İptal Et',
             onPressed: () async {
               Navigator.pop(context);
               await ref.read(orderRepositoryProvider).cancelOrder(
-                order.id,
-                cancelledBy: ref.read(currentUserIdProvider)!,
-                reason: 'Kullanıcı isteği',
-              );
+                    order.id,
+                    cancelledBy: ref.read(currentUserIdProvider)!,
+                    reason: 'Kullanıcı isteği',
+                  );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Sipariş iptal edildi'), backgroundColor: AppColors.success),
+                  const SnackBar(
+                      content: Text('Sipariş iptal edildi'),
+                      backgroundColor: AppColors.success),
                 );
                 context.pop();
               }
@@ -451,7 +509,8 @@ class OrderDetailScreen extends ConsumerWidget {
       isCompleted: true,
     ));
 
-    if (order.paymentStatus == PaymentStatus.paid || order.paymentStatus == PaymentStatus.authorized) {
+    if (order.paymentStatus == PaymentStatus.paid ||
+        order.paymentStatus == PaymentStatus.authorized) {
       events.add(const _TimelineEvent(
         title: 'Ödeme Onaylandı',
         subtitle: 'Ödeme başarıyla alındı',
@@ -472,13 +531,17 @@ class OrderDetailScreen extends ConsumerWidget {
       ));
     }
 
-    if (order.fulfillmentStatus == FulfillmentStatus.shipped || order.fulfillmentStatus == FulfillmentStatus.outForDelivery) {
+    if (order.fulfillmentStatus == FulfillmentStatus.shipped ||
+        order.fulfillmentStatus == FulfillmentStatus.outForDelivery) {
       events.add(_TimelineEvent(
         title: 'Kargoda',
-        subtitle: order.tracking?.trackingNumber != null ? 'Takip: ${order.tracking!.trackingNumber}' : 'Kargo yolda',
+        subtitle: order.tracking?.trackingNumber != null
+            ? 'Takip: ${order.tracking!.trackingNumber}'
+            : 'Kargo yolda',
         icon: Icons.local_shipping,
         color: AppColors.primary,
-        isCompleted: order.fulfillmentStatus != FulfillmentStatus.outForDelivery,
+        isCompleted:
+            order.fulfillmentStatus != FulfillmentStatus.outForDelivery,
       ));
     }
 
@@ -502,7 +565,9 @@ class OrderDetailScreen extends ConsumerWidget {
       ));
     }
 
-    return events.map((e) => _TimelineEventTile(event: e, isLast: e == events.last)).toList();
+    return events
+        .map((e) => _TimelineEventTile(event: e, isLast: e == events.last))
+        .toList();
   }
 }
 
@@ -565,13 +630,16 @@ class _TimelineEventTile extends StatelessWidget {
                   event.title,
                   style: AppTextStyles.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: event.isCompleted ? AppColors.textPrimary : AppColors.textTertiary,
+                    color: event.isCompleted
+                        ? AppColors.textPrimary
+                        : AppColors.textTertiary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   event.subtitle,
-                  style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -591,7 +659,8 @@ class _StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = _getStatusColors(status);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: BorderRadius.circular(20),
@@ -607,23 +676,48 @@ class _StatusChip extends StatelessWidget {
     );
   }
 
-  ({Color background, Color border, Color text}) _getStatusColors(OrderStatus status) {
+  ({Color background, Color border, Color text}) _getStatusColors(
+      OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
-        return (background: AppColors.warning.withValues(alpha: 0.15), border: AppColors.warning, text: AppColors.warning);
+        return (
+          background: AppColors.warning.withValues(alpha: 0.15),
+          border: AppColors.warning,
+          text: AppColors.warning
+        );
       case OrderStatus.confirmed:
       case OrderStatus.processing:
-        return (background: AppColors.info.withValues(alpha: 0.15), border: AppColors.info, text: AppColors.info);
+        return (
+          background: AppColors.info.withValues(alpha: 0.15),
+          border: AppColors.info,
+          text: AppColors.info
+        );
       case OrderStatus.shipped:
-        return (background: AppColors.primary.withValues(alpha: 0.15), border: AppColors.primary, text: AppColors.primary);
+        return (
+          background: AppColors.primary.withValues(alpha: 0.15),
+          border: AppColors.primary,
+          text: AppColors.primary
+        );
       case OrderStatus.delivered:
-        return (background: AppColors.success.withValues(alpha: 0.15), border: AppColors.success, text: AppColors.success);
+        return (
+          background: AppColors.success.withValues(alpha: 0.15),
+          border: AppColors.success,
+          text: AppColors.success
+        );
       case OrderStatus.cancelled:
       case OrderStatus.failed:
       case OrderStatus.returned:
-        return (background: AppColors.error.withValues(alpha: 0.15), border: AppColors.error, text: AppColors.error);
+        return (
+          background: AppColors.error.withValues(alpha: 0.15),
+          border: AppColors.error,
+          text: AppColors.error
+        );
       case OrderStatus.refunded:
-        return (background: AppColors.info.withValues(alpha: 0.15), border: AppColors.info, text: AppColors.info);
+        return (
+          background: AppColors.info.withValues(alpha: 0.15),
+          border: AppColors.info,
+          text: AppColors.info
+        );
     }
   }
 
@@ -678,9 +772,13 @@ class _StatusInfoItem extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 24),
             const SizedBox(height: 4),
-            Text(label, style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+            Text(label,
+                style: AppTextStyles.textTheme.bodySmall
+                    ?.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 2),
-            Text(value, style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: color)),
+            Text(value,
+                style: AppTextStyles.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600, color: color)),
           ],
         ),
       ),
@@ -701,10 +799,14 @@ class _TrackingRow extends StatelessWidget {
       children: [
         SizedBox(
           width: 120,
-          child: Text(label, style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+          child: Text(label,
+              style: AppTextStyles.textTheme.bodySmall
+                  ?.copyWith(color: AppColors.textSecondary)),
         ),
         Expanded(
-          child: Text(value, style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+          child: Text(value,
+              style: AppTextStyles.textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w600)),
         ),
       ],
     );
@@ -737,11 +839,13 @@ class _TrackingEventTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(event.description, style: AppTextStyles.textTheme.bodyMedium),
+                Text(event.description,
+                    style: AppTextStyles.textTheme.bodyMedium),
                 const SizedBox(height: 2),
                 Text(
                   '${event.location != null ? '${event.location} • ' : ''}${_formatDateTime(event.timestamp)}',
-                  style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.textTheme.bodySmall
+                      ?.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -766,15 +870,19 @@ class _AddressBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(address.name, style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+        Text(address.name,
+            style: AppTextStyles.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600)),
         Text(address.line1, style: AppTextStyles.textTheme.bodyMedium),
         if (address.line2 != null && address.line2!.isNotEmpty)
           Text(address.line2!, style: AppTextStyles.textTheme.bodyMedium),
-        Text('${address.city}, ${address.state} ${address.postalCode}', style: AppTextStyles.textTheme.bodyMedium),
+        Text('${address.city}, ${address.state} ${address.postalCode}',
+            style: AppTextStyles.textTheme.bodyMedium),
         Text(address.country, style: AppTextStyles.textTheme.bodyMedium),
         if (address.phone.isNotEmpty) ...[
           const SizedBox(height: 4),
-          Text('Tel: ${address.phone}', style: AppTextStyles.textTheme.bodyMedium),
+          Text('Tel: ${address.phone}',
+              style: AppTextStyles.textTheme.bodyMedium),
         ],
       ],
     );
@@ -808,14 +916,28 @@ class _OrderDetailItemTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.productTitle, style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(item.productTitle,
+                    style: AppTextStyles.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
                 if (item.variantAttributes.isNotEmpty)
-                  Text(item.variantAttributes.entries.map((e) => '${e.key}: ${e.value}').join(', '), style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
-                Text('${item.quantity} x \$${(item.unitPrice / 100).toStringAsFixed(2)}', style: AppTextStyles.textTheme.bodySmall?.copyWith(color: AppColors.textSecondary)),
+                  Text(
+                      item.variantAttributes.entries
+                          .map((e) => '${e.key}: ${e.value}')
+                          .join(', '),
+                      style: AppTextStyles.textTheme.bodySmall
+                          ?.copyWith(color: AppColors.textSecondary)),
+                Text(
+                    '${item.quantity} x \$${(item.unitPrice / 100).toStringAsFixed(2)}',
+                    style: AppTextStyles.textTheme.bodySmall
+                        ?.copyWith(color: AppColors.textSecondary)),
               ],
             ),
           ),
-          Text('\$${(item.totalPrice / 100).toStringAsFixed(2)}', style: AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
+          Text('\$${(item.totalPrice / 100).toStringAsFixed(2)}',
+              style: AppTextStyles.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold, color: AppColors.primary)),
         ],
       ),
     );
@@ -842,14 +964,21 @@ class _PriceRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: isTotal ? AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold) : AppTextStyles.textTheme.bodyMedium),
+          Text(label,
+              style: isTotal
+                  ? AppTextStyles.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold)
+                  : AppTextStyles.textTheme.bodyMedium),
           Text(
             value,
             style: isTotal
-                ? AppTextStyles.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)
+                ? AppTextStyles.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold, color: AppColors.primary)
                 : isDiscount
-                    ? AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.error)
-                    : AppTextStyles.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                    ? AppTextStyles.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600, color: AppColors.error)
+                    : AppTextStyles.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

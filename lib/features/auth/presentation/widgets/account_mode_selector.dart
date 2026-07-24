@@ -59,7 +59,9 @@ class AccountModeSelector extends StatelessWidget {
                   style: AppTextStyles.body(
                     size: 13,
                     weight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected ? AppColors.textPrimary : AppColors.textTertiary,
+                    color: selected
+                        ? AppColors.textPrimary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ),

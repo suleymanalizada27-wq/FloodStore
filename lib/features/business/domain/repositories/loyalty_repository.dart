@@ -8,7 +8,9 @@ abstract class LoyaltyRepository {
   Future<LoyaltyAccount> getOrCreateAccount(String userId);
 
   /// Add points (earn)
-  Future<LoyaltyAccount> addPoints(String userId, int points, {
+  Future<LoyaltyAccount> addPoints(
+    String userId,
+    int points, {
     required TransactionType type,
     required String description,
     String? referenceId,
@@ -16,14 +18,17 @@ abstract class LoyaltyRepository {
   });
 
   /// Redeem points
-  Future<LoyaltyAccount> redeemPoints(String userId, int points, {
+  Future<LoyaltyAccount> redeemPoints(
+    String userId,
+    int points, {
     required String description,
     String? referenceId,
     Map<String, dynamic> metadata = const {},
   });
 
   /// Get point transactions
-  Future<List<PointTransaction>> getTransactions(String userId, {
+  Future<List<PointTransaction>> getTransactions(
+    String userId, {
     int limit = 50,
     String? lastDocumentId,
     TransactionType? type,

@@ -2,7 +2,8 @@ import '../entities/notification.dart';
 
 abstract class NotificationRepository {
   /// Get user notifications
-  Future<List<Notification>> getNotifications(String userId, {
+  Future<List<Notification>> getNotifications(
+    String userId, {
     int limit = 20,
     String? lastDocumentId,
     bool unreadOnly = false,
@@ -34,7 +35,8 @@ abstract class NotificationRepository {
   Future<NotificationPreferences> getPreferences(String userId);
 
   /// Update notification preferences
-  Future<void> updatePreferences(String userId, NotificationPreferences preferences);
+  Future<void> updatePreferences(
+      String userId, NotificationPreferences preferences);
 
   /// Subscribe to topic (for FCM)
   Future<void> subscribeToTopic(String userId, String topic);

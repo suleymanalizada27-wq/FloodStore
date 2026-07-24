@@ -1,6 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-enum PasswordResetStep { enterEmail, emailSent, enterCode, newPassword, success }
+enum PasswordResetStep {
+  enterEmail,
+  emailSent,
+  enterCode,
+  newPassword,
+  success
+}
 
 class PasswordResetState extends Equatable {
   const PasswordResetState({

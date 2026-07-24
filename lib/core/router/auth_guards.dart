@@ -65,5 +65,6 @@ abstract final class AuthGuards {
   /// Idle-timeout enforcement for users who did not check "keep me signed
   /// in" — see [SessionService]. Call site is responsible for actually
   /// signing the user out; this guard only decides *whether* to.
-  static bool shouldForceReauth({required bool sessionExpired}) => sessionExpired;
+  static bool shouldForceReauth({required bool sessionExpired}) =>
+      sessionExpired;
 }

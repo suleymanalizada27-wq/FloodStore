@@ -55,7 +55,8 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
         foregroundColor: tokens.textPrimary,
-        titleTextStyle: AppTextStyles.headlineSmall.copyWith(color: tokens.textPrimary),
+        titleTextStyle:
+            AppTextStyles.headlineSmall.copyWith(color: tokens.textPrimary),
       ),
       cardTheme: CardThemeData(
         color: tokens.cardColor,
@@ -75,7 +76,8 @@ abstract final class AppTheme {
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: AppTextStyles.body(size: 15, weight: FontWeight.w600),
         ),
       ),
@@ -84,7 +86,8 @@ abstract final class AppTheme {
           backgroundColor: tokens.primary,
           foregroundColor: tokens.onPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: AppTextStyles.body(size: 15, weight: FontWeight.w600),
         ),
       ),
@@ -93,7 +96,8 @@ abstract final class AppTheme {
           foregroundColor: tokens.primary,
           side: BorderSide(color: tokens.outline, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: AppTextStyles.body(size: 15, weight: FontWeight.w600),
         ),
       ),
@@ -101,14 +105,16 @@ abstract final class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: tokens.primary,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           textStyle: AppTextStyles.body(size: 14, weight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: tokens.inputFillColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: tokens.inputBorderColor, width: 1),
@@ -132,14 +138,16 @@ abstract final class AppTheme {
         labelStyle: AppTextStyles.body(size: 14, color: tokens.textSecondary),
         hintStyle: AppTextStyles.body(size: 14, color: tokens.textTertiary),
         errorStyle: AppTextStyles.body(size: 12, color: tokens.error),
-        floatingLabelStyle: AppTextStyles.body(size: 12, color: tokens.primary, weight: FontWeight.w600),
+        floatingLabelStyle: AppTextStyles.body(
+            size: 12, color: tokens.primary, weight: FontWeight.w600),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: tokens.chipBackgroundColor,
         selectedColor: tokens.primary.withValues(alpha: 0.12),
         disabledColor: tokens.disabledSurface,
         labelStyle: AppTextStyles.body(size: 13, color: tokens.textSecondary),
-        secondaryLabelStyle: AppTextStyles.body(size: 13, color: tokens.onPrimary),
+        secondaryLabelStyle:
+            AppTextStyles.body(size: 13, color: tokens.onPrimary),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -157,8 +165,10 @@ abstract final class AppTheme {
         selectedTileColor: tokens.primary.withValues(alpha: 0.08),
         iconColor: tokens.textSecondary,
         textColor: tokens.textPrimary,
-        titleTextStyle: AppTextStyles.body(size: 16, weight: FontWeight.w500, color: tokens.textPrimary),
-        subtitleTextStyle: AppTextStyles.body(size: 14, color: tokens.textSecondary),
+        titleTextStyle: AppTextStyles.body(
+            size: 16, weight: FontWeight.w500, color: tokens.textPrimary),
+        subtitleTextStyle:
+            AppTextStyles.body(size: 14, color: tokens.textSecondary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
@@ -169,15 +179,18 @@ abstract final class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-        selectedLabelStyle: AppTextStyles.body(size: 12, weight: FontWeight.w600),
-        unselectedLabelStyle: AppTextStyles.body(size: 12, weight: FontWeight.w400),
+        selectedLabelStyle:
+            AppTextStyles.body(size: 12, weight: FontWeight.w600),
+        unselectedLabelStyle:
+            AppTextStyles.body(size: 12, weight: FontWeight.w400),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: tokens.surface,
         indicatorColor: tokens.primary.withValues(alpha: 0.12),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppTextStyles.body(size: 12, weight: FontWeight.w600, color: tokens.primary);
+            return AppTextStyles.body(
+                size: 12, weight: FontWeight.w600, color: tokens.primary);
           }
           return AppTextStyles.body(size: 12, color: tokens.textTertiary);
         }),
@@ -210,8 +223,10 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 12,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        titleTextStyle: AppTextStyles.headlineSmall.copyWith(color: tokens.textPrimary),
-        contentTextStyle: AppTextStyles.body(size: 15, color: tokens.textSecondary),
+        titleTextStyle:
+            AppTextStyles.headlineSmall.copyWith(color: tokens.textPrimary),
+        contentTextStyle:
+            AppTextStyles.body(size: 15, color: tokens.textSecondary),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: tokens.surface,
@@ -228,7 +243,8 @@ abstract final class AppTheme {
         indicatorColor: tokens.primary,
         indicatorSize: TabBarIndicatorSize.label,
         labelStyle: AppTextStyles.body(size: 14, weight: FontWeight.w600),
-        unselectedLabelStyle: AppTextStyles.body(size: 14, weight: FontWeight.w400),
+        unselectedLabelStyle:
+            AppTextStyles.body(size: 14, weight: FontWeight.w400),
         dividerColor: tokens.dividerColor,
         splashFactory: InkSparkle.splashFactory,
       ),
@@ -243,7 +259,8 @@ abstract final class AppTheme {
         thumbColor: tokens.primary,
         overlayColor: tokens.primary.withValues(alpha: 0.12),
         valueIndicatorColor: tokens.primary,
-        valueIndicatorTextStyle: AppTextStyles.body(size: 12, color: tokens.onPrimary),
+        valueIndicatorTextStyle:
+            AppTextStyles.body(size: 12, color: tokens.onPrimary),
       ),
     );
   }

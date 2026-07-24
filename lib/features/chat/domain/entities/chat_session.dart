@@ -23,7 +23,8 @@ class ChatSession extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, userId, title, createdAt, updatedAt, messageCount, status, context];
+  List<Object?> get props =>
+      [id, userId, title, createdAt, updatedAt, messageCount, status, context];
 
   Map<String, dynamic> toFirestore() => {
         'userId': userId,
@@ -40,8 +41,10 @@ class ChatSession extends Equatable {
       id: id,
       userId: data['userId'] ?? '',
       title: data['title'] ?? '',
-      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(data['updatedAt'] ?? DateTime.now().toIso8601String()),
       messageCount: data['messageCount'] ?? 0,
       status: ChatSessionStatus.values.firstWhere(
         (s) => s.name == data['status'],

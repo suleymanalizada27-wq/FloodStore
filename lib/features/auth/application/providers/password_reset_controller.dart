@@ -32,7 +32,8 @@ class PasswordResetController extends StateNotifier<PasswordResetState> {
       return;
     }
 
-    state = state.copyWith(isSubmitting: true, clearError: true, email: email.trim());
+    state = state.copyWith(
+        isSubmitting: true, clearError: true, email: email.trim());
     try {
       await _repository.sendPasswordResetEmail(email.trim());
       state = state.copyWith(
@@ -94,8 +95,10 @@ class PasswordResetController extends StateNotifier<PasswordResetState> {
 
     state = state.copyWith(isSubmitting: true, clearError: true);
     try {
-      await _repository.confirmPasswordReset(code: code, newPassword: newPassword);
-      state = state.copyWith(isSubmitting: false, step: PasswordResetStep.success);
+      await _repository.confirmPasswordReset(
+          code: code, newPassword: newPassword);
+      state =
+          state.copyWith(isSubmitting: false, step: PasswordResetStep.success);
       _log('Password reset completed');
     } on AuthFailure catch (e) {
       state = state.copyWith(isSubmitting: false, errorMessage: e.message);
@@ -121,7 +124,7 @@ class PasswordResetController extends StateNotifier<PasswordResetState> {
   void reset() => state = const PasswordResetState();
 }
 
-final passwordResetControllerProvider =
-    StateNotifierProvider.autoDispose<PasswordResetController, PasswordResetState>(
+final passwordResetControllerProvider = StateNotifierProvider.autoDispose<
+    PasswordResetController, PasswordResetState>(
   PasswordResetController.new,
 );
