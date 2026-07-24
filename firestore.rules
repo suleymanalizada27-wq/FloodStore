@@ -10,7 +10,7 @@ service cloud.firestore {
       );
       allow create: if request.auth != null && request.auth.uid == userId;
       allow update: if request.auth != null && request.auth.uid == userId &&
-                   !request.resource.data.keys().hasAny(['role']); // Prevent role modification
+                   !('role' in request.resource.data); // Prevent role modification
       allow delete: if false; // Prevent deletion of user data
     }
 
@@ -44,7 +44,7 @@ service cloud.firestore {
     }
 
     // Wishlist collection - owner only read/write
-    match /wishlist/{wishlistId} {
+    match /wishlists/{wishlistId} {
       allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
@@ -58,7 +58,8 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
       allow update: if request.auth != null &&
                     (request.auth.uid == resource.data.userId || request.auth.uid == resource.data.sellerId) &&
-                    !request.resource.data.keys().hasAny(['paymentStatus', 'status']); // Prevent direct payment/status writes
+                    request.resource.data.status == resource.data.status &&
+                    request.resource.data.paymentStatus == resource.data.paymentStatus;
       allow delete: if false; // Prevent deletion of orders
     }
 
@@ -75,23 +76,23 @@ service cloud.firestore {
       match /rfq_responses/{responseId} {
         allow read: if request.auth != null && (
           request.auth.uid == get(/databases/$(database)/documents/rfqs/$(rfqId)).data.requesterId ||
-          request.auth.uid == request.resource.data.supplierId
+          request.auth.uid in get(/databases/$(database)/documents/rfqs/$(rfqId)).data.invitedSuppliers
         );
         allow create: if request.auth != null &&
                      exists(/databases/$(database)/documents/rfqs/$(rfqId)) &&
-                     get(/databases/$(database)/documents/rfqs/$(rfqId)).data.invitedSuppliers.has([request.auth.uid]);
+                     request.auth.uid in get(/databases/$(database)/documents/rfqs/$(rfqId)).data.invitedSuppliers;
         allow update, delete: if request.auth != null && request.auth.uid == request.resource.data.supplierId;
       }
     }
 
     // Chat sessions and messages - participants only
     match /chat_sessions/{sessionId} {
-      allow read, write: if request.auth != null && resource.data.participants.has([request.auth.uid]);
-      allow create: if request.auth != null && request.resource.data.participants.has([request.auth.uid]);
+      allow read, write: if request.auth != null && request.auth.uid in resource.data.participants;
+      allow create: if request.auth != null && request.auth.uid in request.resource.data.participants;
 
       match /messages/{messageId} {
-        allow read: if request.auth != null && get(/databases/$(database)/documents/chat_sessions/$(sessionId)).data.participants.has([request.auth.uid]);
-        allow create: if request.auth != null && get(/databases/$(database)/documents/chat_sessions/$(sessionId)).data.participants.has([request.auth.uid]);
+        allow read: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/chat_sessions/$(sessionId)).data.participants;
+        allow create: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/chat_sessions/$(sessionId)).data.participants;
         allow update, delete: if request.auth != null && request.auth.uid == request.resource.data.senderId;
       }
     }

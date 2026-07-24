@@ -138,7 +138,7 @@ class FirestoreUserRepository implements UserRepository {
     try {
       final querySnapshot = await _usersRef()
           .doc(userId)
-          .collection('wishlist')
+          .collection('wishlists')
           .orderBy('addedAt', descending: true)
           .limit(limit)
           .get();
@@ -154,7 +154,7 @@ class FirestoreUserRepository implements UserRepository {
   @override
   Future<void> addToWishlist(String userId, String productId) async {
     try {
-      await _usersRef().doc(userId).collection('wishlist').doc(productId).set({
+      await _usersRef().doc(userId).collection('wishlists').doc(productId).set({
         'productId': productId,
         'addedAt': fs.FieldValue.serverTimestamp(),
       });
@@ -168,7 +168,7 @@ class FirestoreUserRepository implements UserRepository {
     try {
       await _usersRef()
           .doc(userId)
-          .collection('wishlist')
+          .collection('wishlists')
           .doc(productId)
           .delete();
     } catch (e) {

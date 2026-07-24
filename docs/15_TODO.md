@@ -7,7 +7,10 @@
       immediately (`docs/modules/ORDERS.md`, `docs/08_PAYMENT_ARCHITECTURE.md`)
 - [x] Write and deploy `firestore.rules` — currently no security rules exist at all
       (`06_FIREBASE_RULES.md`) — this is what would have blocked the exploit above
-- [ ] Resolve `wishlist` vs `wishlists` collection duplication (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
+- [x] Resolve `wishlist` vs `wishlists` collection duplication (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
+      - Verified that codebase consistently uses `wishlists` (plural) collection
+      - Confirmed `wishlists` matches target Postgres name in migration matrix
+      - No actual Firestore references to `wishlist` (singular) found in codebase
 - [ ] Audit `messages` vs `chat_messages` — confirm which is live before dropping either (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
 - [x] ~~Resolve `sellers` vs `business_accounts` relationship~~ — resolved via `decisions/ADR-006-IDENTITY-MODEL.md` (merge into `organizations` + `seller_profiles`); Firestore-side collections can stay split until Seller module migrates
 - [x] ~~Write ADR-003 (Auth strategy)~~ — resolved: Firebase Auth stays, `decisions/ADR-003-AUTH.md`
