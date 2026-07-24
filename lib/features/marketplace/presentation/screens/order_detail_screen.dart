@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../features/chat/application/providers/chat_providers.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
@@ -207,7 +208,37 @@ class OrderDetailScreen extends ConsumerWidget {
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
-
+                // Contact buyer/seller button
+                final currentUserId = ref.watch(currentUserIdProvider);
+                currentUserId.when(
+                  data: (userId) {
+                    if (userId == null) return const SizedBox.shrink();
+                    final otherUserId = order.customerId == userId ? order.sellerId : order.customerId;
+                    if (otherUserId == null || otherUserId.isEmpty) return const SizedBox.shrink();
+                    final isBuyer = order.customerId == userId;
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: AppSpacing.lg),
+                      child: PremiumButton(
+                        label: isBuyer ? 'Satıcıyla İletişime Geç' : 'Alıcıyla İletişime Geç',
+                        icon: Icons.chat,
+                        onPressed: () {
+                          final chatSessionId = _getChatSessionId(userId, otherUserId);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => MessageThreadScreen(
+                                sessionId: chatSessionId,
+                                otherUserId: otherUserId,
+                              ),
+                          ),
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (e) => const SizedBox.shrink(),
+                ),
+                const SizedBox(height: AppSpacing.lg),
                 // Price breakdown
                 GlassCard(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -984,4 +1015,8 @@ class _PriceRow extends StatelessWidget {
       ),
     );
   }
+  String _getChatSessionId(String userId1, String userId2) {
+    final List<String> ids = [userId1, userId2]..sort();
+    return '${ids[0]}_${ids[1]}';
+}
 }
