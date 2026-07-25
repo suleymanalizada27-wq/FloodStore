@@ -21,6 +21,7 @@ class PremiumTextField extends StatefulWidget {
     this.onChanged,
     this.autofillHints,
     this.inputFormatters,
+    this.readOnly = false,
   });
 
   final String label;
@@ -35,6 +36,7 @@ class PremiumTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final Iterable<String>? autofillHints;
   final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
 
   @override
   State<PremiumTextField> createState() => _PremiumTextFieldState();
@@ -68,7 +70,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
           style: AppTextStyles.body(
             size: 13,
             weight: FontWeight.w600,
-            color: _focused ? AppColors.secondary : AppColors.textSecondary,
+            color: _focused && !widget.readOnly ? AppColors.secondary : AppColors.textSecondary,
           ),
           child: Text(widget.label),
         ),
@@ -79,7 +81,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
-              if (_focused)
+              if (_focused && !widget.readOnly)
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.18),
                   blurRadius: 18,
@@ -89,7 +91,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
           ),
           child: TextFormField(
             controller: widget.controller,
-            focusNode: _focusNode,
+            focusNode: widget.readOnly ? null : _focusNode,
             obscureText: widget.obscureText,
             keyboardType: widget.keyboardType,
             textInputAction: widget.textInputAction,
@@ -97,6 +99,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
             onChanged: widget.onChanged,
             autofillHints: widget.autofillHints,
             inputFormatters: widget.inputFormatters,
+            readOnly: widget.readOnly,
             style: AppTextStyles.body(size: 15),
             cursorColor: AppColors.primary,
             decoration: InputDecoration(
@@ -105,7 +108,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
                   ? null
                   : Icon(widget.prefixIcon,
                       size: 20,
-                      color: _focused
+                      color: _focused && !widget.readOnly
                           ? AppColors.secondary
                           : AppColors.textTertiary),
               suffixIcon: widget.suffixIcon,

@@ -7,7 +7,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../application/providers/product_providers.dart';
-import '../../application/providers/marketplace_providers.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/category.dart';
 
@@ -111,9 +110,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             season: ['all'],
             occasion: ['casual'],
             style: ['modern'],
-            color: ['blue', 'white', 'black'][i % 3] == 0
+            color: (i % 3) == 0
                 ? ['blue']
-                : ['white', 'black'][i % 3] == 1
+                : (i % 3) == 1
                     ? ['white']
                     : ['black'],
             pattern: ['solid'],

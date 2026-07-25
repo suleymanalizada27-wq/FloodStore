@@ -71,7 +71,7 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
 
       final dailySalesMap = <String, DailySales>{};
       for (final doc in dailySalesQuery.docs) {
-        final data = doc.data() ?? {};
+        final data = doc.data() as Map<String, dynamic>? ?? <String, dynamic>{};
         final date =
             (data['createdAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now();
         final dateKey =
@@ -220,7 +220,7 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
       final snapshot = await query.orderBy('createdAt', descending: true).get();
       return snapshot.docs
           .map((doc) => SellerAdCampaign.fromFirestore(
-              doc.data()! as Map<String, dynamic>, doc.id))
+              doc.data() as Map<String, dynamic>? ?? <String, dynamic>{}, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get ad campaigns: $e');
@@ -233,8 +233,8 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
     try {
       final doc = await _adCampaignsRef().doc(campaignId).get();
       if (!doc.exists) throw Exception('Campaign not found');
-      final data = doc.data()! as Map<String, dynamic>;
-      return AdMetrics.fromFirestore(data['metrics'] as Map<String, dynamic>);
+      final data = doc.data() as Map<String, dynamic>? ?? <String, dynamic>{};
+      return AdMetrics.fromFirestore(data['metrics'] as Map<String, dynamic>? ?? <String, dynamic>{});
     } catch (e) {
       throw Exception('Failed to get ad metrics: $e');
     }
@@ -275,14 +275,14 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
       final snapshot = await query.get();
       return snapshot.docs
           .where((doc) {
-            final data = doc.data() as Map<String, dynamic>;
+            final data = doc.data() as Map<String, dynamic>? ?? <String, dynamic>{};
             final expiresAt = data['expiresAt'] != null
                 ? DateTime.parse(data['expiresAt'])
                 : null;
             return expiresAt == null || expiresAt.isAfter(DateTime.now());
           })
           .map((doc) => Recommendation.fromFirestore(
-              doc.data()! as Map<String, dynamic>, doc.id))
+              doc.data() as Map<String, dynamic>? ?? <String, dynamic>{}, doc.id))
           .toList();
     } catch (e) {
       throw Exception('Failed to get recommendations: $e');

@@ -9,8 +9,10 @@ import '../../../../features/chat/application/providers/chat_providers.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
+import '../../../../features/auth/application/providers/auth_providers.dart';
 import '../../domain/entities/order.dart';
 import '../../application/providers/marketplace_providers.dart';
+import '../../../../features/chat/presentation/screens/message_thread_screen.dart';
 
 class OrderDetailScreen extends ConsumerWidget {
   const OrderDetailScreen({super.key});
@@ -209,37 +211,39 @@ class OrderDetailScreen extends ConsumerWidget {
 
                 const SizedBox(height: AppSpacing.lg),
                 // Contact buyer/seller button
-                final currentUserId = ref.watch(currentUserIdProvider);
-                currentUserId.when(
-                  data: (userId) {
-                    if (userId == null) return const SizedBox.shrink();
-                    final otherUserId = order.customerId == userId ? order.sellerId : order.customerId;
-                    if (otherUserId == null || otherUserId.isEmpty) return const SizedBox.shrink();
-                    final isBuyer = order.customerId == userId;
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: AppSpacing.lg),
-                      child: PremiumButton(
-                        label: isBuyer ? 'Satıcıyla İletişime Geç' : 'Alıcıyla İletişime Geç',
-                        icon: Icons.chat,
-                        onPressed: () {
-                          final chatSessionId = _getChatSessionId(userId, otherUserId);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => MessageThreadScreen(
-                                sessionId: chatSessionId,
-                                otherUserId: otherUserId,
-                              ),
+                (() {
+                  final userId = ref.watch(currentUserIdProvider);
+                  if (userId == null) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final otherUserId = order.userId == userId ? order.sellerId : order.userId;
+                  if (otherUserId == null || otherUserId.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final isBuyer = order.userId == userId;
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: AppSpacing.lg),
+                    child: PremiumButton(
+                      label: isBuyer ? 'Satıcıyla İletişime Geç' : 'Alıcıyla İletişime Geç',
+                      icon: Icons.chat,
+                      onPressed: () {
+                        final chatSessionId = _getChatSessionId(userId, otherUserId);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => MessageThreadScreen(
+                              sessionId: chatSessionId,
+                              otherUserId: otherUserId,
+                            ),
                           ),
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  loading: () => const SizedBox.shrink(),
-                  error: (e) => const SizedBox.shrink(),
-                ),
+                        );
+                      },
+                    ),
+                  );
+                })(),
                 const SizedBox(height: AppSpacing.lg),
-                // Price breakdown
+
                 GlassCard(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
@@ -390,7 +394,7 @@ class OrderDetailScreen extends ConsumerWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text('Sipariş iptal edildi'),
+                      content: Text('Sipariş iptal edilidi'),
                       backgroundColor: AppColors.success),
                 );
                 context.pop();
@@ -600,6 +604,11 @@ class OrderDetailScreen extends ConsumerWidget {
         .map((e) => _TimelineEventTile(event: e, isLast: e == events.last))
         .toList();
   }
+}
+
+String _getChatSessionId(String userId1, String userId2) {
+  final List<String> ids = [userId1, userId2]..sort();
+  return '${ids[0]}_${ids[1]}';
 }
 
 class _TimelineEvent {
@@ -1015,8 +1024,4 @@ class _PriceRow extends StatelessWidget {
       ),
     );
   }
-  String _getChatSessionId(String userId1, String userId2) {
-    final List<String> ids = [userId1, userId2]..sort();
-    return '${ids[0]}_${ids[1]}';
-}
 }

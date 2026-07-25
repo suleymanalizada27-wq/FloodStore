@@ -1,5 +1,5 @@
-import '../../entities/inventory.dart';
-import '../../entities/warehouse.dart';
+import '../entities/inventory.dart';
+import '../entities/warehouse.dart';
 
 /// Abstract repository for inventory-related operations
 abstract class InventoryRepository {

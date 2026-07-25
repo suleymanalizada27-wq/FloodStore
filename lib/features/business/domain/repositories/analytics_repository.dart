@@ -1,5 +1,5 @@
 import '../entities/seller_analytics.dart';
-import '../../marketplace/domain/entities/recommendation.dart';
+import '../../../marketplace/domain/entities/recommendation.dart';
 
 abstract class AnalyticsRepository {
   Future<SellerDashboardData> getSellerDashboard(String sellerId,
@@ -21,5 +21,11 @@ abstract class AnalyticsRepository {
   Future<List<DailySales>> getDailySales(
     String sellerId, {
     required DateTimeRange dateRange,
+  });
+  Future<List<Recommendation>> getRecommendationsForUser(
+    String userId, {
+    RecommendationType? type,
+    int limit = 20,
+    String? lastDocumentId,
   });
 }

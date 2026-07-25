@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:floodstore/features/procurement/domain/entities/inventory.dart';
 import '../../domain/repositories/inventory_repository.dart';
-import '../../../../core/enums/inventory_status.dart';
+import 'package:floodstore/core/enums/inventory_status.dart';
 
 class FirestoreInventoryRepository implements InventoryRepository {
   final fs.FirebaseFirestore _firestore;
@@ -10,7 +10,7 @@ class FirestoreInventoryRepository implements InventoryRepository {
       : _firestore = firestore ?? fs.FirebaseFirestore.instance;
 
   fs.CollectionReference get _inventoryRef =>
-      _firestore.collection('inventory_items');
+    _firestore.collection('inventory_items');
 
   @override
   Future<String> createInventoryItem(InventoryItem item) async {
@@ -226,10 +226,11 @@ class FirestoreInventoryRepository implements InventoryRepository {
         throw Exception('Inventory item not found');
       }
 
-      final sourceData = sourceDoc.data();
-      if (sourceData == null) {
+      final Object? sourceDataRaw = sourceDoc.data();
+      if (sourceDataRaw == null) {
         throw Exception('Inventory item data is null');
       }
+      final Map<String, dynamic> sourceData = sourceDataRaw as Map<String, dynamic>;
 
       final currentQuantity = (sourceData['quantity'] as num?)?.toDouble() ?? 0;
       final currentReserved = (sourceData['reservedQuantity'] as num?)?.toDouble() ?? 0;
@@ -255,10 +256,11 @@ class FirestoreInventoryRepository implements InventoryRepository {
       if (destinationQuery.docs.isNotEmpty) {
         // Update existing destination item
         final destDoc = destinationQuery.docs.first;
-        final destData = destDoc.data();
-        if (destData == null) {
+        final Object? destDataRaw = destDoc.data();
+        if (destDataRaw == null) {
           throw Exception('Destination inventory item data is null');
         }
+        final Map<String, dynamic> destData = destDataRaw as Map<String, dynamic>;
 
         final destQuantity = (destData['quantity'] as num?)?.toDouble() ?? 0;
         final destReserved = (destData['reservedQuantity'] as num?)?.toDouble() ?? 0;
@@ -282,8 +284,7 @@ class FirestoreInventoryRepository implements InventoryRepository {
           receivedDate: sourceData['receivedDate'] != null
               ? DateTime.parse(sourceData['receivedDate'])
               : null,
-          expiryDate: sourceData['expiryDate'] != null'
-          ? Date'] != null
+          expiryDate: sourceData['expiryDate'] != null
               ? DateTime.parse(sourceData['expiryDate'])
               : null,
           manufacturingDate: sourceData['manufacturingDate'] != null

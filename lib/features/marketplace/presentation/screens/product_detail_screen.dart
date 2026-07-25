@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../features/chat/application/providers/chat_providers.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/premium_button.dart';
+import '../../../../features/chat/presentation/screens/message_thread_screen.dart';
 import '../../application/providers/marketplace_providers.dart';
 
 /// Detailed view for a single product.
@@ -184,9 +184,8 @@ class ProductDetailScreen extends ConsumerWidget {
                                 );
                               }
                             }
-                      // TODO: Add contact seller button
+                          },
                         ),
-                      ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
@@ -202,7 +201,7 @@ class ProductDetailScreen extends ConsumerWidget {
                               );
                               return;
                             }
-                            final sellerId = product.base.sellerId ?? 'seller-${product.id.hashCode}';
+                            final sellerId = product.sellerId.isNotEmpty ? product.sellerId : 'seller-${product.id.hashCode}';
                             if (userId == sellerId) {
                               return; // User is the seller
                             }
@@ -235,5 +234,5 @@ class ProductDetailScreen extends ConsumerWidget {
   String _getChatSessionId(String userId1, String userId2) {
     final List<String> ids = [userId1, userId2]..sort();
     return '${ids[0]}_${ids[1]}';
-}
+  }
 }

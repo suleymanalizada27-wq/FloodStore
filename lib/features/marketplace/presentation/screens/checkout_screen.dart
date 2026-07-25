@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -433,6 +434,219 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               onPressed: _isLoading ? null : _placeOrder,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddressSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_savedAddresses.isNotEmpty && !_isLoadingAddresses)
+          PremiumButton(
+            label: _selectedAddress != null
+                ? _selectedAddress!.name
+                : 'Select Address',
+            icon: Icons.arrow_drop_down,
+            expand: false,
+            onPressed: _showAddressSelectionDialog,
+          )
+        else if (_isLoadingAddresses)
+          const SizedBox(
+            height: 48,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          )
+        else
+          const Text(
+            'No saved addresses. Please add an address in your profile.',
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _nameController,
+          decoration: const InputDecoration(
+            labelText: 'Full Name',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Please enter your name' : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _phoneController,
+          decoration: const InputDecoration(
+            labelText: 'Phone Number',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Please enter your phone' : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _line1Controller,
+          decoration: const InputDecoration(
+            labelText: 'Address Line 1',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty
+                  ? 'Please enter your address'
+                  : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _line2Controller,
+          decoration: const InputDecoration(
+            labelText: 'Address Line 2 (Optional)',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _cityController,
+          decoration: const InputDecoration(
+            labelText: 'City',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Please enter your city' : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _stateController,
+          decoration: const InputDecoration(
+            labelText: 'State/Province',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty
+                  ? 'Please enter your state'
+                  : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _postalCodeController,
+          decoration: const InputDecoration(
+            labelText: 'Postal Code',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty
+                  ? 'Please enter your postal code'
+                  : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _countryController,
+          decoration: const InputDecoration(
+            labelText: 'Country',
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Please enter your country' : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeliveryOptions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _BuildDeliveryOption(
+          label: 'Standard Delivery',
+          value: 'standard',
+          groupValue: _selectedDeliveryOption,
+          onChanged: (value) => setState(() => _selectedDeliveryOption = value!),
+          description: 'Estimated delivery: 5-7 business days',
+          price: '\$5.00',
+        ),
+        const SizedBox(height: 16),
+        _BuildDeliveryOption(
+          label: 'Express Delivery',
+          value: 'express',
+          groupValue: _selectedDeliveryOption,
+          onChanged: (value) => setState(() => _selectedDeliveryOption = value!),
+          description: 'Estimated delivery: 2-3 business days',
+          price: '\$10.00',
+        ),
+        const SizedBox(height: 16),
+        _BuildDeliveryOption(
+          label: 'Overnight Delivery',
+          value: 'overnight',
+          groupValue: _selectedDeliveryOption,
+          onChanged: (value) => setState(() => _selectedDeliveryOption = value!),
+          description: 'Estimated delivery: 1 business day',
+          price: '\$20.00',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentMethods() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _BuildPaymentOption(
+          label: 'Credit/Debit Card',
+          value: 'card',
+          groupValue: _selectedPaymentMethod,
+          onChanged: (value) => setState(() => _selectedPaymentMethod = value!),
+          description: 'Pay securely with your card',
+        ),
+        const SizedBox(height: 16),
+        _BuildPaymentOption(
+          label: 'Cash on Delivery',
+          value: 'cod',
+          groupValue: _selectedPaymentMethod,
+          onChanged: (value) => setState(() => _selectedPaymentMethod = value!),
+          description: 'Pay in cash when you receive your order',
+        ),
+      ],
+    );
+  }
+
+  Widget _BuildDeliveryOption({
+    required String label,
+    required String value,
+    required String groupValue,
+    required ValueChanged<String> onChanged,
+    required String description,
+    required String price,
+  }) {
+    return InkWell(
+      onTap: () => onChanged(value),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: value == groupValue ? AppColors.primary : AppColors.border,
+            width: value == groupValue ? 2 : 1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _BuildPaymentOption({
+    required String label,
+    required String value,
+    required String groupValue,
+    required ValueChanged<String> onChanged,
+    required String description,
+  }) {
+    return InkWell(
+      onTap: () => onChanged(value),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: value == groupValue ? AppColors.primary : AppColors.border,
+            width: value == groupValue ? 2 : 1,
+          ),
         ),
       ),
     );

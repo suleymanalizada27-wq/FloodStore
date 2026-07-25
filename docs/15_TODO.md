@@ -11,7 +11,7 @@
       - Verified that codebase consistently uses `wishlists` (plural) collection
       - Confirmed `wishlists` matches target Postgres name in migration matrix
       - No actual Firestore references to `wishlist` (singular) found in codebase
-- [ ] Audit `messages` vs `chat_messages` — confirm which is live before dropping either (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
+- [x] Audit \`messages\` vs \`chat_messages\` — confirm which is live before dropping either (`04_DATABASE_SCHEMA.md`, `database/15_MIGRATION_MATRIX.md`)
 - [x] ~~Resolve `sellers` vs `business_accounts` relationship~~ — resolved via `decisions/ADR-006-IDENTITY-MODEL.md` (merge into `organizations` + `seller_profiles`); Firestore-side collections can stay split until Seller module migrates
 - [x] ~~Write ADR-003 (Auth strategy)~~ — resolved: Firebase Auth stays, `decisions/ADR-003-AUTH.md`
 - [x] ~~Write ADR-004 (Payments runtime)~~ — resolved: Supabase Edge Functions, `decisions/ADR-004-PAYMENTS.md`; payment **provider** (Stripe or alternative) is still open
@@ -26,7 +26,7 @@
 - [ ] Build `application/`+`presentation/` layers for `procurement` (`modules/PROCUREMENT.md`)
       — recommend building directly against Postgres target, not Firestore
 - [ ] Build `application/`+`presentation/` layers for `business`/Seller Dashboard (`modules/SELLER.md`)
-- [ ] Build `application/`+`presentation/` layers for `chat` (`modules/CHAT.md`) — good first
+- [x] Build `application/`+`presentation/` layers for `chat` (`modules/CHAT.md`) — good first
       Postgres migration candidate (least data)
 
 ## MEDIUM

@@ -6,7 +6,7 @@ import '../../domain/repositories/order_repository.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../../domain/repositories/wishlist_repository.dart';
 import '../../domain/repositories/coupon_repository.dart';
-import '../../features/business/domain/repositories/analytics_repository.dart';
+import '../../../../features/business/domain/repositories/analytics_repository.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
@@ -21,7 +21,7 @@ import '../../data/repositories/firestore_order_repository.dart';
 import '../../data/repositories/firestore_user_repository.dart';
 import '../../data/repositories/firestore_wishlist_repository.dart';
 import '../../data/repositories/firestore_coupon_repository.dart';
-import '../../features/business/data/repositories/firestore_analytics_repository.dart';
+import '../../../../features/business/data/repositories/firestore_analytics_repository.dart';
 import '../state/product_list_notifier.dart';
 import '../state/product_search_state.dart';
 import '../../data/sources/firestore_product_data_source.dart';
@@ -56,6 +56,14 @@ final wishlistRepositoryProvider = Provider<WishlistRepository>((ref) {
 
 final couponRepositoryProvider = Provider<CouponRepository>((ref) {
   return FirestoreCouponRepository();
+});
+
+final wishlistProvider = StreamProvider.family<Wishlist?, String>((ref, userId) {
+  return ref.watch(wishlistRepositoryProvider).watchWishlist(userId);
+});
+
+final wishlistForUserProvider = FutureProvider.family<Wishlist?, String>((ref, userId) {
+  return ref.watch(wishlistRepositoryProvider).getWishlist(userId);
 });
 
 final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {

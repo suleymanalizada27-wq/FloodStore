@@ -68,10 +68,10 @@ Nothing built. Fully greenfield — spec lives in the module doc.
 
 | Feature | Status | Notes |
 |---|---|---|
-| Chat session/message entities+repo | ⚠️ | exist, no `application/`/`presentation/` |
+| Chat session/message entities+repo | ✅ | entities and Firestore repository implemented |
 | Notification entity+repo | ⚠️ | exist, no UI |
 | Visual search entity+repo | ⚠️ | exist, purpose/usage unclear — confirm with product owner before building on it |
-| Buyer↔seller messaging UI | ❌ | not started |
+| Buyer↔seller messaging UI | ✅ | Conversation list and message thread screens implemented; contact buttons added to product and order detail |
 | Push notifications (FCM) | ❌ | not wired |
 
 ## Logistics, Admin, Analytics, AI, Payments

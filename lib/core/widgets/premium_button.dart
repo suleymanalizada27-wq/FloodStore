@@ -18,6 +18,7 @@ class PremiumButton extends StatefulWidget {
     this.loading = false,
     this.icon,
     this.expand = true,
+    this.isLoading = false,
   });
 
   final String label;
@@ -34,7 +35,7 @@ class _PremiumButtonState extends State<PremiumButton> {
   bool _hovering = false;
   bool _pressed = false;
 
-  bool get _enabled => widget.onPressed != null && !widget.loading;
+  bool get _enabled => widget.onPressed != null && !widget.loading && !widget.isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class _PremiumButtonState extends State<PremiumButton> {
               ],
             ),
             alignment: Alignment.center,
-            child: widget.loading
+            child: (widget.loading || widget.isLoading)
                 ? const SizedBox(
                     height: 22,
                     width: 22,

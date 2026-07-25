@@ -218,8 +218,6 @@ class Product extends Equatable {
       'rentalRatePerMonth': rentalRatePerMonth,
     };
   }
-<parameter=new_string>
-}
 
   static Product fromFirestore(Map<String, dynamic> data, String documentId) {
     return Product(

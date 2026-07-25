@@ -623,7 +623,7 @@ class _BusinessAccountRegistrationScreenState
   }
 
   Widget _buildStep5() {
-    return SingleChildScrollVew(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
