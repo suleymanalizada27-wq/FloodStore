@@ -188,35 +188,39 @@ class ProductDetailScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: PremiumButton(
-                          label: 'Satıcıyla İletişime Geç',
-                          icon: Icons.chat,
-                          onPressed: () {
-                            final userId = ref.read(currentUserIdProvider);
-                            if (userId == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Lütfen giriş yapın')),
-                              );
-                              return;
-                            }
-                            final sellerId = product.sellerId.isNotEmpty ? product.sellerId : 'seller-${product.id.hashCode}';
-                            if (userId == sellerId) {
-                              return; // User is the seller
-                            }
-                            final chatSessionId = _getChatSessionId(userId, sellerId);
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => MessageThreadScreen(
-                                  sessionId: chatSessionId,
-                                  otherUserId: sellerId,
+                      const SizedBox(width: AppSpacing.sm),
+                      if (product.sellerId.isNotEmpty)
+                        Expanded(
+                          child: PremiumButton(
+                            label: 'Satıcıyla İletişime Geç',
+                            icon: Icons.chat,
+                            onPressed: () {
+                              final userId = ref.read(currentUserIdProvider);
+                              if (userId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Lütfen giriş yapın')),
+                                );
+                                return;
+                              }
+                              final sellerId = product.sellerId;
+                              if (userId == sellerId) {
+                                return; // User is the seller
+                              }
+                              final chatSessionId = _getChatSessionId(userId, sellerId);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => MessageThreadScreen(
+                                    sessionId: chatSessionId,
+                                    otherUserId: sellerId,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                              );
+                            },
+                          ),
+                        )
+                      else
+                        const SizedBox.shrink(),
                     ],
                   ),
                 ],
