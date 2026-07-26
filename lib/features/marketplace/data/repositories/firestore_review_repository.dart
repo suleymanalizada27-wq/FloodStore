@@ -16,14 +16,14 @@ class FirestoreReviewRepository implements ReviewRepository {
     try {
       final snapshot = await _reviewsRef()
           .where('productId', isEqualTo: productId)
-          .where('isVisible', isEqualTo: true)
+          .where('isApproved', isEqualTo: true)
           .orderBy('createdAt', descending: true)
           .get();
 
       return snapshot.docs
           .map((doc) => Review.fromFirestore(
               doc.data() as Map<String, dynamic>, doc.id))
-          .where((review) => review.isVisible)
+          .where((review) => !review.isFlagged)
           .toList();
     } catch (e) {
       throw Exception('Failed to get reviews for product: $e');

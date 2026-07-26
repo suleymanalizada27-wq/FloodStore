@@ -32,6 +32,7 @@
 ## MEDIUM
 - [ ] Advanced product filters (`modules/MARKETPLACE.md`)
 - [ ] Reviews UI wiring
+- [ ] Reviews collection composite index (isApproved + createdAt) - add to firestore.indexes.json, verify with `firebase deploy --only firestore:indexes`
 - [ ] Reconcile duplicate `history`/`ad_campaigns` collection purposes
 - [ ] Set up Firebase Emulator Suite for local dev/testing (`05_FIREBASE.md`)
 - [ ] Write real CI pipeline (`flutter analyze` + `flutter test` on PR) (`12_DEPLOYMENT.md`)
