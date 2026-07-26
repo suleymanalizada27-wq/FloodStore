@@ -249,7 +249,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       );
 
       // Save the product
-      final productId = await productRepository.createProduct(sampleProduct);
+      await productRepository.createProduct(sampleProduct);
 
       // Refresh the product list
       await _loadProducts();

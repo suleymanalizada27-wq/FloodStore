@@ -1,5 +1,6 @@
 import '../entities/inventory.dart';
 import '../entities/warehouse.dart';
+import '../../../../core/enums/inventory_status.dart';
 
 /// Abstract repository for inventory-related operations
 abstract class InventoryRepository {

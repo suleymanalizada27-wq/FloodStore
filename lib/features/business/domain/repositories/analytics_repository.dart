@@ -28,4 +28,27 @@ abstract class AnalyticsRepository {
     int limit = 20,
     String? lastDocumentId,
   });
+  Future<AdMetrics> getAdMetrics(String campaignId,
+      {DateTimeRange? dateRange});
+  Future<void> updateAdMetrics(String campaignId, AdMetrics metrics);
+  Future<void> recordRecommendationClick(
+      String userId, String recommendationId);
+  Future<void> recordRecommendationImpression(
+      String userId, List<String> recommendationIds);
+  Future<void> dismissRecommendation(
+      String userId, String recommendationId);
+  Future<void> generateRecommendationsForUser(String userId);
+  Future<PlatformAnalytics> getPlatformAnalytics(
+      {DateTimeRange? dateRange});
+  Future<List<DailySales>> getPlatformDailySales(
+      {required DateTimeRange dateRange});
+  Future<Map<String, double>> getRevenueByCategory(
+      {DateTimeRange? dateRange});
+  Future<Map<String, int>> getOrdersByStatus(
+      {DateTimeRange? dateRange});
+  Future<double> getConversionRate({DateTimeRange? dateRange});
+  Future<int> getActiveUsers({DateTimeRange? dateRange});
+  Future<int> getNewUsers({DateTimeRange? dateRange});
+  Future<Map<String, int>> getUsersBySource(
+      {DateTimeRange? dateRange});
 }

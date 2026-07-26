@@ -6,9 +6,6 @@ import '../../domain/repositories/rfq_repository.dart';
 import '../../data/repositories/firestore_warehouse_repository.dart';
 import '../../data/repositories/firestore_inventory_repository.dart';
 import '../../data/repositories/firestore_rfq_repository.dart';
-import '../../domain/entities/warehouse.dart';
-import '../../domain/entities/inventory.dart';
-import '../../domain/entities/rfq.dart';
 
 // Repository Providers
 final warehouseRepositoryProvider = Provider<WarehouseRepository>((ref) {

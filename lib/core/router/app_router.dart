@@ -51,6 +51,12 @@ abstract final class AppRoutes {
   static const orderDetail = '/order/detail';
   static const businessAccountRegister = '/business/register';
   static const wishlist = '/wishlist';
+  static const chatConversationList = '/chat/conversations';
+  static const chatThread = '/chat/thread';
+
+  // Chat routes
+  static const chatConversations = '/chat/conversations';
+  static const chatMessages = '/chat/messages/:sessionId';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -197,6 +203,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.businessAccountRegister,
         pageBuilder: (context, state) =>
             _heroPage(const BusinessAccountRegistrationScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.chatConversationList,
+        pageBuilder: (context, state) => _heroPage(const ConversationListScreen()),
+      ),
+      GoRoute(
+        path: '${AppRoutes.chatThread}/:sessionId',
+        pageBuilder: (context, state) {
+          final sessionId = state.pathParameters['sessionId']!;
+          // In a real app, you'd get the otherUserId from query params or state
+          // For now, we'll pass it as an empty string and handle it in the screen
+          return _heroPage(MessageThreadScreen(
+            sessionId: sessionId,
+            otherUserId: '', // Would normally come from state/query params
+          ));
+        },
       ),
     ],
   );

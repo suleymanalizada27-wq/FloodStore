@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -293,12 +292,11 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           onPressed: _isAddingToCart ? null : _addToCart,
                           loading: _isAddingToCart,
                           label: _isAddingToCart
-                              ? 'Əlavə olunur...'
+                              ? 'Əlavə oluyor...'
                               : 'Sepətə Əlavə Et',
                           icon: _isAddingToCart
                               ? Icons.hourglass_empty
                               : Icons.add_shopping_cart,
-                          size: PremiumButtonSize.small,
                         ),
                       ),
                     ],

@@ -48,8 +48,6 @@ class FirestoreAnalyticsRepository implements AnalyticsRepository {
 
       double totalRevenue = orders.fold(0, (sum, o) => sum + o.totalAmount);
       int totalOrders = orders.length;
-      int totalItems = orders.fold(
-          0, (sum, o) => sum + o.items.fold(0, (s, i) => s + i.quantity));
       double avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
       int pendingOrders = orders
