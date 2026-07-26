@@ -28,5 +28,7 @@ Development → Staging → Production
 Hosting target for web (Firebase Hosting vs. other) is still open. Server runtime is
 **resolved** — Supabase Edge Functions, per `decisions/ADR-004-PAYMENTS.md` — but the CI/CD
 pipeline for deploying Edge Functions (Supabase CLI in GitHub Actions) doesn't exist yet and
-blocks a real deployment pipeline for anything beyond the current Firestore-backed client. See
+blocks a deployment pipeline for anything beyond the current Firestore-backed client. See
 `08_PAYMENT_ARCHITECTURE.md`.
+
+**CI Pipeline Status**: ✅ Implemented - GitHub Actions workflow at `.github/workflows/ci.yml` runs `flutter analyze` and `flutter test` on every push and PR to main branch.
