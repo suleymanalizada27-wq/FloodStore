@@ -23,6 +23,7 @@ import '../../features/marketplace/presentation/screens/business_account_registr
 import '../../features/marketplace/presentation/screens/wishlist_screen.dart';
 import '../../features/chat/presentation/screens/conversation_list_screen.dart';
 import '../../features/chat/presentation/screens/message_thread_screen.dart';
+import '../../features/business/presentation/screens/seller_dashboard_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -57,6 +58,9 @@ abstract final class AppRoutes {
   // Chat routes
   static const chatConversations = '/chat/conversations';
   static const chatMessages = '/chat/messages/:sessionId';
+
+  // Business routes
+  static const sellerDashboard = '/seller/dashboard';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -219,6 +223,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             otherUserId: '', // Would normally come from state/query params
           ));
         },
+      ),
+      GoRoute(
+        path: AppRoutes.sellerDashboard,
+        pageBuilder: (context, state) => _heroPage(const SellerDashboardScreen()),
       ),
     ],
   );

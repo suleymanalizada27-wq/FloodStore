@@ -16,7 +16,7 @@
 - [x] ~~Write ADR-003 (Auth strategy)~~ — resolved: Firebase Auth stays, `decisions/ADR-003-AUTH.md`
 - [x] ~~Write ADR-004 (Payments runtime)~~ — resolved: Supabase Edge Functions, `decisions/ADR-004-PAYMENTS.md`; payment **provider** (Stripe or alternative) is still open
 - [ ] Confirm payment provider selection (`decisions/ADR-004-PAYMENTS.md` "Open" section)
-- [ ] Audit `transactions`, `bundles`, `ad_campaigns`, `settings`, `history`, `visual_search_*` collections — confirm real usage before designing target tables (`database/15_MIGRATION_MATRIX.md` "Audit first" rows)
+- [x] Audit `transactions`, `bundles`, `ad_campaigns`, `settings`, `history`, `visual_search_*` collections — confirm real usage before designing target tables (`database/15_MIGRATION_MATRIX.md` "Audit first" rows)
 
 ## HIGH
 - [ ] Build real Checkout entity/flow (`modules/ORDERS.md`)
@@ -25,7 +25,7 @@
 - [ ] Apply `database/03_TABLES.md` schema + `database/07_RLS_POLICIES.md` to the new Supabase project (`database/12_MIGRATIONS.md` Phase 1)
 - [ ] Build `application/`+`presentation/` layers for `procurement` (`modules/PROCUREMENT.md`)
       — recommend building directly against Postgres target, not Firestore
-- [ ] Build `application/`+`presentation/` layers for `business`/Seller Dashboard (`modules/SELLER.md`)
+- [x] Build `application/`+`presentation/` layers for `business`/Seller Dashboard (`modules/SELLER.md`)
 - [x] Build `application/`+`presentation/` layers for `chat` (`modules/CHAT.md`) — good first
       Postgres migration candidate (least data)
 

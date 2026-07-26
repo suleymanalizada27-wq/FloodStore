@@ -1,14 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/entities/loyalty.dart';
-import '../../domain/entities/business_account.dart';
-import '../../domain/entities/seller_analytics.dart';
-import '../../domain/repositories/loyalty_repository.dart';
-import '../../domain/repositories/business_account_repository.dart';
-import '../../domain/repositories/analytics_repository.dart';
-import '../../data/repositories/firestore_loyalty_repository.dart';
-import '../../data/repositories/firestore_business_account_repository.dart';
-import '../../data/repositories/firestore_analytics_repository.dart';
+import 'package:floodstore/features/business/domain/entities/loyalty.dart';
+import 'package:floodstore/features/business/domain/entities/business_account.dart';
+import 'package:floodstore/features/business/domain/entities/seller_analytics.dart';
+import 'package:floodstore/features/marketplace/domain/entities/product.dart';
+import 'package:floodstore/features/marketplace/domain/entities/order.dart';
+import 'package:floodstore/features/business/domain/repositories/loyalty_repository.dart';
+import 'package:floodstore/features/business/domain/repositories/business_account_repository.dart';
+import 'package:floodstore/features/business/domain/repositories/analytics_repository.dart';
+import 'package:floodstore/features/business/domain/repositories/seller_repository.dart';
+import 'package:floodstore/features/business/data/repositories/firestore_loyalty_repository.dart';
+import 'package:floodstore/features/business/data/repositories/firestore_business_account_repository.dart';
+import 'package:floodstore/features/business/data/repositories/firestore_analytics_repository.dart';
+import 'package:floodstore/features/business/data/repositories/firestore_seller_repository.dart';
 
 // Repository Providers
 final loyaltyRepositoryProvider = Provider<LoyaltyRepository>((ref) {
@@ -23,6 +26,10 @@ final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
   return FirestoreAnalyticsRepository();
 });
 
+final sellerRepositoryProvider = Provider<SellerRepository>((ref) {
+  return FirestoreSellerRepository();
+});
+
 // Loyalty Providers
 final loyaltyAccountProvider =
     FutureProvider.family<LoyaltyAccount?, String>((ref, userId) {
@@ -35,7 +42,7 @@ final loyaltyTransactionsProvider =
 });
 
 final loyaltyTiersProvider = FutureProvider<List<LoyaltyTier>>((ref) {
-  return ref.watch(loyaltyRepositoryProvider).getTiers();
+  return ref.read(loyaltyRepositoryProvider).getTiers();
 });
 
 final tierProgressProvider =
@@ -63,4 +70,15 @@ final sellerDashboardProvider =
 final sellerAdCampaignsProvider =
     FutureProvider.family<List<SellerAdCampaign>?, String>((ref, sellerId) {
   return ref.watch(analyticsRepositoryProvider).getAdCampaigns(sellerId);
+});
+
+// Seller Providers
+final sellerProductsProvider =
+    FutureProvider.family<List<Product>, String>((ref, sellerId) {
+  return ref.watch(sellerRepositoryProvider).getSellerProducts(sellerId);
+});
+
+final sellerOrdersProvider =
+    FutureProvider.family<List<Order>, String>((ref, sellerId) {
+  return ref.watch(sellerRepositoryProvider).getSellerOrders(sellerId);
 });
