@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 
 /// Represents a product review
 class Review extends Equatable {
@@ -92,4 +93,43 @@ class Review extends Equatable {
 
   /// Checks if the review is visible (approved and not flagged)
   bool get isVisible => isApproved && !isFlagged;
+
+  /// Factory method to create a Review from Firestore document
+  factory Review.fromFirestore(Map<String, dynamic> data, String documentId) {
+    return Review(
+      id: documentId,
+      productId: data['productId'] ?? '',
+      userId: data['userId'] ?? '',
+      rating: (data['rating'] ?? 0).toDouble(),
+      title: data['title'],
+      comment: data['comment'],
+      images: List<String>.from(data['images'] ?? []),
+      isVerifiedPurchase: data['isVerifiedPurchase'] ?? false,
+      helpfulVotes: data['helpfulVotes'] ?? 0,
+      totalVotes: data['totalVotes'] ?? 0,
+      createdAt: (data['createdAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as fs.Timestamp?)?.toDate() ?? DateTime.now(),
+      isApproved: data['isApproved'] ?? false,
+      isFlagged: data['isFlagged'] ?? false,
+    );
+  }
+
+  /// Convert to Map for Firestore storage
+  Map<String, dynamic> toFirestore() {
+    return {
+      'productId': productId,
+      'userId': userId,
+      'rating': rating,
+      'title': title,
+      'comment': comment,
+      'images': images,
+      'isVerifiedPurchase': isVerifiedPurchase,
+      'helpfulVotes': helpfulVotes,
+      'totalVotes': totalVotes,
+      'createdAt': fs.Timestamp.fromDate(createdAt),
+      'updatedAt': fs.Timestamp.fromDate(updatedAt),
+      'isApproved': isApproved,
+      'isFlagged': isFlagged,
+    };
+  }
 }

@@ -216,8 +216,8 @@ class ProductDetailScreen extends ConsumerWidget {
             // Calculate average rating
             double avgRating = 0;
             if (reviews.isNotEmpty) {
-              avgRating =
-                  reviews.reduce((a, b) => a.rating + b.rating) / reviews.length;
+              double totalRating = reviews.fold(0, (sum, review) => sum + review.rating);
+              avgRating = totalRating / reviews.length;
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

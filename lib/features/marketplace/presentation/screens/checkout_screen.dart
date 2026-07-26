@@ -430,7 +430,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             PremiumButton(
               label: 'Place Order',
               icon: Icons.check_circle_outline,
-              isLoading: _isLoading,
+              loading: _isLoading,
               onPressed: _isLoading ? null : _placeOrder,
             ),
           ],
