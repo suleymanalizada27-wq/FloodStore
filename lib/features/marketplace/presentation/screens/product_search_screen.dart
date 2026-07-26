@@ -51,10 +51,12 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final categoriesAsync = ref.watch(categoriesProvider);
+    final brandsAsync = ref.watch(brandsProvider);
     final searchResultsAsync = ref.watch(productSearchProvider(
       ProductSearchParams(
         query: _query,
         categoryIds: _selectedCategory == 'all' ? null : [_selectedCategory],
+        brandIds: _selectedBrands.isEmpty ? null : _selectedBrands,
         sortField: _sortField,
         sortDescending: !_sortAscending,
         minPrice: _minPrice > 0 ? _minPrice : null,
@@ -75,7 +77,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
             _buildSearchBar(),
 
             // Filter Bar
-            if (_showFilters) _buildFilterChips(categoriesAsync),
+            if (_showFilters) _buildFilterChips(categoriesAsync, brandsAsync),
 
             // Results
             Expanded(
@@ -244,7 +246,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
     });
   }
 
-  Widget _buildFilterChips(AsyncValue<List<Category>> categoriesAsync) {
+  Widget _buildFilterChips(AsyncValue<List<Category>> categoriesAsync, AsyncValue<List<String>> brandsAsync) {
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md, vertical: AppSpacing.sm),
@@ -258,6 +260,9 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
           children: [
             // Category Filter
             _buildCategoryFilter(categoriesAsync),
+            const SizedBox(width: AppSpacing.md),
+            // Brand Filter
+            _buildBrandFilter(brandsAsync),
             const SizedBox(width: AppSpacing.md),
             // Sort Filter
             _buildSortFilter(),
@@ -316,6 +321,53 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
                 sortOrder: 0,
                 isActive: true))
         .name;
+  }
+
+  Widget _buildBrandFilter(AsyncValue<List<String>> brandsAsync) {
+    return brandsAsync.when(
+      data: (brands) {
+        final allBrands = [...brands];
+        allBrands.sort(); // Sort alphabetically
+        return PopupMenuButton<String>(
+          onSelected: (value) => setState(() {
+            if (_selectedBrands.contains(value)) {
+              _selectedBrands.remove(value);
+            } else {
+              _selectedBrands.add(value);
+            }
+          }),
+          child: Chip(
+            label: Text(_selectedBrands.isNotEmpty
+                ? 'Marka: ${_selectedBrands.length} seçili'
+                : 'Marka'),
+            avatar: const Icon(Icons.branding_watermark, size: 18),
+            onDeleted: _selectedBrands.isNotEmpty
+                ? () => setState(() => _selectedBrands.clear())
+                : null,
+            deleteIconColor: AppColors.primary,
+          ),
+          itemBuilder: (context) => allBrands
+              .map((brand) => PopupMenuItem<String>(
+                    value: brand,
+                    checked: _selectedBrands.contains(brand),
+                    child: Row(
+                      children: [
+                        if (_selectedBrands.contains(brand))
+                          const Icon(Icons.check, size: 16),
+                        const SizedBox(width: 8),
+                        Text(brand),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        );
+      },
+      loading: () => const SizedBox(
+        width: 120,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+    );
   }
 
   Widget _buildSortFilter() {

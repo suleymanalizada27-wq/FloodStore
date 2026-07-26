@@ -314,6 +314,14 @@ class FirestoreProductRepository implements ProductRepository {
     }
   }
 
+  Future<List<String>> getBrands() async {
+    try {
+      return await _dataSource.getBrands();
+    } catch (e) {
+      throw Exception('Failed to get brands: $e');
+    }
+  }
+
   @override
   Future<String> createCategory(Category category) async {
     try {

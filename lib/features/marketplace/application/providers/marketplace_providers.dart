@@ -125,6 +125,10 @@ final categoriesProvider = FutureProvider<List<Category>>((ref) {
   return ref.watch(productRepositoryProvider).getCategories();
 });
 
+final brandsProvider = FutureProvider<List<String>>((ref) {
+  return ref.watch(productRepositoryProvider).getBrands();
+});
+
 final featuredProductsProvider = FutureProvider<List<Product>>((ref) {
   return ref.watch(productRepositoryProvider).getFeaturedProducts(limit: 10);
 });

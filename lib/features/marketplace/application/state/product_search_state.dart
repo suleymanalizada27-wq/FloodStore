@@ -5,6 +5,7 @@ import '../../domain/entities/product.dart';
 class ProductSearchParams extends Equatable {
   final String query;
   final List<String>? categoryIds;
+  final List<String>? brandIds;
   final double? minPrice;
   final double? maxPrice;
   final ProductSortField? sortField;
@@ -16,6 +17,7 @@ class ProductSearchParams extends Equatable {
   const ProductSearchParams({
     this.query = '',
     this.categoryIds,
+    this.brandIds,
     this.minPrice,
     this.maxPrice,
     this.sortField,
@@ -29,6 +31,7 @@ class ProductSearchParams extends Equatable {
   List<Object?> get props => [
         query,
         categoryIds,
+        brandIds,
         minPrice,
         maxPrice,
         sortField,
@@ -41,6 +44,7 @@ class ProductSearchParams extends Equatable {
   ProductSearchParams copyWith({
     String? query,
     List<String>? categoryIds,
+    List<String>? brandIds,
     double? minPrice,
     double? maxPrice,
     ProductSortField? sortField,
@@ -52,6 +56,7 @@ class ProductSearchParams extends Equatable {
     return ProductSearchParams(
       query: query ?? this.query,
       categoryIds: categoryIds ?? this.categoryIds,
+      brandIds: brandIds ?? this.brandIds,
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
       sortField: sortField ?? this.sortField,

@@ -46,12 +46,11 @@ class _ConversationListScreenState extends ConsumerState<ConversationListScreen>
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     final chat = chats[index];
-                    final isMe = chat.userId == currentUserId;
-                    
+
                     // For simplicity, we'll show the other participant's ID
                     // In a real app, you'd fetch the user details
-                    final otherUserId = chat.userId == currentUserId 
-                        ? 'other-user' 
+                    final otherUserId = chat.userId == currentUserId
+                        ? 'other-user'
                         : chat.userId;
                         
                     return ListTile(

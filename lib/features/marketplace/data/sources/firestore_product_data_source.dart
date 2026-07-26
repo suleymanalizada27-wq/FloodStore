@@ -118,6 +118,7 @@ class FirestoreProductDataSource {
     int limit = 20,
     String? lastDocumentId,
     List<String>? categoryIds,
+    List<String>? brandIds,
     double? minPrice,
     double? maxPrice,
     String? sortBy,
@@ -135,6 +136,11 @@ class FirestoreProductDataSource {
 
       if (categoryIds != null && categoryIds.isNotEmpty) {
         queryRef = queryRef.where('categoryId', whereIn: categoryIds);
+      }
+
+      // Brand filtering
+      if (brandIds != null && brandIds.isNotEmpty) {
+        queryRef = queryRef.where('base.brand', whereIn: brandIds);
       }
 
       // TODO: Implement text search (client-side filtering for MVP)
@@ -458,6 +464,29 @@ class FirestoreProductDataSource {
       // Filter out the original product
       return products.where((p) => p.id != productId).take(limit).toList();
     });
+  }
+
+  Future<List<String>> getBrands() async {
+    try {
+      // We'll get distinct brands from the base.brand field
+      // Since Firestore doesn't support distinct, we'll get all and then deduplicate in memory
+      final querySnapshot = await _productsCollection
+          .where('base.brand', isNotEqualTo: null)
+          .get();
+
+      final Set<String> brandsSet = {};
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final brand = data['base']['brand'] as String?;
+        if (brand != null && brand.isNotEmpty) {
+          brandsSet.add(brand);
+        }
+      }
+
+      return brandsSet.toList()..sort(); // Sort alphabetically
+    } catch (e) {
+      throw Exception('Failed to get brands: $e');
+    }
   }
 
   // Variant CRUD operations

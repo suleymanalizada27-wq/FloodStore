@@ -45,7 +45,6 @@ class FirestoreLoyaltyRepository implements LoyaltyRepository {
       }
       // Create new account with Bronze tier
       final tiers = LoyaltyTier.defaultTiers;
-      final bronze = tiers.firstWhere((t) => t.id == 'bronze');
       final account = LoyaltyAccount(
         userId: userId,
         currentPoints: 0,

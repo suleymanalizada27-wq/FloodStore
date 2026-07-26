@@ -157,50 +157,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 cart,
                 notes: 'Checkout via mobile app',
               );
-
-      // Update order with shipping address - payment info will be added after real payment processing
-      final order = Order(
-        id: orderId,
-        userId: userId,
-        status: OrderStatus.pending, // Order placed but payment pending
-        fulfillmentStatus: FulfillmentStatus.pending,
-        paymentStatus: PaymentStatus.pending, // Will be updated after real payment
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        placedAt: DateTime.now(),
-        subtotalAmount: cart.subtotalAmount,
-        taxAmount: taxAmount,
-        shippingAmount: shippingAmount,
-        discountAmount: 0,
-        totalAmount: totalAmount,
-        currency: 'USD',
-        customerNotes: null,
-        internalNotes: null,
-        shippingAddress: address,
-        billingAddress: address, // For now, same as shipping
-        items: cart.items
-            .map((item) => OrderItem(
-                  id: item.id,
-                  productId: item.productId,
-                  variantId: item.variantId,
-                  quantity: item.quantity,
-                  unitPrice: item.unitPrice,
-                  totalPrice: item.totalPrice,
-                  productTitle: item.productTitle,
-                  variantAttributes: item.variantAttributes,
-                ))
-            .toList(),
-        discounts: [],
-        // Payment info will be added after real payment processing - keeping as null for now
-        payment: null,
-        tracking: null,
-        history: [],
-      );
-
-      // Update the order with shipping address only - payment status remains pending
-      await ref
-          .read(orderRepositoryProvider)
-          .updateOrderStatus(orderId, OrderStatus.pending);
       // Note: Payment info will be added later via Cloud Function when real payment integration is implemented
 
       // Show message to user about payment processing (in production, this would integrate with real payment provider)

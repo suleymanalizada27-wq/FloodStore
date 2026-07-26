@@ -240,7 +240,6 @@ class FirestoreNotificationRepository implements NotificationRepository {
 
   @override
   Future<int> cleanOldNotifications({int daysOld = 90}) async {
-    final cutoff = DateTime.now().subtract(Duration(days: daysOld));
     try {
       // This would be a batch operation across all users
       // For production, use a Cloud Function

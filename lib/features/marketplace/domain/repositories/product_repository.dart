@@ -125,6 +125,9 @@ abstract class ProductRepository {
   /// Gets a category by ID
   Future<Category?> getCategoryById(String categoryId);
 
+  /// Gets a list of unique brands
+  Future<List<String>> getBrands();
+
   /// Creates a new category
   Future<String> createCategory(Category category);
 
