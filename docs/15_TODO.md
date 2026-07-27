@@ -30,7 +30,7 @@
       Postgres migration candidate (least data)
 
 ## MEDIUM
-- [ ] Advanced product filters (`modules/MARKETPLACE.md`)
+- [x] Advanced product filters (`modules/MARKETPLACE.md`)
 - [ ] Reviews UI wiring
 - [ ] Reviews collection composite index (isApproved + createdAt) - add to firestore.indexes.json, verify with `firebase deploy --only firestore:indexes`
 - [ ] Reconcile duplicate `history`/`ad_campaigns` collection purposes

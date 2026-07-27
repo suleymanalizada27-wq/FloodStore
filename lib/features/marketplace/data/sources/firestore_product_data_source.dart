@@ -157,6 +157,11 @@ class FirestoreProductDataSource {
             queryRef.where('pricing.basePrice', isLessThanOrEqualTo: maxPrice);
       }
 
+      // Free shipping filter
+      if (freeShippingOnly) {
+        queryRef = queryRef.where('pricing.freeShipping', isEqualTo: true);
+      }
+
       // Sorting
       if (sortBy != null && sortBy.isNotEmpty) {
         queryRef = queryRef.orderBy(
@@ -173,10 +178,15 @@ class FirestoreProductDataSource {
       }
 
       final querySnapshot = await queryRef.get();
-      final products = querySnapshot.docs
+      var products = querySnapshot.docs
           .map((doc) => _productFromSnapshot(doc))
           .whereType<Product>()
           .toList();
+
+      // Apply inStockOnly filter in-memory
+      if (inStockOnly) {
+        products = products.where((product) => product.inventory.availableQuantity > 0).toList();
+      }
 
       // Apply client-side filtering for search query (case-insensitive)
       if (query.isNotEmpty) {

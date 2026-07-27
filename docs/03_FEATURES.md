@@ -26,7 +26,7 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 | Product catalog / listing | ⚠️ | `products_screen.dart`, `product_detail_screen.dart` exist |
 | Categories | ⚠️ | `category.dart`, `category_card.dart` exist |
 | Search | ⚠️ | `product_search_screen.dart`, client-side filtering only (`firestore_product_data_source.dart`) |
-| Advanced filters | ❌ | not implemented |
+| Advanced filters | ✅ | price range, in-stock, category, brand filters implemented |
 | Cart | ⚠️ | `cart_screen.dart`, `firestore_cart_repository.dart` exist; confirm all CRUD paths work |
 | Wishlist | ⚠️ | `wishlist_screen.dart`, `firestore_wishlist_repository.dart` exist |
 | Checkout | ⚠️ **security fixed, payment integration pending** | `checkout_screen.dart` (519 lines) has a real address/delivery/payment-method UI and creates a real order. **Security fix applied**: `_placeOrder()` no longer writes fake `PaymentInfo(status: 'paid')` or confirms orders client-side. Order status remains `pending` with `paymentStatus: pending` until real payment integration (Cloud Functions/Supabase Edge Functions) is implemented. See `08_PAYMENT_ARCHITECTURE.md`. |

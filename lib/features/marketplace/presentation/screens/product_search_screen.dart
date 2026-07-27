@@ -23,7 +23,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   final FocusNode _searchFocus = FocusNode();
 
   String _query = '';
-  String _selectedCategory = 'all';
+  final Set<String> _selectedCategories = {};
   ProductSortField _sortField = ProductSortField.relevance;
   bool _sortAscending = false;
   double _minPrice = 0;
@@ -55,7 +55,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
     final searchResultsAsync = ref.watch(productSearchProvider(
       ProductSearchParams(
         query: _query,
-        categoryIds: _selectedCategory == 'all' ? null : [_selectedCategory],
+        categoryIds: _selectedCategories.isEmpty ? null : _selectedCategories.toList(),
         brandIds: _selectedBrands.isEmpty ? null : _selectedBrands,
         sortField: _sortField,
         sortDescending: !_sortAscending,
@@ -182,7 +182,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   }
 
   bool get _hasActiveFilters {
-    return _selectedCategory != 'all' ||
+    return _selectedCategories.isNotEmpty ||
         _sortField != ProductSortField.relevance ||
         _minPrice > 0 ||
         _maxPrice < 10000 ||
@@ -194,10 +194,11 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
 
   List<Widget> _buildActiveFilterChips() {
     final chips = <Widget>[];
-    if (_selectedCategory != 'all')
+    for (final category in _selectedCategories) {
       chips.add(_FilterChip(
-          label: 'Kategori: $_selectedCategory',
-          onDeleted: () => setState(() => _selectedCategory = 'all')));
+          label: 'Kategori: $category',
+          onDeleted: () => setState(() => _selectedCategories.remove(category))));
+    }
     if (_sortField != ProductSortField.relevance)
       chips.add(_FilterChip(
           label: 'Sıralama: ${_sortField.label}',
@@ -233,7 +234,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
 
   void _clearAllFilters() {
     setState(() {
-      _selectedCategory = 'all';
+      _selectedCategories.clear();
       _sortField = ProductSortField.relevance;
       _sortAscending = false;
       _minPrice = 0;
@@ -281,26 +282,37 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   Widget _buildCategoryFilter(AsyncValue<List<Category>> categoriesAsync) {
     return categoriesAsync.when(
       data: (categories) {
-        final allCategories = [
-          const Category(
-              id: 'all', name: 'Tümü', level: 0, sortOrder: 0, isActive: true),
-          ...categories.where((c) => c.level == 0 && c.isActive),
-        ];
+        final List<Category> sortedCategories = [...categories]
+          ..sort((a, b) => a.name.compareTo(b.name));
         return PopupMenuButton<String>(
-          initialValue: _selectedCategory,
-          onSelected: (value) => setState(() => _selectedCategory = value),
+          onSelected: (value) => setState(() {
+            if (_selectedCategories.contains(value)) {
+              _selectedCategories.remove(value);
+            } else {
+              _selectedCategories.add(value);
+            }
+          }),
           child: Chip(
-            label: Text(_getCategoryName(_selectedCategory, allCategories)),
+            label: Text(_selectedCategories.isNotEmpty
+                ? 'Kategori: ${_selectedCategories.length} seçili'
+                : 'Kategori'),
             avatar: const Icon(Icons.category_outlined, size: 18),
-            onDeleted: _selectedCategory != 'all'
-                ? () => setState(() => _selectedCategory = 'all')
+            onDeleted: _selectedCategories.isNotEmpty
+                ? () => setState(() => _selectedCategories.clear())
                 : null,
             deleteIconColor: AppColors.primary,
           ),
-          itemBuilder: (context) => allCategories
-              .map((c) => PopupMenuItem(
-                    value: c.id,
-                    child: Text(c.name),
+          itemBuilder: (context) => sortedCategories
+              .map((category) => PopupMenuItem<String>(
+                    value: category.id,
+                    child: Row(
+                      children: [
+                        if (_selectedCategories.contains(category.id))
+                          const Icon(Icons.check, size: 16),
+                        const SizedBox(width: 8),
+                        Text(category.name),
+                      ],
+                    ),
                   ))
               .toList(),
         );
@@ -308,19 +320,6 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
     );
-  }
-
-  String _getCategoryName(String categoryId, List<Category> categories) {
-    if (categoryId == 'all') return 'Tüm Kategoriler';
-    return categories
-        .firstWhere((c) => c.id == categoryId,
-            orElse: () => Category(
-                id: '',
-                name: categoryId,
-                level: 0,
-                sortOrder: 0,
-                isActive: true))
-        .name;
   }
 
   Widget _buildBrandFilter(AsyncValue<List<String>> brandsAsync) {
@@ -349,7 +348,6 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
           itemBuilder: (context) => allBrands
               .map((brand) => PopupMenuItem<String>(
                     value: brand,
-                    checked: _selectedBrands.contains(brand),
                     child: Row(
                       children: [
                         if (_selectedBrands.contains(brand))
