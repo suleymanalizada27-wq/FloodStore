@@ -20,7 +20,7 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
-  final _couponController = TextEditingController();
+  final TextEditingController _couponController = TextEditingController();
   String? _couponError;
   String? _appliedCouponCode;
   bool _isApplyingCoupon = false;
@@ -108,7 +108,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final userId = ref.watch(currentUserIdProvider);
     final cartAsync = ref.watch(cartProvider(userId!));
 
@@ -125,7 +125,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            onPressed: () => _showClearCartDialog(context, ref, userId),
+            onPressed: () => _showClearCartDialog(context, userId),
             tooltip: 'Sepeti Temizle',
           ),
         ],
@@ -229,7 +229,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 
   void _showClearCartDialog(
-      BuildContext context, WidgetRef ref, String userId) {
+      BuildContext context, String userId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
