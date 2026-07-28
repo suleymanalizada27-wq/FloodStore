@@ -24,6 +24,10 @@ import '../../features/marketplace/presentation/screens/wishlist_screen.dart';
 import '../../features/chat/presentation/screens/conversation_list_screen.dart';
 import '../../features/chat/presentation/screens/message_thread_screen.dart';
 import '../../features/business/presentation/screens/seller_dashboard_screen.dart';
+import '../../features/b2b/presentation/screens/projects_screen.dart';
+import '../../features/b2b/presentation/screens/project_detail_screen.dart';
+import '../../features/b2b/presentation/screens/create_purchase_request_screen.dart';
+import '../../features/b2b/presentation/screens/approval_inbox_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -61,6 +65,12 @@ abstract final class AppRoutes {
 
   // Business routes
   static const sellerDashboard = '/seller/dashboard';
+
+  // B2B routes
+  static const b2bProjects = '/b2b/projects';
+  static const b2bProjectDetail = '/b2b/projects/:projectId';
+  static const b2bCreatePurchaseRequest = '/b2b/projects/:projectId/purchase-request/new';
+  static const b2bApprovalInbox = '/b2b/approval-inbox';
 }
 
 /// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
@@ -227,6 +237,30 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.sellerDashboard,
         pageBuilder: (context, state) => _heroPage(const SellerDashboardScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.b2bProjects,
+        pageBuilder: (context, state) => _heroPage(const ProjectsScreen(
+          organizationId: '', // TODO: Get from auth/user context
+        )),
+      ),
+      GoRoute(
+        path: AppRoutes.b2bProjectDetail,
+        pageBuilder: (context, state) {
+          final projectId = state.pathParameters['projectId']!;
+          return _heroPage(ProjectDetailScreen(projectId: projectId));
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.b2bCreatePurchaseRequest,
+        pageBuilder: (context, state) {
+          final projectId = state.pathParameters['projectId']!;
+          return _heroPage(CreatePurchaseRequestScreen(projectId: projectId));
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.b2bApprovalInbox,
+        pageBuilder: (context, state) => _heroPage(const ApprovalInboxScreen()),
       ),
     ],
   );

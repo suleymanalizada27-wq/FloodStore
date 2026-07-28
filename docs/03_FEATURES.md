@@ -1,4 +1,4 @@
-# Features — granular status
+## Features — granular status
 
 Legend: ✅ Done · ⚠️ Partial · ❌ Missing
 
@@ -17,14 +17,14 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 | Organization (business) accounts | ✅ `organization.dart` | ✅ `firestore_organization_repository` | ✅ `organization_providers` | ✅ `organization_onboarding_screen.dart`, `organization_switcher.dart` | ✅ |
 | Security Center (sessions, devices) | ✅ `device_session.dart`, `mfa_method.dart` | ✅ `firestore_security_repository` | ✅ `security_providers` | ✅ `security_center_screen.dart` | ✅ |
 | Rate limiting | — | — | `core/services/auth_rate_limiter.dart` | — | ✅ |
-| Session persistence | — | — | `core/services/session_service.dart`, `secure_token_service.dart` | — | ✅ |
+| Session persistence | — | — | `core/services/session_service.dart`, `secure_token_service.dat` | — | ✅ |
 
 ## Marketplace (`lib/features/marketplace/`) — see `modules/MARKETPLACE.md`
 
 | Feature | Status | Notes |
 |---|---|---|
-| Product catalog / listing | ⚠️ | `products_screen.dart`, `product_detail_screen.dart` exist |
-| Categories | ⚠️ | `category.dart`, `category_card.dart` exist |
+| Product catalog / listing | ⚠️ | `products_screen.dart`, `product_detail_screen.dart` |
+| Categories | ⚠️ | `category.dart`, `category_card.dart` |
 | Search | ⚠️ | `product_search_screen.dart`, client-side filtering only (`firestore_product_data_source.dart`) |
 | Advanced filters | ✅ | price range, in-stock, category, brand filters implemented |
 | Cart | ⚠️ | `cart_screen.dart`, `firestore_cart_repository.dart` exist; confirm all CRUD paths work |
@@ -49,11 +49,28 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 | KYC/KYB verification | ❌ | not started |
 | Trust score / Verified Supplier badge | ❌ | not started |
 
+## B2B (`lib/features/b2b/`) — see `modules/B2B.md`
+
+| Feature | Status | Notes |
+|---|---|---|
+| Project entity | ✅ | `project.dart`, `project_phase.dart` |
+| Budget entity | ✅ | `budget.dart`, `budget_item.dart` |
+| Purchase Request entity | ✅ | `purchase_request.dart`, `purchase_request_item.dart` |
+| Project Repository (abstract) | ✅ | `project_repository.dart` |
+| Project Repository (Mock) | ✅ | `mock_project_repository.dart` (temporary; replace with Supabase once provisioned) |
+| B2B Providers (Application) | ✅ | `b2b_providers.dart` |
+| Projects Screen | ✅ | `projects_screen.dart` |
+| Project Detail Screen | ✅ | `project_detail_screen.dart` |
+| Create Purchase Request Screen | ✅ | `create_purchase_request_screen.dart` |
+| Approval Inbox Screen | ✅ | `approval_inbox_screen.dart` |
+| Routes | ✅ | Added to `app_router.dart` |
+| Real Backend (Supabase) | ❌ | Pending Supabase project setup |
+
 ## Procurement (`lib/features/procurement/`) — see `modules/PROCUREMENT.md`
 
 | Feature | Status | Notes |
 |---|---|---|
-| RFQ entity/repo | ⚠️ | `rfq.dart`, `firestore_rfq_repository.dart` exist |
+| RFQ entity/repo | ⚠✽ | `rfq.dart`, `firestore_rfq_repository.dart` exist |
 | Inventory entity/repo | ⚠️ | `inventory.dart`, `firestore_inventory_repository.dart` exist |
 | Warehouse entity/repo | ⚠️ | `warehouse.dart`, `firestore_warehouse_repository.dart` exist |
 | RFQ submission/response UI | ❌ | no `presentation/` folder yet |
@@ -76,8 +93,7 @@ Nothing built. Fully greenfield — spec lives in the module doc.
 
 ## Logistics, Admin, Analytics, AI, Payments
 
-Not started. See `modules/LOGISTICS.md`, `modules/ADMIN.md`, `modules/ANALYTICS.md`,
-`modules/AI.md`, `08_PAYMENT_ARCHITECTURE.md`.
+Not started. See `modules/LOGISTICS.md`, `modules/ADMIN.md`, `modules/ANALYTICS.md`, `modules/AI.md`, `08_PAYMENT_ARCHITECTURE.md`.
 
 ## Cross-cutting
 
