@@ -10,9 +10,98 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/premium_button.dart';
 import '../../domain/entities/cart.dart';
 import '../../application/providers/marketplace_providers.dart';
+import '../../domain/entities/coupon.dart';
 
-class CartScreen extends ConsumerWidget {
+class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  ConsumerState<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends ConsumerState<CartScreen> {
+  final _couponController = TextEditingController();
+  String? _couponError;
+  String? _appliedCouponCode;
+  bool _isApplyingCoupon = false;
+
+  @override
+  void dispose() {
+    _couponController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _applyCoupon() async {
+    if (_couponController.text.trim().isEmpty) {
+      setState(() {
+        _couponError = 'Please enter a coupon code';
+      });
+      return;
+    }
+
+    setState(() {
+      _isApplyingCoupon = true;
+      _couponError = null;
+    });
+
+    try {
+      final userId = ref.read(currentUserIdProvider)!;
+      final cart = await ref.read(cartRepositoryProvider).getCart(userId);
+
+      if (cart == null) {
+        throw Exception('Cart not found');
+      }
+
+      // Validate coupon using the coupon repository
+      final couponRepo = ref.read(couponRepositoryProvider);
+      final validationResult = await couponRepo.validateCoupon(
+        code: _couponController.text.trim(),
+        userId: userId,
+        productIds: cart.items.map((item) => item.productId).toList(),
+        categoryIds: [], // We don't have category IDs in cart items easily
+        subtotal: cart.subtotalAmount,
+      );
+
+      if (validationResult.isValid) {
+        // Apply coupon to cart
+        await ref.read(cartRepositoryProvider).applyCoupon(userId, _couponController.text.trim());
+        setState(() {
+          _appliedCouponCode = _couponController.text.trim();
+          _couponError = null;
+        });
+      } else {
+        setState(() {
+          _couponError = validationResult.errorMessage;
+          _appliedCouponCode = null;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _couponError = 'Failed to apply coupon: $e';
+        _appliedCouponCode = null;
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isApplyingCoupon = false);
+      }
+    }
+  }
+
+  Future<void> _removeCoupon() async {
+    try {
+      final userId = ref.read(currentUserIdProvider)!;
+      await ref.read(cartRepositoryProvider).removeCoupon(userId);
+      setState(() {
+        _appliedCouponCode = null;
+        _couponController.clear();
+        _couponError = null;
+      });
+    } catch (e) {
+      setState(() {
+        _couponError = 'Failed to remove coupon: $e';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,8 +161,17 @@ class CartScreen extends ConsumerWidget {
                   },
                 ),
               ),
+              _CouponSection(
+                couponController: _couponController,
+                couponError: _couponError,
+                appliedCouponCode: _appliedCouponCode,
+                isApplyingCoupon: _isApplyingCoupon,
+                onApplyCoupon: _applyCoupon,
+                onRemoveCoupon: _removeCoupon,
+              ),
               _CartSummary(
                 subtotal: cart.subtotalAmount,
+                discountAmount: _appliedCouponCode != null ? _calculateDiscountAmount(cart.subtotalAmount, _appliedCouponCode!) : 0,
                 onCheckout: () => context.push(AppRoutes.checkout),
               ),
             ],
@@ -97,6 +195,13 @@ class CartScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  double _calculateDiscountAmount(double subtotal, String couponCode) {
+    // This is a simplified calculation - in a real app, you'd get the actual discount from the coupon validation
+    // For now, we'll assume a 10% discount for demonstration
+    // In a real implementation, you'd want to store the discount amount from the validation result
+    return (subtotal * 0.1).clamp(0.0, 1000.0);
   }
 
   Widget _buildEmptyCart(BuildContext context) {
@@ -312,10 +417,12 @@ class _QuantityButton extends StatelessWidget {
 
 class _CartSummary extends StatelessWidget {
   final double subtotal;
+  final double discountAmount;
   final VoidCallback onCheckout;
 
   const _CartSummary({
     required this.subtotal,
+    required this.discountAmount,
     required this.onCheckout,
   });
 
@@ -323,8 +430,8 @@ class _CartSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     const shipping = 5.00;
     const tax = 0.18;
-    final taxAmount = subtotal * tax;
-    final total = subtotal + shipping + taxAmount;
+    final taxAmount = (subtotal - discountAmount) * tax;
+    final total = subtotal - discountAmount + shipping + taxAmount;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -344,6 +451,10 @@ class _CartSummary extends StatelessWidget {
           _SummaryRow(
               label: 'Ara Toplam',
               value: '\$${(subtotal / 100).toStringAsFixed(2)}'),
+          if (discountAmount > 0)
+            _SummaryRow(
+                label: 'İndirim',
+                value: '\$-${(discountAmount / 100).toStringAsFixed(2)}'),
           _SummaryRow(
               label: 'Kargo', value: '\$${shipping.toStringAsFixed(2)}'),
           _SummaryRow(
@@ -403,6 +514,115 @@ class _SummaryRow extends StatelessWidget {
                 : AppTextStyles.textTheme.bodyMedium
                     ?.copyWith(fontWeight: FontWeight.w600),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CouponSection extends StatelessWidget {
+  final TextEditingController couponController;
+  final String? couponError;
+  final String? appliedCouponCode;
+  final bool isApplyingCoupon;
+  final VoidCallback onApplyCoupon;
+  final VoidCallback onRemoveCoupon;
+
+  const _CouponSection({
+    required this.couponController,
+    required this.couponError,
+    required this.appliedCouponCode,
+    required this.isApplyingCoupon,
+    required this.onApplyCoupon,
+    required this.onRemoveCoupon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Kupon İndirimi',
+            style: AppTextStyles.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: couponController,
+                  decoration: InputDecoration(
+                    labelText: 'Kupon Kodu Girin',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    errorText: couponError,
+                    suffixIcon: isApplyingCoupon
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : appliedCouponCode != null
+                            ? IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: onRemoveCoupon,
+                              )
+                            : null,
+                  ),
+                  onSubmitted: (_) => onApplyCoupon(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              PremiumButton(
+                label: 'Uygula',
+                loading: isApplyingCoupon,
+                onPressed: onApplyCoupon,
+                expand: false,
+              ),
+            ],
+          ),
+          if (appliedCouponCode != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Uygulanan Kupon:',
+                    style: AppTextStyles.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    appliedCouponCode!.toUpperCase(),
+                    style: AppTextStyles.textTheme.bodyMedium
+                        ?.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

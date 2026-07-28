@@ -55,3 +55,10 @@ Buyer → Checkout → create Payment Intent (server-side call)
   (Stripe Elements/PaymentSheet or equivalent) so raw card data never touches FloodStore's
   servers.
 - Let a client set `orders.status = 'paid'` directly, in Firestore rules or Postgres RLS.
+
+## Coupon Handling Note
+
+Coupon discount calculation is currently client-side for UI purposes in the cart screen;
+server-side validation must be performed when creating the order (via Cloud Functions/Supabase
+Edge Functions) to prevent tampering. The coupon application flow in the UI should be
+considered a preview only, with final validation occurring server-side during order creation.

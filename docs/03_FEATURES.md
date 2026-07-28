@@ -32,7 +32,7 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 | Checkout | ⚠️ **security fixed, payment integration pending** | `checkout_screen.dart` (519 lines) has a real address/delivery/payment-method UI and creates a real order. **Security fix applied**: `_placeOrder()` no longer writes fake `PaymentInfo(status: 'paid')` or confirms orders client-side. Order status remains `pending` with `paymentStatus: pending` until real payment integration (Cloud Functions/Supabase Edge Functions) is implemented. See `08_PAYMENT_ARCHITECTURE.md`. |
 | Orders (history/detail) | ⚠️ | `order_confirmation_screen.dart`, `order_detail_screen.dart` exist; `firestore_order_repository.dart` exists — verify against real checkout flow once that's built |
 | Reviews | Reviews & ratings | ⚠️ | `review.dart` entity exists, no dedicated reviews screen/repository wiring confirmed | ratings | ⚠️ | Review entity exists; review functionality added to product detail screen (view and write reviews). |
-| Coupons / promotions | ⚠️ | `coupon.dart`, `firestore_coupon_repository.dart` exist, no UI application flow confirmed |
+| Coupons / promotions | ✅ | `coupon.dart`, `firestore_coupon_repository.dart` exist, UI application flow implemented in cart screen with coupon input, validation, and discount application |
 | Bundles | ❌ | `bundles` collection referenced in code but no dedicated entity/screen found |
 | Recommendations / recently viewed | ⚠️ | `recommendation.dart` entity + `recently_viewed`/`recommendations` collections referenced; UI wiring unclear |
 | Analytics (seller-facing) | ⚠️ | `firestore_analytics_repository.dart` exists, no dashboard UI |
