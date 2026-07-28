@@ -35,7 +35,19 @@ fields. See `08_PAYMENT_ARCHITECTURE.md` and `10_SECURITY.md`.
 
 ## Local development
 
-The repo does not currently show Firebase Emulator Suite configuration
-(`firebase emulators:start` setup, `firebase.json` `emulators` block). Adding this is
-recommended before writing the automated test suite referenced in `11_TESTING.md`, so tests
-don't run against production Firestore.
+The Firebase Emulator Suite is configured in `firebase.json` with the following services:
+- Auth: port 9099
+- Firestore: port 8080
+- Storage: port 9199
+- UI: port 4000 (enabled)
+
+To start the emulators, run:
+```
+firebase emulators:start
+```
+
+This will start all configured emulators and make them available at their respective ports.
+The Emulator Suite UI will be available at http://localhost:4000.
+
+Using the emulators is recommended for development and testing to avoid accidentally
+modifying production data.

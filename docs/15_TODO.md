@@ -31,11 +31,11 @@
 
 ## MEDIUM
 - [x] Advanced product filters (`modules/MARKETPLACE.md`)
-- [ ] Reviews UI wiring
-- [ ] Reviews collection composite index (isApproved + createdAt) - add to firestore.indexes.json, verify with `firebase deploy --only firestore:indexes`
+- [x] Reviews UI wiring
+- [x] Reviews collection composite index (isApproved + createdAt) - add to firestore.indexes.json, verify with `firebase deploy --only firestore:indexes`
 - [ ] Reconcile duplicate `history`/`ad_campaigns` collection purposes
-- [ ] Set up Firebase Emulator Suite for local dev/testing (`05_FIREBASE.md`)
-- [ ] Write real CI pipeline (`flutter analyze` + `flutter test` on PR) (`12_DEPLOYMENT.md`)
+- [x] Set up Firebase Emulator Suite for local dev/testing (`05_FIREBASE.md`)
+- [x] Write real CI pipeline (`flutter analyze` + `flutter test` on PR) (`12_DEPLOYMENT.md`)
 
 ## LOW / GREENFIELD (build directly on Postgres/Supabase per migration plan)
 - [ ] B2B company structure — projects, budgets, approvals (`modules/B2B.md`)
