@@ -24,6 +24,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   String? _couponError;
   String? _appliedCouponCode;
   bool _isApplyingCoupon = false;
+  double _discountAmount = 0.0;
 
   @override
   void dispose() {
@@ -67,12 +68,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         await ref.read(cartRepositoryProvider).applyCoupon(userId, _couponController.text.trim());
         setState(() {
           _appliedCouponCode = _couponController.text.trim();
+          _discountAmount = validationResult.discountAmount;
           _couponError = null;
         });
       } else {
         setState(() {
           _couponError = validationResult.errorMessage;
           _appliedCouponCode = null;
+          _discountAmount = 0.0;
         });
       }
     } catch (e) {
@@ -95,6 +98,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         _appliedCouponCode = null;
         _couponController.clear();
         _couponError = null;
+        _discountAmount = 0.0;
       });
     } catch (e) {
       setState(() {
@@ -171,7 +175,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ),
               _CartSummary(
                 subtotal: cart.subtotalAmount,
-                discountAmount: _appliedCouponCode != null ? _calculateDiscountAmount(cart.subtotalAmount, _appliedCouponCode!) : 0,
+                discountAmount: _discountAmount,
                 onCheckout: () => context.push(AppRoutes.checkout),
               ),
             ],
@@ -197,13 +201,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     );
   }
 
-  double _calculateDiscountAmount(double subtotal, String couponCode) {
-    // This is a simplified calculation - in a real app, you'd get the actual discount from the coupon validation
-    // For now, we'll assume a 10% discount for demonstration
-    // In a real implementation, you'd want to store the discount amount from the validation result
-    return (subtotal * 0.1).clamp(0.0, 1000.0);
-  }
-
+  
   Widget _buildEmptyCart(BuildContext context) {
     return Center(
       child: Column(
