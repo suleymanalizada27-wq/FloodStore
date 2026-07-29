@@ -10,10 +10,10 @@ import '../../../../features/business/domain/repositories/analytics_repository.d
 import '../../domain/entities/product.dart';
 import '../../domain/entities/cart.dart';
 import '../../domain/entities/order.dart';
-import '../../domain/entities/user.dart';
+import 'package:floodstore/features/user/domain/entities/user.dart';
 import '../../domain/entities/wishlist.dart';
 import '../../domain/entities/coupon.dart';
-import '../../domain/entities/recommendation.dart';
+import 'package:floodstore/features/recommendation/domain/entities/recommendation.dart';
 import '../../domain/entities/category.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 import '../../data/repositories/firestore_cart_repository.dart';

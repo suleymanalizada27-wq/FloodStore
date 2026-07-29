@@ -1,5 +1,5 @@
 import '../entities/seller_analytics.dart';
-import '../../../marketplace/domain/entities/recommendation.dart';
+import 'package:floodstore/features/recommendation/domain/entities/recommendation.dart';
 
 abstract class AnalyticsRepository {
   Future<SellerDashboardData> getSellerDashboard(String sellerId,

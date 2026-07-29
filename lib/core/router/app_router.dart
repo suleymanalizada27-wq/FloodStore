@@ -19,7 +19,7 @@ import '../../features/marketplace/presentation/screens/order_detail_screen.dart
 import '../../features/marketplace/presentation/screens/home_screen.dart';
 import '../../features/marketplace/presentation/screens/products_screen.dart';
 import '../../features/marketplace/presentation/screens/product_detail_screen.dart';
-import '../../features/marketplace/presentation/screens/business_account_registration_screen.dart';
+import '../../features/business/presentation/screens/business_account_registration_screen.dart';
 import '../../features/marketplace/presentation/screens/wishlist_screen.dart';
 import '../../features/chat/presentation/screens/conversation_list_screen.dart';
 import '../../features/chat/presentation/screens/message_thread_screen.dart';
@@ -28,6 +28,7 @@ import '../../features/b2b/presentation/screens/projects_screen.dart';
 import '../../features/b2b/presentation/screens/project_detail_screen.dart';
 import '../../features/b2b/presentation/screens/create_purchase_request_screen.dart';
 import '../../features/b2b/presentation/screens/approval_inbox_screen.dart';
+import '../../features/b2b/presentation/screens/create_project_screen.dart';
 import 'auth_guards.dart';
 
 abstract final class AppRoutes {
@@ -71,10 +72,9 @@ abstract final class AppRoutes {
   static const b2bProjectDetail = '/b2b/projects/:projectId';
   static const b2bCreatePurchaseRequest = '/b2b/projects/:projectId/purchase-request/new';
   static const b2bApprovalInbox = '/b2b/approval-inbox';
+  static const b2bCreateProject = '/b2b/projects/create';
 }
 
-/// Bridges a Riverpod [Stream] provider to a [Listenable] so GoRouter can
-/// react to auth changes without a manual polling shim.
 class _AuthChangeNotifier extends ChangeNotifier {
   _AuthChangeNotifier(Ref ref) {
     _subscription = ref.listen(authStateChangesProvider, (_, __) {
@@ -238,6 +238,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.sellerDashboard,
         pageBuilder: (context, state) => _heroPage(const SellerDashboardScreen()),
       ),
+      // B2B routes
       GoRoute(
         path: AppRoutes.b2bProjects,
         pageBuilder: (context, state) => _heroPage(const ProjectsScreen(
@@ -261,6 +262,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.b2bApprovalInbox,
         pageBuilder: (context, state) => _heroPage(const ApprovalInboxScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.b2bCreateProject,
+        pageBuilder: (context, state) => _heroPage(const CreateProjectScreen(
+          organizationId: '', // TODO: Get from auth/user context
+        )),
       ),
     ],
   );

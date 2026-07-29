@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:floodstore/features/b2b/application/providers/b2b_providers.dart';
 import 'package:floodstore/features/b2b/domain/entities/project.dart';
+import 'package:floodstore/features/b2b/presentation/screens/create_project_screen.dart';
 import 'package:floodstore/features/b2b/presentation/screens/project_detail_screen.dart';
 import 'package:floodstore/core/theme/app_colors.dart';
 import 'package:floodstore/core/theme/app_spacing.dart';
@@ -32,7 +33,11 @@ class ProjectsScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              // TODO: Navigate to create project screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CreateProjectScreen(organizationId: organizationId),
+                ),
+              );
             },
             tooltip: 'Yeni Layihə',
           ),
@@ -87,18 +92,34 @@ class ProjectsScreen extends ConsumerWidget {
                 ?.copyWith(color: AppColors.textTertiary),
           ),
           const SizedBox(height: 24),
-          PremiumButton(
-            label: 'Yeni Layihə Yaradın',
-            icon: Icons.add,
+          ElevatedButton(
             onPressed: () {
-              // TODO: Navigate to create project screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CreateProjectScreen(organizationId: organizationId),
+                ),
+              );
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.background,
+              elevation: 0,
+            ),
+            child: PremiumButton(
+              label: 'Yeni Layihə Yaradın',
+              icon: Icons.add,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CreateProjectScreen(organizationId: organizationId),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
-}
 
 class _ProjectCard extends ConsumerWidget {
   final Project project;
@@ -128,7 +149,7 @@ class _ProjectCard extends ConsumerWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              _StatusBadge(status: project.status),
+              _statusBadge(status: project.status),
               const SizedBox(width: 8),
               Text(
                 'Created: ${_formatDate(project.startDate)}',
@@ -145,12 +166,11 @@ class _ProjectCard extends ConsumerWidget {
               icon: Icons.arrow_forward_ios,
               expand: false,
               onPressed: () {
-                // TODO: Navigate to project detail screen
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (_) => ProjectDetailScreen(projectId: project.id),
-                //   ),
-                // );
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ProjectDetailScreen(projectId: project.id),
+                  ),
+                );
               },
             ),
           ),
@@ -159,7 +179,7 @@ class _ProjectCard extends ConsumerWidget {
     );
   }
 
-  Widget _StatusBadge({required String status}) {
+  Widget _statusBadge({required String status}) {
     Color color;
     String label;
 
@@ -203,11 +223,7 @@ class _ProjectCard extends ConsumerWidget {
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
-      ),
+      );
     );
   }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
-}

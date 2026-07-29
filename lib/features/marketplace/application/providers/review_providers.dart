@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/review.dart';
-import '../../domain/repositories/review_repository.dart';
-import '../../data/repositories/firestore_review_repository.dart';
+import 'package:floodstore/features/review/domain/entities/review.dart';
+import 'package:floodstore/features/review/domain/repositories/review_repository.dart';
+import 'package:floodstore/features/review/data/repositories/firestore_review_repository.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../../domain/entities/order.dart';
 import '../../application/providers/marketplace_providers.dart';

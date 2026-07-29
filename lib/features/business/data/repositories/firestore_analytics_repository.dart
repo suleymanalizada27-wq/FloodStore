@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:floodstore/features/business/domain/entities/seller_analytics.dart';
-import '../../../marketplace/domain/entities/recommendation.dart';
+import 'package:floodstore/features/recommendation/domain/entities/recommendation.dart';
 import '../../../marketplace/domain/entities/order.dart';
 import '../../../marketplace/domain/entities/product.dart';
 import '../../domain/repositories/analytics_repository.dart';

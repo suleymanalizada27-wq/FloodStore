@@ -235,7 +235,7 @@ class _PhaseCard extends StatelessWidget {
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _StatusBadge(status: phase.status),
+            _statusBadge(status: phase.status),
             const SizedBox(height: 8),
             Text(
               phase.description,
@@ -250,7 +250,7 @@ class _PhaseCard extends StatelessWidget {
     );
   }
 
-  Widget _StatusBadge({required String status}) {
+  Widget _statusBadge({required String status}) {
     Color color;
 
     switch (status.toLowerCase()) {
