@@ -48,19 +48,17 @@ lib/
     chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
     marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
     procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
-    recommendation/      domain/ data/ application/ presentation/ 
-    review/              domain/ data/ application/ presentation/ 
-    user/                domain/ data/ application/ presentation/ 
+    recommendation/      domain/ data/ application/ presentation/
+    review/              domain/ data/ application/ presentation/
+    user/                domain/ data/ application/ presentation/
   firebase_options.dart
 ```
 
-Note: `business`, `procurement`, and `chat` currently only have `domain/` and `data/` —
-**no `application/` providers and no `presentation/` screens yet**. That's the single
-biggest gap between "entities exist" and "feature is usable." See `03_FEATURES.md`.
+Note: All features now have the four layers (domain, data, application, presentation). See `03_FEATURES.md` for details on completion.
 
 ## Adding a new feature module
 
-1. Create `lib/features/<name>/{domain,data,application,presentation}/`.
+1. Create `lib/features/<name>/{domain,data,application,presentation}/`
 2. Write the domain entity + abstract repository first.
 3. Write the Firestore repository implementation in `data/`.
 4. Wire a Riverpod provider in `application/`.
