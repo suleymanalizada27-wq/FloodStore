@@ -14,7 +14,7 @@ See `docs/03_FEATURES.md` "Marketplace" table for the file-level checklist.
    Checkout/Orders boundary sits.
 2. Reconcile `wishlist` vs `wishlists` collection naming (`docs/04_DATABASE_SCHEMA.md`).
 3. Advanced filters (price range, brand, in-stock).
-4. Reviews UI (entity exists, no screen/provider wiring confirmed).
+4. Reviews UI (entity exists in review feature, no screen/provider wiring confirmed in marketplace).
 5. **Project Cart** (vision differentiator): user describes a project ("100m² house"), system
    computes a material list, adds it as one unit to cart. This needs: a materials-estimation
    ruleset or AI call, a `ProjectCart`/`ProjectCartItem` concept, and UI. Treat as its own

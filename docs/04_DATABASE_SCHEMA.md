@@ -22,7 +22,7 @@ if missing). When you add a new collection, add a new row **and** add a rule for
 
 | Collection | Entity file | Purpose |
 |---|---|---|
-| `users` | `marketplace/domain/entities/user.dart` (shared user record — consider moving to `auth/`) | Core user profile |
+| `users` | `lib/features/user/domain/entities/user.dart` (shared user record — consider moving to `auth/`) | Core user profile |
 | `organizations` | `auth/domain/entities/organization.dart` | Business/company accounts |
 | `members` | — | Organization membership records |
 | `invitationCodes` | — | Org invite codes |
@@ -41,10 +41,10 @@ if missing). When you add a new collection, add a new row **and** add a rule for
 | `saved_carts` | — | Saved-for-later carts |
 | `wishlist` / `wishlists` | `marketplace/domain/entities/wishlist.dart` | ⚠️ two collection names in code (`wishlist` and `wishlists`) — **needs reconciliation, likely a bug** |
 | `orders` | `marketplace/domain/entities/order.dart` | Orders |
-| `reviews` | `marketplace/domain/entities/review.dart` | Product reviews/ratings |
+| `reviews` | `lib/features/review/domain/entities/review.dart` | Product reviews/ratings |
 | `coupons` | `marketplace/domain/entities/coupon.dart` | Discount coupons |
 | `bundles` | — | Product bundles (no dedicated entity found — verify) |
-| `recommendations` | `marketplace/domain/entities/recommendation.dart` | Personalized recs |
+| `recommendations` | `lib/features/recommendation/domain/entities/recommendation.dart` | Personalized recs |
 | `recently_viewed` | — | Recently viewed products |
 | `ad_campaigns` | — | Marketing/ad campaigns |
 | `history` | — | Price history (`price_history.dart`) or generic activity — verify which |

@@ -28,7 +28,6 @@ Rules:
 - Cross-feature imports are a smell. If `marketplace` needs something from `business`, that's
   a sign the entity is misplaced or needs to move to `core/` as a shared primitive.
 
-## Actual folder structure (current)
 
 ```
 lib/
@@ -44,11 +43,13 @@ lib/
   features/
     splash/             presentation/ only
     auth/                domain/ data/ application/ presentation/  (see modules/AUTH.md)
+    business/            domain/ data/ application/ presentation/  (see modules/SELLER.md (and modules/B2B.md for company structure))
+    chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
     marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
-    business/            domain/ data/                              (see modules/SELLER.md (and modules/B2B.md for company structure))
-    procurement/         domain/ data/                              (see modules/PROCUREMENT.md)
-    chat/                domain/ data/                              (see modules/CHAT.md)
-  main.dart
+    procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
+    recommendation/      domain/ data/ application/ presentation/  (see modules/RECOMMENDATION.md)
+    review/              domain/ data/ application/ presentation/  (see modules/REVIEW.md)
+    user/                domain/ data/ application/ presentation/  (see modules/USER.md)
   firebase_options.dart
 ```
 
