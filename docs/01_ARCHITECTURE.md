@@ -29,6 +29,7 @@ Rules:
   a sign the entity is misplaced or needs to move to `core/` as a shared primitive.
 
 
+## Actual folder structure (current)
 ```
 lib/
   core/
@@ -47,9 +48,9 @@ lib/
     chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
     marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
     procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
-    recommendation/      domain/ data/ application/ presentation/  (see modules/RECOMMENDATION.md)
-    review/              domain/ data/ application/ presentation/  (see modules/REVIEW.md)
-    user/                domain/ data/ application/ presentation/  (see modules/USER.md)
+    recommendation/      domain/ data/ application/ presentation/ 
+    review/              domain/ data/ application/ presentation/ 
+    user/                domain/ data/ application/ presentation/ 
   firebase_options.dart
 ```
 
