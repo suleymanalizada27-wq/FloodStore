@@ -30,27 +30,28 @@ Rules:
 
 
 ## Actual folder structure (current)
-```
-lib/
-  core/
-    constants/        app_constants.dart
-    enums/             inventory_status.dart
-    router/            app_router.dart, auth_guards.dart
-    services/           auth_rate_limiter.dart, draft_storage_service.dart,
-                        secure_token_service.dart, session_service.dart
-    theme/              app_colors.dart, app_effects.dart, app_motion.dart,
-                        app_spacing.dart, app_text_styles.dart, app_theme.dart
-    widgets/            shared UI primitives (GlassCard, PremiumButton, etc.)
-  features/
-    splash/             presentation/ only
-    auth/                domain/ data/ application/ presentation/  (see modules/AUTH.md)
-    business/            domain/ data/ application/ presentation/  (see modules/SELLER.md (and modules/B2B.md for company structure))
-    chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
-    marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
-    procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
-    recommendation/      domain/ data/ application/ presentation/
-    review/              domain/ data/ application/ presentation/
-    user/                domain/ data/ application/ presentation/
+ ```
+ lib/
+   core/
+     constants/        app_constants.dart
+     enums/             inventory_status.dart
+     router/            app_router.dart, auth_guards.dart
+     services/           auth_rate_limiter.dart, draft_storage_service.dart,
+                         secure_token_service.dart, session_service.dart
+     theme/              app_colors.dart, app_effects.dart, app_motion.dart,
+                         app_spacing.dart, app_text_styles.dart, app_theme.dart
+     widgets/            shared UI primitives (GlassCard, PremiumButton, etc.)
+   features/
+     splash/             presentation/ only
+     auth/                domain/ data/ application/ presentation/  (see modules/AUTH.md)
+     business/            domain/ data/ application/ presentation/  (see modules/SELLER.md (and modules/B2B.md for company structure))
+     chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
+     marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
+     procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
+     recommendation/      domain/ data/ application/ presentation/ 
+     review/              domain/ data/ application/ presentation/ 
+     user/                domain/ data/ application/ presentation/ 
+ ```
   firebase_options.dart
 ```
 
