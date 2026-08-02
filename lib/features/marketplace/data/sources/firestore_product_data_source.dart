@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/product_variant.dart';
 import '../../domain/entities/category.dart';
-import '../../domain/entities/review.dart';
+import '../../../review/domain/entities/review.dart';
 
 /// Firestore data source for product-related operations
 class FirestoreProductDataSource {

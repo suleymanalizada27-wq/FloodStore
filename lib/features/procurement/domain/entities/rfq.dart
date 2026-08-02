@@ -15,6 +15,8 @@ class RFQ extends Equatable {
   final List<String>? tags; // Tags for categorization/search
   final Map<String, dynamic>?
       customFields; // Custom fields for specific industries
+  final double totalBudget; // Total budget for the RFQ
+  final String currency; // Currency code (USD, EUR, etc.)
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -30,6 +32,8 @@ class RFQ extends Equatable {
     this.notes,
     this.tags,
     this.customFields,
+    required this.totalBudget,
+    required this.currency,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -66,6 +70,8 @@ class RFQ extends Equatable {
     String? notes,
     List<String>? tags,
     Map<String, dynamic>? customFields,
+    double? totalBudget,
+    String? currency,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -81,6 +87,8 @@ class RFQ extends Equatable {
       notes: notes ?? this.notes,
       tags: tags ?? this.tags,
       customFields: customFields ?? this.customFields,
+      totalBudget: totalBudget ?? this.totalBudget,
+      currency: currency ?? this.currency,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -120,6 +128,8 @@ class RFQ extends Equatable {
       notes: data['notes'],
       tags: data['tags'] != null ? List<String>.from(data['tags']) : null,
       customFields: data['customFields'],
+      totalBudget: (data['totalBudget'] as num?)?.toDouble() ?? 0.0,
+      currency: data['currency'] ?? 'USD',
       createdAt: data['createdAt'] != null
           ? DateTime.parse(data['createdAt'])
           : DateTime.now(),

@@ -1,5 +1,4 @@
 import 'package:floodstore/features/procurement/domain/entities/warehouse.dart';
-import '../../../../core/enums/inventory_status.dart';
 
 abstract class WarehouseRepository {
   /// Creates a new warehouse

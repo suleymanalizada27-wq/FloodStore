@@ -120,6 +120,7 @@ class ProjectsScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
 class _ProjectCard extends ConsumerWidget {
   final Project project;
@@ -179,6 +180,11 @@ class _ProjectCard extends ConsumerWidget {
     );
   }
 
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Not set';
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
   Widget _statusBadge({required String status}) {
     Color color;
     String label;
@@ -223,7 +229,7 @@ class _ProjectCard extends ConsumerWidget {
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
-      );
+      ),
     );
   }
-  }
+}

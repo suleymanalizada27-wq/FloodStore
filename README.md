@@ -42,7 +42,7 @@ lib/
 - ✅ Add to Cart functionality with persistence
 - ✅ Product Detail viewing
 - ✅ Category browsing
-- ✅ Procurement module foundation (RFQ entities and repositories)
+- ✅ Procurement module: RFQ entities, repositories, and presentation layer (screens) with mock data
 - ✅ Clean Architecture separation (domain/data/application/presentation layers)
 - ✅ Firebase Authentication integration
 - ✅ Riverpod state management

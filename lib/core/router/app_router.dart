@@ -23,14 +23,19 @@ import '../../features/business/presentation/screens/business_account_registrati
 import '../../features/marketplace/presentation/screens/wishlist_screen.dart';
 import '../../features/chat/presentation/screens/conversation_list_screen.dart';
 import '../../features/chat/presentation/screens/message_thread_screen.dart';
+import '../../features/business/presentation/screens/business_account_registration_screen.dart';
 import '../../features/business/presentation/screens/seller_dashboard_screen.dart';
 import '../../features/b2b/presentation/screens/projects_screen.dart';
 import '../../features/b2b/presentation/screens/project_detail_screen.dart';
 import '../../features/b2b/presentation/screens/create_purchase_request_screen.dart';
 import '../../features/b2b/presentation/screens/approval_inbox_screen.dart';
 import '../../features/b2b/presentation/screens/create_project_screen.dart';
+import '../../features/procurement/presentation/screens/rfq_list_screen.dart';
+import '../../features/procurement/presentation/screens/create_rfq_screen.dart';
+import '../../features/procurement/presentation/screens/rfq_detail_screen.dart';
 import 'auth_guards.dart';
 
+// Procurement routes
 abstract final class AppRoutes {
   static const splash = '/';
 
@@ -73,6 +78,11 @@ abstract final class AppRoutes {
   static const b2bCreatePurchaseRequest = '/b2b/projects/:projectId/purchase-request/new';
   static const b2bApprovalInbox = '/b2b/approval-inbox';
   static const b2bCreateProject = '/b2b/projects/create';
+
+  // Procurement routes
+  static const procurementRfqList = '/procurement/rfqs';
+  static const procurementCreateRfq = '/procurement/rfq/create';
+  static const procurementRfqDetail = '/procurement/rfq/detail';
 }
 
 class _AuthChangeNotifier extends ChangeNotifier {
@@ -155,8 +165,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.forgotPassword,
-        pageBuilder: (context, state) =>
-            _heroPage(const ForgotPasswordScreen()),
+        pageBuilder: (context, state) => _heroPage(const ForgotPasswordScreen()),
       ),
       GoRoute(
         path: AppRoutes.phoneAuth,
@@ -164,18 +173,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.verifyEmail,
-        pageBuilder: (context, state) =>
-            _heroPage(const EmailVerificationScreen()),
+        pageBuilder: (context, state) => _heroPage(const EmailVerificationScreen()),
       ),
       GoRoute(
         path: AppRoutes.organizationOnboarding,
-        pageBuilder: (context, state) =>
-            _heroPage(const OrganizationOnboardingScreen()),
+        pageBuilder: (context, state) => _heroPage(const OrganizationOnboardingScreen()),
       ),
       GoRoute(
         path: AppRoutes.securityCenter,
-        pageBuilder: (context, state) =>
-            _heroPage(const SecurityCenterScreen()),
+        pageBuilder: (context, state) => _heroPage(const SecurityCenterScreen()),
       ),
       GoRoute(
         path: AppRoutes.home,
@@ -206,8 +212,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.orderConfirmation,
-        pageBuilder: (context, state) =>
-            _heroPage(const OrderConfirmationScreen()),
+        pageBuilder: (context, state) => _heroPage(const OrderConfirmationScreen()),
       ),
       GoRoute(
         path: AppRoutes.orderDetail,
@@ -215,8 +220,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.businessAccountRegister,
-        pageBuilder: (context, state) =>
-            _heroPage(const BusinessAccountRegistrationScreen()),
+        pageBuilder: (context, state) => _heroPage(const BusinessAccountRegistrationScreen()),
       ),
       GoRoute(
         path: AppRoutes.chatConversationList,
@@ -268,6 +272,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _heroPage(const CreateProjectScreen(
           organizationId: '', // TODO: Get from auth/user context
         )),
+      ),
+      // Procurement routes
+      GoRoute(
+        path: AppRoutes.procurementRfqList,
+        pageBuilder: (context, state) => _heroPage(const RFQListScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.procurementCreateRfq,
+        pageBuilder: (context, state) => _heroPage(const CreateRFQScreen()),
+      ),
+      GoRoute(
+        path: '${AppRoutes.procurementRfqDetail}/:rfqId',
+        pageBuilder: (context, state) {
+          final rfqId = state.pathParameters['rfqId']!;
+          return _heroPage(RFQDetailScreen(rfqId: rfqId));
+        },
       ),
     ],
   );

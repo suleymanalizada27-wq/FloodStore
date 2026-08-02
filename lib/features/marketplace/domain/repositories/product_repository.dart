@@ -1,7 +1,7 @@
 import '../entities/product.dart';
 import '../entities/product_variant.dart';
 import '../entities/category.dart';
-import '../entities/review.dart';
+import '../../../review/domain/entities/review.dart';
 
 /// Abstract repository for product-related operations
 abstract class ProductRepository {

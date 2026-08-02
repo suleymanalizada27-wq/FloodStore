@@ -12,7 +12,7 @@ import '../../application/providers/marketplace_providers.dart';
 import '../../application/providers/review_providers.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/order.dart';
-import '../../domain/entities/review.dart';
+import '../../../review/domain/entities/review.dart';
 
 /// Detailed view for a single product.
 class ProductDetailScreen extends ConsumerWidget {
