@@ -53,7 +53,6 @@ recommendation/ domain/ only
 review/ domain/ data/
 user/ domain/ only
 ```
-Note: All features now have the four layers (domain, data, application, presentation). See `03_FEATURES.md` for details on completion.
 
 ## Adding a new feature module
 
