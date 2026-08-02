@@ -31,30 +31,27 @@ Rules:
 
 ## Actual folder structure (current)
  ```
- lib/
-   core/
-     constants/        app_constants.dart
-     enums/             inventory_status.dart
-     router/            app_router.dart, auth_guards.dart
-     services/           auth_rate_limiter.dart, draft_storage_service.dart,
-                         secure_token_service.dart, session_service.dart
-     theme/              app_colors.dart, app_effects.dart, app_motion.dart,
-                         app_spacing.dart, app_text_styles.dart, app_theme.dart
-     widgets/            shared UI primitives (GlassCard, PremiumButton, etc.)
-   features/
-     splash/             presentation/ only
-     auth/                domain/ data/ application/ presentation/  (see modules/AUTH.md)
-     business/            domain/ data/ application/ presentation/  (see modules/SELLER.md (and modules/B2B.md for company structure))
-     chat/                domain/ data/ application/ presentation/  (see modules/CHAT.md)
-     marketplace/         domain/ data/ application/ presentation/  (see modules/MARKETPLACE.md)
-     procurement/         domain/ data/ application/ presentation/  (see modules/PROCUREMENT.md)
-     recommendation/      domain/ data/ application/ presentation/ 
-     review/              domain/ data/ application/ presentation/ 
-     user/                domain/ data/ application/ presentation/ 
- ```
-  firebase_options.dart
-```
 
+lib/
+core/
+constants/ app_constants.dot
+enums/ inventory_status.dot
+router/ app_router.dot, auth_guards.dot
+services/ auth_rate_limiter.dot, draft_storage_service.dot
+secure_token_service.dot, session_service.dot
+theme/ app_colors.dot, app_effects.dot, app_motion.dot
+app_spacing.dot, app_text_styles.dot, app_theme.dot
+widgets/ shared UI primitives (GlassCard, PremiumButton, etc.)
+features/
+splash/ presentation/ only
+auth/ domain/ data/ application/ presentation/ (see modules/AUTH.md)
+business/ domain/ data/ application/ presentation/ (see modules/SELLER.md and modules/B2B.md)
+chat/ domain/ data/ application/ presentation/ (see modules/CHAT.md)
+marketplace/ domain/ data/ application/ presentation/ (see modules/MARKETPLACE.md)
+procurement/ domain/ data/ application/ (no presentation/ yet — see modules/PROCUREMENT.md)
+recommendation/ domain/ only
+review/ domain/ data/
+user/ domain/ only
 Note: All features now have the four layers (domain, data, application, presentation). See `03_FEATURES.md` for details on completion.
 
 ## Adding a new feature module
