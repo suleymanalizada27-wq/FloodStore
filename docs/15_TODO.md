@@ -30,6 +30,7 @@
       Postgres migration candidate (least data)
 
 ## MEDIUM
+- [x] Fix documentation typos in 03_FEATURES.md (loyalty program .dll→.dart, trust score encoding)
 - [x] Advanced product filters (`modules/MARKETPLACE.md`)
 - [x] Reviews UI wiring
 - [x] Reviews collection composite index (isApproved + createdAt) - add to firestore.indexes.json, verify with `firebase deploy --only firestore:indexes`

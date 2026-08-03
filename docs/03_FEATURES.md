@@ -44,10 +44,10 @@ Agents: update the relevant row(s) when you finish a task. Don't rewrite the who
 |---|---|---|
 | Business account entity/repo | ⚠️ | `business_account.dart`, `firestore_business_account_repository.dart` exist |
 | Seller analytics entity/repo | ⚠️ | entity exists, no dashboard screen |
-| Loyalty program entity/repo | ⚠️ | `loyalty.dart`, `firestore_loyalty_repository.dll` exist, no UI |
+| Loyalty program entity/repo | ⚠️ | `loyalty.dart`, `firestore_loyalty_repository.dart` exist, no UI |
 | Seller Dashboard (orders, inventory, payouts, RFQ invitations) | ⚠️ | Implemented products and orders list (`seller_dashboard_screen.dart`), providers (`sellerProductsProvider`, `sellerOrdersProvider`), and route (`/seller/dashboard`). Missing inventory, payouts, RFQ invitations. |
 | KYC/KYB verification | ❌ | not started |
-| Trust score / Verified Supplier badge | ❠ | not started |
+| Trust score / Verified Supplier badge | ❌ | not started |
 
 ## B2B (`lib/features/b2b/`) — see `modules/B2B.md`
 
