@@ -33,6 +33,9 @@ import '../../features/b2b/presentation/screens/create_project_screen.dart';
 import '../../features/procurement/presentation/screens/rfq_list_screen.dart';
 import '../../features/procurement/presentation/screens/create_rfq_screen.dart';
 import '../../features/procurement/presentation/screens/rfq_detail_screen.dart';
+import '../../features/tender/presentation/screens/create_tender_screen.dart';
+import '../../features/tender/presentation/screens/tender_detail_screen.dart';
+import '../../features/tender/presentation/screens/tenders_screen.dart';
 import 'auth_guards.dart';
 
 // Procurement routes
@@ -83,6 +86,11 @@ abstract final class AppRoutes {
   static const procurementRfqList = '/procurement/rfqs';
   static const procurementCreateRfq = '/procurement/rfq/create';
   static const procurementRfqDetail = '/procurement/rfq/detail';
+
+  // Tender routes
+  static const tenderList = '/tenders';
+  static const tenderCreate = '/tenders/create';
+  static const tenderDetail = '/tenders/:id';
 }
 
 class _AuthChangeNotifier extends ChangeNotifier {
@@ -287,6 +295,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) {
           final rfqId = state.pathParameters['rfqId']!;
           return _heroPage(RFQDetailScreen(rfqId: rfqId));
+        },
+      ),
+      // Tender routes
+      GoRoute(
+        path: AppRoutes.tenderList,
+        pageBuilder: (context, state) => _heroPage(const TendersScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.tenderCreate,
+        pageBuilder: (context, state) => _heroPage(const CreateTenderScreen()),
+      ),
+      GoRoute(
+        path: '${AppRoutes.tenderDetail}/:id',
+        pageBuilder: (context, state) {
+          final tenderId = state.pathParameters['id']!;
+          return _heroPage(TenderDetailScreen(tenderId: tenderId));
         },
       ),
     ],

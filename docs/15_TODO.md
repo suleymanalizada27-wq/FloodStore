@@ -23,7 +23,7 @@
 - [ ] Stand up Supabase project + Edge Functions runtime (decided: `decisions/ADR-004-PAYMENTS.md`) —
       blocks Payments, KYC approval, tender award, and any trust-sensitive write
 - [ ] Apply `database/03_TABLES.md` schema + `database/07_RLS_POLICIES.md` to the new Supabase project (`database/12_MIGRATIONS.md` Phase 1)
-- [ ] Build `application/`+`presentation/` layers for `procurement` (`modules/PROCUREMENT.md`)
+- [x] Build `application/`+`presentation/` layers for `procurement` (`modules/PROCUREMENT.md`)
       — recommend building directly against Postgres target, not Firestore
 - [x] Build `application/`+`presentation/` layers for `business`/Seller Dashboard (`modules/SELLER.md`)
 - [x] Build `application/`+`presentation/` layers for `chat` (`modules/CHAT.md`) — good first
@@ -39,7 +39,7 @@
 - [x] Write real CI pipeline (`flutter analyze` + `flutter test` on PR) (`12_DEPLOYMENT.md`)
 
 ## LOW / GREENFIELD (build directly on Postgres/Supabase per migration plan)
-- [ ] B2B company structure — projects, budgets, approvals (`modules/B2B.md`)
+- [ ] B2B company structure — projects, budgets, approvals (`modules/B2B.md`) — domain/presentation done with mock data, Supabase backend pending
 - [ ] Tender / reverse auction (`modules/TENDER_RFQ.md`)
 - [ ] Logistics tracking (`modules/LOGISTICS.md`)
 - [ ] Admin panel (`modules/ADMIN.md`)
