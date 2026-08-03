@@ -5,7 +5,12 @@ import 'package:floodstore/features/tender/domain/entities/tender.dart';
 import 'package:floodstore/features/tender/domain/entities/tender_bid.dart';
 
 class TenderDetailScreen extends ConsumerStatefulWidget {
-  const TenderDetailScreen({super.key});
+  const TenderDetailScreen({
+    super.key,
+    required this.tenderId,
+  });
+
+  final String tenderId;
 
   @override
   ConsumerState<TenderDetailScreen> createState() => _TenderDetailScreenState();
@@ -20,13 +25,9 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
   int? _deliveryDays;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)!.settings.arguments as String?;
-    if (args == null) {
-      throw Exception('Tender ID is required');
-    }
-    tenderId = args;
+  void initState() {
+    super.initState();
+    tenderId = widget.tenderId;
   }
 
   @override
@@ -41,7 +42,7 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
           // Only show close button if tender is open and we are the owner?
           // For simplicity, we'll show it if tender is open (in a real app, check ownership)
           if (tenderAsync.when(
-                data: (tender) => tender.status == 'open',
+                data: (tender) => tender.status == TenderStatus.open,
                 loading: () => false,
                 error: (_, __) => false,
               ))
@@ -86,7 +87,7 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
             ],
           ),
         ),
-        if (tender.status == 'open')
+        if (tender.status == TenderStatus.open)
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: _buildBidForm(),
@@ -220,7 +221,7 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _deliveryDays = value.isNotEmpty ? int.parse(value) : null;
+                  _deliveryDays = (value != null && value.isNotEmpty) ? int.parse(value) : null;
                 },
               ),
               const SizedBox(height: 16),
@@ -243,7 +244,7 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
     );
   }
 
-  void _submitBid() {
+  void _submitBid() async {
     if (_bidFormKey.currentState!.validate()) {
       _bidFormKey.currentState!.save();
       setState(() {
@@ -260,63 +261,59 @@ class _TenderDetailScreenState extends ConsumerState<TenderDetailScreen> {
         submittedAt: DateTime.now(),
       );
 
-      ref
-          .read(submitBidProvider(bid).future)
-          .then((_) {
-            // Successfully submitted
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Bid submitted successfully')),
-              );
-              // Reset form
-              _bidFormKey.currentState!.reset();
-              setState(() {
-                _isSubmitting = false;
-                _bidPrice = 0;
-                _deliveryDays = null;
-              });
-              // Refresh bids
-              ref.refresh(tenderBidsProvider(tenderId));
-            }
-          })
-          .catchError((error) {
-            if (mounted) {
-              setState(() {
-                _isSubmitting = false;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error submitting bid: $error')),
-              );
-            }
+      try {
+        await ref.read(submitBidProvider(bid).future);
+        // Successfully submitted
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bid submitted successfully')),
+          );
+          // Reset form
+          _bidFormKey.currentState!.reset();
+          setState(() {
+            _isSubmitting = false;
+            _bidPrice = 0;
+            _deliveryDays = null;
           });
+          // Refresh bids
+          ref.refresh(tenderBidsProvider(tenderId));
+        }
+      } catch (error) {
+        if (mounted) {
+          setState(() {
+            _isSubmitting = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error submitting bid: $error')),
+          );
+        }
+      }
     }
   }
 
-  void _closeTender() {
+  void _closeTender() async {
     setState(() {
       _isClosing = true;
     });
 
-    ref
-        .read(closeTenderProvider(tenderId).future)
-        .then((_) {
-          // Successfully closed
-          if (mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Tender closed successfully')),
-            );
-          }
-        })
-        .catchError((error) {
-          if (mounted) {
-            setState(() {
-              _isClosing = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error closing tender: $error')),
-            );
-          }
+    try {
+      await ref.read(closeTenderProvider(tenderId).future);
+      // Successfully closed
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tender closed successfully')),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _isClosing = false;
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error closing tender: $error')),
+        );
+      }
+    }
   }
 }

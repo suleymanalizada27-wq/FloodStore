@@ -42,10 +42,8 @@ class _CreateTenderScreenState extends ConsumerState<CreateTenderScreen> {
                         hintText: 'Enter RFQ ID if this tender is related to an RFQ',
                       ),
                       validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          return null;
-                        }
-                        return 'Please enter some text';
+                        // Optional field, so we allow empty
+                        return null;
                       },
                       onSaved: (value) {
                         _rfqId = value;
@@ -124,7 +122,7 @@ class _CreateTenderScreenState extends ConsumerState<CreateTenderScreen> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       setState(() {
@@ -178,27 +176,25 @@ class _CreateTenderScreenState extends ConsumerState<CreateTenderScreen> {
       );
 
       // Use the createTenderProvider to create the tender
-      ref
-          .read(createTenderProvider(tender).future)
-          .then((_) {
-            // Successfully created
-            if (mounted) {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Tender created successfully')),
-              );
-            }
-          })
-          .catchError((error) {
-            if (mounted) {
-              setState(() {
-                _isCreating = false;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error creating tender: $error')),
-              );
-            }
+      try {
+        await ref.read(createTenderProvider(tender).future);
+        // Successfully created
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tender created successfully')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          setState(() {
+            _isCreating = false;
           });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error creating tender: $error')),
+          );
+        }
+      }
     }
   }
 }

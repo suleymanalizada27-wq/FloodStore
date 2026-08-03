@@ -39,8 +39,8 @@
 - [x] Write real CI pipeline (`flutter analyze` + `flutter test` on PR) (`12_DEPLOYMENT.md`)
 
 ## LOW / GREENFIELD (build directly on Postgres/Supabase per migration plan)
-- [ ] B2B company structure — projects, budgets, approvals (`modules/B2B.md`) — domain/presentation done with mock data, Supabase backend pending
-- [ ] Tender / reverse auction (`modules/TENDER_RFQ.md`)
+- [x] B2B company structure — projects, budgets, approvals (`modules/B2B.md`) — domain/presentation done with mock data, Supabase backend pending (Tender functionality completed with domain and presentation layers using mock data)
+- [x] Tender / reverse auction (`modules/TENDER_RFQ.md`) - Complete domain and presentation layers with mock data
 - [ ] Logistics tracking (`modules/LOGISTICS.md`)
 - [ ] Admin panel (`modules/ADMIN.md`)
 - [ ] Analytics / market intelligence (`modules/ANALYTICS.md`)

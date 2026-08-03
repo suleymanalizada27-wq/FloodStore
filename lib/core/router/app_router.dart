@@ -307,7 +307,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _heroPage(const CreateTenderScreen()),
       ),
       GoRoute(
-        path: '${AppRoutes.tenderDetail}/:id',
+        path: AppRoutes.tenderDetail,
         pageBuilder: (context, state) {
           final tenderId = state.pathParameters['id']!;
           return _heroPage(TenderDetailScreen(tenderId: tenderId));
